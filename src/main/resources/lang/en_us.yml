@@ -16,4 +16,6 @@ commands:
   itemlore:
     lore-changed: "&aYou changed the lore of the item you're holding to:"
   misc:
+    config-reloaded: "&aConfiguration reloaded"
+    lang-reloaded: "&aLanguage files reloaded"
     have-to-hold-item: "&cYou have to hold an item in your hand."

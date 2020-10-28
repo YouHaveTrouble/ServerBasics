@@ -1,5 +1,5 @@
-name: EnderCore
+name: ServerBasics
 version: ${project.version}
-main: eu.endermite.endercore.EnderCore
+main: eu.endermite.serverbasics.ServerBasics
 api-version: 1.16
 authors: [ YouHaveTrouble ]

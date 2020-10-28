@@ -2,3 +2,8 @@ language:
   #Match message language to player language set in client
   auto-language: true
   default-language: "en_us"
+spawn:
+  world: world
+  x: 0
+  y: 0
+  z: 0

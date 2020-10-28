@@ -2,8 +2,11 @@ package eu.endermite.serverbasics;
 
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
+import eu.endermite.serverbasics.messages.MessageParser;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
@@ -18,6 +21,7 @@ public final class ServerBasics extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         reloadConfigs();
+        reloadLang();
         commandManager = new CommandManager();
         commandManager.initCommands();
     }
@@ -26,6 +30,9 @@ public final class ServerBasics extends JavaPlugin {
         saveDefaultConfig();
         reloadConfig();
         configCache = new ConfigCache();
+    }
+
+    private void reloadLang() {
         languageCacheMap = new HashMap<>();
         try {
             LanguageCache en_us = new LanguageCache("en_us");
@@ -36,8 +43,34 @@ public final class ServerBasics extends JavaPlugin {
         }
     }
 
-    public void reloadConfigs(CommandSender sender) {
+    public void asyncReloadConfigs(CommandSender sender) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                reloadConfigs();
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    MessageParser.sendMessage(player, getLang(player.getLocale()).CONFIG_RELOADED);
+                } else {
+                    MessageParser.sendMessage(sender, getLang(configCache.DEFAULT_LANG).CONFIG_RELOADED);
+                }
+            }
+        }.runTaskAsynchronously(this);
+    }
 
+    public void asyncReloadLanguage(CommandSender sender) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                reloadLang();
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    MessageParser.sendMessage(player, getLang(player.getLocale()).LANG_RELOADED);
+                } else {
+                    MessageParser.sendMessage(sender, getLang(configCache.DEFAULT_LANG).LANG_RELOADED);
+                }
+            }
+        }.runTaskAsynchronously(this);
     }
 
     public static ServerBasics getInstance() {

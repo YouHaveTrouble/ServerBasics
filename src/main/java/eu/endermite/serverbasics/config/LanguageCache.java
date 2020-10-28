@@ -8,7 +8,7 @@ import java.io.File;
 
 public class LanguageCache {
 
-    public String HAVE_TO_HOLD_ITEM, HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
+    public String CONFIG_RELOADED, LANG_RELOADED, HAVE_TO_HOLD_ITEM, HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
             FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED;
 
     public LanguageCache(String lang) {
@@ -27,6 +27,9 @@ public class LanguageCache {
         }
         try {
             fileConfiguration.load(langFile);
+
+            this.CONFIG_RELOADED = fileConfiguration.getString("commands.misc.config-reloaded");
+            this.LANG_RELOADED = fileConfiguration.getString("commands.misc.lang-reloaded");
 
             this.HAVE_TO_HOLD_ITEM = fileConfiguration.getString("commands.misc.have-to-hold-item");
 

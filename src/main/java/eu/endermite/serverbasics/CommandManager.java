@@ -77,6 +77,7 @@ public class CommandManager {
         new PlayTimeCommand().constructCommand();
         new ItemNameCommand().constructCommand();
         new ItemLoreCommand().constructCommand();
+        new ServerBasicsCommand().constructCommand();
     }
 
     public AnnotationParser getAnnotationParser() {

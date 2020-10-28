@@ -1,0 +1,19 @@
+commands:
+  heal:
+    healed: "&aYou have been healed"
+    healed-by-other: "&aYou have been healed by %s"
+    healed-other: "&aYou healed %s"
+    healed-many: "&aYou healed %s players"
+    healed-noone: "&aYou healed noone"
+  feed:
+    fed: "&aYou have been fed"
+    fed-by-other: "&aYou have been fed by %s"
+    fed-other: "&aYou fed %s"
+    fed-many: "&aYou fed %s players"
+    fed-noone: "&aYou fed noone"
+  itemname:
+    name-changed: "&aYou changed the name of the the item you're holding to &r%s"
+  itemlore:
+    lore-changed: "&aYou changed the lore of the item you're holding to:"
+  misc:
+    have-to-hold-item: "&cYou have to hold an item in your hand."

@@ -1,0 +1,5 @@
+name: EnderCore
+version: ${project.version}
+main: eu.endermite.endercore.EnderCore
+api-version: 1.16
+authors: [ YouHaveTrouble ]

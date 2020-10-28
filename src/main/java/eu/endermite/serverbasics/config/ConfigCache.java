@@ -7,7 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class ConfigCache {
 
     public String DEFAULT_LANG;
-    public boolean AUTO_LANG;
+    public boolean AUTO_LANG, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
@@ -16,6 +16,11 @@ public class ConfigCache {
 
         this.DEFAULT_LANG = language.getString("default-language", "en_us");
         this.AUTO_LANG = language.getBoolean("auto-language", true);
+
+        ConfigurationSection customMessages = config.getConfigurationSection("join-leave-messages");
+
+        this.CUSTOM_JOIN_MSG = customMessages.getBoolean("custom-join-message", true);
+        this.CUSTOM_LEAVE_MSG = customMessages.getBoolean("custom-leave-message", true);
 
     }
 

@@ -19,3 +19,6 @@ commands:
     config-reloaded: "&aConfiguration reloaded"
     lang-reloaded: "&aLanguage files reloaded"
     have-to-hold-item: "&cYou have to hold an item in your hand."
+custom-join-leave-messages:
+  join: "&e%s joined the game"
+  leave: "&e%s left the game"

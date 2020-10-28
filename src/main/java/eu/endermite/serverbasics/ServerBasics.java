@@ -2,6 +2,7 @@ package eu.endermite.serverbasics;
 
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
+import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.messages.MessageParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,6 +25,9 @@ public final class ServerBasics extends JavaPlugin {
         reloadLang();
         commandManager = new CommandManager();
         commandManager.initCommands();
+
+        getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
+
     }
 
     private void reloadConfigs() {
@@ -89,7 +93,7 @@ public final class ServerBasics extends JavaPlugin {
         LanguageCache cache;
          cache = languageCacheMap.get(lang);
         if (cache == null)
-            cache = languageCacheMap.get("en_us");
+            cache = languageCacheMap.get(configCache.DEFAULT_LANG);
         return cache;
     }
 }

@@ -2,8 +2,8 @@ language:
   #Match message language to player language set in client
   auto-language: true
   default-language: "en_us"
-spawn:
-  world: world
-  x: 0
-  y: 0
-  z: 0
+
+# Custom join and leave massages. You can change them in language files
+join-leave-messages:
+  custom-join-message: true
+  custom-leave-message: true

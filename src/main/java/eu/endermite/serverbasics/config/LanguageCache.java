@@ -9,7 +9,7 @@ import java.io.File;
 public class LanguageCache {
 
     public String CONFIG_RELOADED, LANG_RELOADED, HAVE_TO_HOLD_ITEM, HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
-            FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED;
+            FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG;
 
     public LanguageCache(String lang) {
 
@@ -18,7 +18,6 @@ public class LanguageCache {
         ServerBasics plugin = ServerBasics.getInstance();
 
         File langFile = new File(plugin.getDataFolder()+"/lang", lang+".yml");
-        System.out.println(langFile);
         fileConfiguration = new YamlConfiguration();
 
         if (!langFile.exists()) {
@@ -47,6 +46,9 @@ public class LanguageCache {
 
             this.ITEM_NAME_CHANGED = fileConfiguration.getString("commands.itemname.name-changed");
             this.ITEM_LORE_CHANGED = fileConfiguration.getString("commands.itemlore.lore-changed");
+
+            this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join");
+            this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave");
 
         } catch (Exception e) {
             e.printStackTrace();

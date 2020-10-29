@@ -52,9 +52,9 @@ public class ServerBasicsCommand {
                 plugin.reloadLocations();
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).ALL_CONFIG_RELOADED);
+                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).ALL_CONFIG_RELOADED);
                 } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).ALL_CONFIG_RELOADED);
+                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).ALL_CONFIG_RELOADED);
                 }
             }
         }.runTaskAsynchronously(plugin);
@@ -73,9 +73,9 @@ public class ServerBasicsCommand {
                 plugin.reloadConfigs();
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).CONFIG_RELOADED);
+                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).CONFIG_RELOADED);
                 } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CONFIG_RELOADED);
+                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CONFIG_RELOADED);
                 }
             }
         }.runTaskAsynchronously(plugin);
@@ -94,9 +94,9 @@ public class ServerBasicsCommand {
                 plugin.reloadLang();
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).LANG_RELOADED);
+                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LANG_RELOADED);
                 } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LANG_RELOADED);
+                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LANG_RELOADED);
                 }
             }
         }.runTaskAsynchronously(plugin);
@@ -115,9 +115,9 @@ public class ServerBasicsCommand {
                 plugin.reloadLocations();
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).LOCATIONS_RELOADED);
+                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LOCATIONS_RELOADED);
                 } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LOCATIONS_RELOADED);
+                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LOCATIONS_RELOADED);
                 }
             }
         }.runTaskAsynchronously(plugin);

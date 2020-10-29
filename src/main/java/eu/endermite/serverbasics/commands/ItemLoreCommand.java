@@ -32,7 +32,7 @@ public class ItemLoreCommand {
     ) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getInstance().getLang(player.getLocale()).HAVE_TO_HOLD_ITEM;
+            String msg = ServerBasics.getLang(player.getLocale()).HAVE_TO_HOLD_ITEM;
             MessageParser.sendMessage(player, msg);
             return;
         }
@@ -46,7 +46,7 @@ public class ItemLoreCommand {
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
         player.getInventory().setItemInMainHand(itemStack);
-        String msg = ServerBasics.getInstance().getLang(player.getLocale()).ITEM_LORE_CHANGED;
+        String msg = ServerBasics.getLang(player.getLocale()).ITEM_LORE_CHANGED;
         MessageParser.sendMessage(player, msg);
         player.sendMessage(lines);
     }

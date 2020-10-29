@@ -29,7 +29,7 @@ public class ItemNameCommand {
     ) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getInstance().getLang(player.getLocale()).HAVE_TO_HOLD_ITEM;
+            String msg = ServerBasics.getLang(player.getLocale()).HAVE_TO_HOLD_ITEM;
             MessageParser.sendMessage(player, msg);
             return;
         }
@@ -39,7 +39,7 @@ public class ItemNameCommand {
         meta.setDisplayName(parsedName);
         itemStack.setItemMeta(meta);
         player.getInventory().setItemInMainHand(itemStack);
-        String msg = ServerBasics.getInstance().getLang(player.getLocale()).ITEM_NAME_CHANGED;
+        String msg = ServerBasics.getLang(player.getLocale()).ITEM_NAME_CHANGED;
         msg = String.format(msg, name);
         MessageParser.sendMessage(player, msg);
     }

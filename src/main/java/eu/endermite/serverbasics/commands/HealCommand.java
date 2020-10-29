@@ -60,9 +60,9 @@ public class HealCommand {
             String playerLang = target.getLocale();
             String msg;
             if (player != target) {
-                msg = String.format(ServerBasics.getInstance().getLang(playerLang).HEALED_BY_OTHER, player.getName());
+                msg = String.format(ServerBasics.getLang(playerLang).HEALED_BY_OTHER, player.getName());
             } else {
-                msg = ServerBasics.getInstance().getLang(playerLang).HEALED;
+                msg = ServerBasics.getLang(playerLang).HEALED;
             }
             MessageParser.sendMessage(target, msg);
         }
@@ -70,20 +70,20 @@ public class HealCommand {
             String msg;
             String playerLang = ((Player) player).getLocale();
             if (amountHealed == 1)
-                msg = String.format(ServerBasics.getInstance().getLang(playerLang).HEALED_BY_OTHER, lastPlayer.getDisplayName());
+                msg = String.format(ServerBasics.getLang(playerLang).HEALED_BY_OTHER, lastPlayer.getDisplayName());
             else if (amountHealed > 1)
-                msg = String.format(ServerBasics.getInstance().getLang(playerLang).HEALED_MANY, amountHealed);
+                msg = String.format(ServerBasics.getLang(playerLang).HEALED_MANY, amountHealed);
             else
-                msg = ServerBasics.getInstance().getLang(playerLang).HEALED_NOONE;
+                msg = ServerBasics.getLang(playerLang).HEALED_NOONE;
             MessageParser.sendMessage(player, msg);
         } else {
             String msg;
             if (amountHealed == 1)
-                msg = String.format(ServerBasics.getInstance().getLang("en_us").HEALED_BY_OTHER, lastPlayer.getDisplayName());
+                msg = String.format(ServerBasics.getLang("en_us").HEALED_BY_OTHER, lastPlayer.getDisplayName());
             else if (amountHealed > 1)
-                msg = String.format(ServerBasics.getInstance().getLang("en_us").HEALED_MANY, amountHealed);
+                msg = String.format(ServerBasics.getLang("en_us").HEALED_MANY, amountHealed);
             else
-                msg = ServerBasics.getInstance().getLang("en_us").HEALED_NOONE;
+                msg = ServerBasics.getLang("en_us").HEALED_NOONE;
             MessageParser.sendMessage(player, msg);
         }
 

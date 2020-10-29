@@ -23,18 +23,18 @@ public class SpawnCommand {
     private void commandSpawn(
             final Player player
     ) {
-        if (!ServerBasics.getInstance().getLocationsCache().isSpawnSet()) {
-            MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).SPAWN_NOT_SET);
+        if (!ServerBasics.getLocationsCache().isSpawnSet()) {
+            MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).SPAWN_NOT_SET);
             return;
         }
         new BukkitRunnable() {
             @Override
             public void run() {
-                PaperLib.teleportAsync(player, ServerBasics.getInstance().getLocationsCache().spawn, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                PaperLib.teleportAsync(player, ServerBasics.getLocationsCache().spawn, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
                     if (result) {
-                        MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).TPD_SPAWN);
+                        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).TPD_SPAWN);
                     } else {
-                        MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).COULD_NOT_TP);
+                        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).COULD_NOT_TP);
                     }
                 });
             }
@@ -50,8 +50,8 @@ public class SpawnCommand {
             final Player player
     ) {
         Location newSpawn = player.getLocation();
-        ServerBasics.getInstance().getLocationsCache().setSpawn(newSpawn);
-        MessageParser.sendMessage(player, ServerBasics.getInstance().getLang(player.getLocale()).SPAWN_SET);
+        ServerBasics.getLocationsCache().setSpawn(newSpawn);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).SPAWN_SET);
     }
 
 }

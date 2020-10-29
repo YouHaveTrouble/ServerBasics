@@ -62,7 +62,7 @@ public final class ServerBasics extends JavaPlugin {
         return configCache;
     }
 
-    public LanguageCache getLang(String lang) {
+    public static LanguageCache getLang(String lang) {
         LanguageCache cache;
          cache = languageCacheMap.get(lang);
         if (cache == null)
@@ -70,7 +70,7 @@ public final class ServerBasics extends JavaPlugin {
         return cache;
     }
 
-    public LocationsCache getLocationsCache() {
+    public static LocationsCache getLocationsCache() {
         return locationsCache;
     }
 }

@@ -21,7 +21,6 @@ public class ConfigCache {
 
         this.CUSTOM_JOIN_MSG = customMessages.getBoolean("custom-join-message", true);
         this.CUSTOM_LEAVE_MSG = customMessages.getBoolean("custom-leave-message", true);
-
     }
 
 }

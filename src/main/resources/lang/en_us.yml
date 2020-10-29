@@ -19,6 +19,8 @@ commands:
     config-reloaded: "&aConfiguration reloaded"
     lang-reloaded: "&aLanguage files reloaded"
     have-to-hold-item: "&cYou have to hold an item in your hand."
+
+# Set join/leave to "" to disable
 custom-join-leave-messages:
   join: "&e%s joined the game"
   leave: "&e%s left the game"

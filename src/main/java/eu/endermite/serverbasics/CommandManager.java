@@ -78,6 +78,7 @@ public class CommandManager {
         new ItemNameCommand().constructCommand();
         new ItemLoreCommand().constructCommand();
         new ServerBasicsCommand().constructCommand();
+        new SpawnCommand().constructCommand();
     }
 
     public AnnotationParser getAnnotationParser() {

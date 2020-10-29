@@ -2,12 +2,9 @@ package eu.endermite.serverbasics;
 
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
+import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
-import eu.endermite.serverbasics.messages.MessageParser;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
@@ -15,6 +12,7 @@ public final class ServerBasics extends JavaPlugin {
 
     private static ServerBasics plugin;
     private static ConfigCache configCache;
+    private static LocationsCache locationsCache;
     private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
 
@@ -23,6 +21,7 @@ public final class ServerBasics extends JavaPlugin {
         plugin = this;
         reloadConfigs();
         reloadLang();
+        reloadLocations();
         commandManager = new CommandManager();
         commandManager.initCommands();
 
@@ -30,13 +29,13 @@ public final class ServerBasics extends JavaPlugin {
 
     }
 
-    private void reloadConfigs() {
+    public void reloadConfigs() {
         saveDefaultConfig();
         reloadConfig();
         configCache = new ConfigCache();
     }
 
-    private void reloadLang() {
+    public void reloadLang() {
         languageCacheMap = new HashMap<>();
         try {
             LanguageCache en_us = new LanguageCache("en_us");
@@ -47,34 +46,8 @@ public final class ServerBasics extends JavaPlugin {
         }
     }
 
-    public void asyncReloadConfigs(CommandSender sender) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                reloadConfigs();
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    MessageParser.sendMessage(player, getLang(player.getLocale()).CONFIG_RELOADED);
-                } else {
-                    MessageParser.sendMessage(sender, getLang(configCache.DEFAULT_LANG).CONFIG_RELOADED);
-                }
-            }
-        }.runTaskAsynchronously(this);
-    }
-
-    public void asyncReloadLanguage(CommandSender sender) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                reloadLang();
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    MessageParser.sendMessage(player, getLang(player.getLocale()).LANG_RELOADED);
-                } else {
-                    MessageParser.sendMessage(sender, getLang(configCache.DEFAULT_LANG).LANG_RELOADED);
-                }
-            }
-        }.runTaskAsynchronously(this);
+    public void reloadLocations() {
+        locationsCache = new LocationsCache();
     }
 
     public static ServerBasics getInstance() {
@@ -95,5 +68,9 @@ public final class ServerBasics extends JavaPlugin {
         if (cache == null)
             cache = languageCacheMap.get(configCache.DEFAULT_LANG);
         return cache;
+    }
+
+    public LocationsCache getLocationsCache() {
+        return locationsCache;
     }
 }

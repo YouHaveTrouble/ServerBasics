@@ -15,17 +15,6 @@ public class ServerBasicsCommand {
         ServerBasics.getCommandManager().getAnnotationParser().parse(this);
     }
 
-    @CommandMethod("serverbasics")
-    @CommandDescription("Main ServerBasics command")
-    @CommandPermission("serverbasics.command.serverbasics")
-    private void commandServerBasics(
-            final CommandSender sender
-    ) {
-        ServerBasics plugin = ServerBasics.getInstance();
-        String msg = "&fServerBasics " + plugin.getDescription().getVersion();
-        MessageParser.sendMessage(sender, msg);
-    }
-
     @CommandMethod("serverbasics version")
     @CommandDescription("Display ServerBasics version")
     @CommandPermission("serverbasics.command.serverbasics")
@@ -121,6 +110,17 @@ public class ServerBasicsCommand {
                 }
             }
         }.runTaskAsynchronously(plugin);
+    }
+
+    @CommandMethod("serverbasics")
+    @CommandDescription("Main ServerBasics command")
+    @CommandPermission("serverbasics.command.serverbasics")
+    private void commandServerBasics(
+            final CommandSender sender
+    ) {
+        ServerBasics plugin = ServerBasics.getInstance();
+        String msg = "&fServerBasics " + plugin.getDescription().getVersion();
+        MessageParser.sendMessage(sender, msg);
     }
 
 }

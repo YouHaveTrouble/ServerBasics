@@ -1,5 +1,8 @@
 package eu.endermite.serverbasics.messages;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,6 +37,12 @@ public class MessageParser {
             player.sendTitle("",message, 5, 60, 5);
             return;
         }
+    }
+
+    public static void sendDefaultTranslatedError(CommandSender player, String translationString, net.md_5.bungee.api.ChatColor color) {
+        BaseComponent baseComponent = new TranslatableComponent(translationString);
+        baseComponent.setColor(color);
+        player.sendMessage(baseComponent);
     }
 
 }

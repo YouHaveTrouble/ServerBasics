@@ -8,8 +8,10 @@ import java.io.File;
 
 public class LanguageCache {
 
-    public String ALL_CONFIG_RELOADED, CONFIG_RELOADED, LANG_RELOADED, LOCATIONS_RELOADED, HAVE_TO_HOLD_ITEM, HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
-            FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG, TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP;
+    public String ALL_CONFIG_RELOADED, CONFIG_RELOADED, LANG_RELOADED, LOCATIONS_RELOADED, HAVE_TO_HOLD_ITEM,
+            HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
+            FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
+            TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP, NO_PERMISSION;
 
     public LanguageCache(String lang) {
 
@@ -34,6 +36,7 @@ public class LanguageCache {
             this.COULD_NOT_TP = fileConfiguration.getString("commands.misc.could-not-teleport", "");
 
             this.HAVE_TO_HOLD_ITEM = fileConfiguration.getString("commands.misc.have-to-hold-item", "");
+            this.NO_PERMISSION = fileConfiguration.getString("commands.misc.no-permission", "");
 
             this.TPD_SPAWN = fileConfiguration.getString("commands.spawn.teleported", "");
             this.TPD_SPAWN_OTHER = fileConfiguration.getString("commands.spawn.teleported-other", "");

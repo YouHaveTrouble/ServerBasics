@@ -17,6 +17,9 @@ commands:
     fed-other: "&aYou fed %s"
     fed-many: "&aYou fed %s players"
     fed-noone: "&aYou fed noone"
+  fly:
+    flight-on: "&aYou toggled fly on"
+    flight-off: "&aYou toggled fly off"
   itemname:
     name-changed: "&aYou changed the name of the the item you're holding to &r%s"
   itemlore:
@@ -28,6 +31,7 @@ commands:
     locations-reloaded: "&aLocations reloaded"
     have-to-hold-item: "&cYou have to hold an item in your hand."
     could-not-teleport: "&cCould not teleport"
+    no-permission: "&cYou do not have permission to do this"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:

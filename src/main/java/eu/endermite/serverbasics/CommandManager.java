@@ -7,14 +7,23 @@ import cloud.commandframework.arguments.parser.StandardParameters;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.BukkitCommandMetaBuilder;
 import cloud.commandframework.bukkit.CloudBukkitCapabilities;
+import cloud.commandframework.exceptions.NoPermissionException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
 import cloud.commandframework.meta.CommandMeta;
+import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import eu.endermite.serverbasics.commands.*;
+import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -23,6 +32,7 @@ public class CommandManager {
     private final ServerBasics plugin = ServerBasics.getInstance();
 
     public BukkitCommandManager<CommandSender> manager;
+    private BukkitAudiences bukkitAudiences;
     private CommandConfirmationManager<CommandSender> confirmationManager;
     private AnnotationParser<CommandSender> annotationParser;
 
@@ -43,6 +53,8 @@ public class CommandManager {
             plugin.getServer().getPluginManager().disablePlugin(plugin);
             return;
         }
+
+        this.bukkitAudiences = BukkitAudiences.create(ServerBasics.getInstance());
 
         if (manager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
             manager.registerBrigadier();
@@ -68,8 +80,22 @@ public class CommandManager {
                 commandMetaFunction
         );
 
+        manager.registerExceptionHandler(NoPermissionException.class, (sender, exception) -> {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).NO_PERMISSION);
+            } else {
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).NO_PERMISSION);
+            }
+        });
+
+
+
+
         constructCommands();
     }
+
+
 
     private void constructCommands() {
         new HealCommand().constructCommand();
@@ -79,6 +105,7 @@ public class CommandManager {
         new ItemLoreCommand().constructCommand();
         new ServerBasicsCommand().constructCommand();
         new SpawnCommand().constructCommand();
+        new FlyCommand().constructCommand();
     }
 
     public AnnotationParser getAnnotationParser() {

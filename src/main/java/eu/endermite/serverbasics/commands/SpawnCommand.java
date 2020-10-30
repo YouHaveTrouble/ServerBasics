@@ -1,12 +1,16 @@
 package eu.endermite.serverbasics.commands;
 
+import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
+import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
 import io.papermc.lib.PaperLib;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,6 +19,43 @@ public class SpawnCommand {
 
     public void constructCommand() {
         ServerBasics.getCommandManager().getAnnotationParser().parse(this);
+    }
+
+    @CommandMethod("spawn <target>")
+    @CommandDescription("Teleports player to spawn")
+    @CommandPermission("serverbasics.command.spawn.others")
+    private void commandSpawnOther(
+            final CommandSender sender,
+            final @Argument(value = "target", description = "player to target") SinglePlayerSelector targetToParse
+            ) {
+        if (!ServerBasics.getLocationsCache().isSpawnSet()) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).SPAWN_NOT_SET);
+            }
+            else
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).SPAWN_NOT_SET);
+            return;
+        }
+
+        Player target = targetToParse.getPlayer();
+
+        if (target == null) {
+            MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", ChatColor.RED);
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PaperLib.teleportAsync(target, ServerBasics.getLocationsCache().spawn, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                    if (result) {
+                        MessageParser.sendMessage(target, ServerBasics.getLang(target.getLocale()).TPD_SPAWN);
+                    } else {
+                        MessageParser.sendMessage(target, ServerBasics.getLang(target.getLocale()).COULD_NOT_TP);
+                    }
+                });
+            }
+        }.runTask(ServerBasics.getInstance());
     }
 
     @CommandMethod("spawn")
@@ -39,8 +80,6 @@ public class SpawnCommand {
                 });
             }
         }.runTask(ServerBasics.getInstance());
-
-
     }
 
     @CommandMethod("setspawn")

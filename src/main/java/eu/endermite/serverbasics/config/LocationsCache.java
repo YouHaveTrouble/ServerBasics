@@ -7,13 +7,14 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.util.HashMap;
 
 public class LocationsCache {
 
-    private FileConfiguration fileConfiguration;
-    private File locFile;
+    private final FileConfiguration fileConfiguration;
+    private final File locFile;
     public Location spawn;
     private HashMap<String, Location> warps;
 
@@ -21,7 +22,7 @@ public class LocationsCache {
 
         ServerBasics plugin = ServerBasics.getInstance();
 
-        locFile = new File(plugin.getDataFolder()+"/locations.yml");
+        locFile = new File(plugin.getDataFolder() + "/locations.yml");
         fileConfiguration = new YamlConfiguration();
 
         if (!locFile.exists()) {
@@ -34,9 +35,18 @@ public class LocationsCache {
 
             this.spawn = getLocation("spawn");
 
+            ConfigurationSection warpsSection = fileConfiguration.getConfigurationSection("warps");
+
+            if (warpsSection == null)
+                return;
+
+            for (String warp : warpsSection.getKeys(false)) {
+                warps.put(warp, getLocation("warp."+warp));
+            }
+
         } catch (Exception e) {
-        e.printStackTrace();
-    }
+            e.printStackTrace();
+        }
     }
 
     private Location getLocation(String configPath) {
@@ -50,9 +60,11 @@ public class LocationsCache {
             double z = locationSection.getDouble("z");
             return new Location(world, x, y, z);
         } catch (NullPointerException e) {
-            ServerBasics.getInstance().getLogger().warning("Detected spawn location entry, but could not parse the location!");
+            ServerBasics.getInstance().getLogger().warning("Detected entry for " + configPath + ", but could not parse the location!");
             return null;
         }
+
+
     }
 
     public boolean isSpawnSet() {

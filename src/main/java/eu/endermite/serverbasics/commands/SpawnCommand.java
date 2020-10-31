@@ -42,6 +42,7 @@ public class SpawnCommand {
 
         if (target == null) {
             MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", ChatColor.RED);
+            return;
         }
 
         new BukkitRunnable() {

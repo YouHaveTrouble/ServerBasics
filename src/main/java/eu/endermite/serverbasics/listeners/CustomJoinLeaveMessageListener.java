@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class CustomJoinLeaveMessageListener implements Listener {
 
@@ -20,27 +19,23 @@ public class CustomJoinLeaveMessageListener implements Listener {
 
         event.setJoinMessage("");
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
+            String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_JOIN_MSG;
 
-                String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_JOIN_MSG;
-
-                if (!consoleMsg.equals("")) {
-                    consoleMsg = String.format(consoleMsg, event.getPlayer().getDisplayName());
-                    consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
-                    System.out.println(consoleMsg);
-                }
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    String msg = ServerBasics.getInstance().getLang(player.getLocale()).CUSTOM_JOIN_MSG;
-                    if (msg.equals(""))
-                        continue;
-                    msg = String.format(msg, event.getPlayer().getDisplayName());
-                    MessageParser.sendMessage(player, msg);
-                }
+            if (!consoleMsg.equals("")) {
+                consoleMsg = String.format(consoleMsg, event.getPlayer().getDisplayName());
+                consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
+                System.out.println(consoleMsg);
             }
-        }.runTaskAsynchronously(ServerBasics.getInstance());
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                String msg = ServerBasics.getInstance().getLang(player.getLocale()).CUSTOM_JOIN_MSG;
+                if (msg.equals(""))
+                    continue;
+                msg = String.format(msg, event.getPlayer().getDisplayName());
+                MessageParser.sendMessage(player, msg);
+            }
+        });
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -51,27 +46,24 @@ public class CustomJoinLeaveMessageListener implements Listener {
 
         event.setQuitMessage("");
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
+            String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_LEAVE_MSG;
 
-                String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_LEAVE_MSG;
-
-                if (!consoleMsg.equals("")) {
-                    consoleMsg = String.format(consoleMsg, event.getPlayer().getDisplayName());
-                    consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
-                    System.out.println(consoleMsg);
-                }
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    String msg = ServerBasics.getInstance().getLang(player.getLocale()).CUSTOM_LEAVE_MSG;
-                    if (msg.equals(""))
-                        continue;
-                    msg = String.format(msg, event.getPlayer().getDisplayName());
-                    MessageParser.sendMessage(player, msg);
-                }
+            if (!consoleMsg.equals("")) {
+                consoleMsg = String.format(consoleMsg, event.getPlayer().getDisplayName());
+                consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
+                System.out.println(consoleMsg);
             }
-        }.runTaskAsynchronously(ServerBasics.getInstance());
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                String msg = ServerBasics.getInstance().getLang(player.getLocale()).CUSTOM_LEAVE_MSG;
+                if (msg.equals(""))
+                    continue;
+                msg = String.format(msg, event.getPlayer().getDisplayName());
+                MessageParser.sendMessage(player, msg);
+            }
+        });
+
     }
 
 }

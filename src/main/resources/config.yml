@@ -7,3 +7,11 @@ language:
 join-leave-messages:
   custom-join-message: true
   custom-leave-message: true
+
+storage:
+  type: sqlite
+  host: localhost
+  port: 3306
+  username: root
+  password: password
+  ssl: true

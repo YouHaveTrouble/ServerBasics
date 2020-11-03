@@ -11,4 +11,6 @@ this is currently extremely work in progress.
 <li>Full support of messages based on users language</li>
 <li>Basic "essential" commands, but using vanilla selectors</li>
 <li>/execute reworked to support bukkit commands</li>
+<li>Chat formatting working with 1.16.4 block function</li>
+<li>Commands working on offline players</li>
 </ul>

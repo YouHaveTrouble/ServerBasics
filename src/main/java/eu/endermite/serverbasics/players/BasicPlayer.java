@@ -1,7 +1,10 @@
-package eu.endermite.serverbasics;
+package eu.endermite.serverbasics.players;
 
 import lombok.Builder;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+
+import java.util.UUID;
 
 /**
  * All player data that needs to be tracked in a plugin and convienience methods
@@ -10,8 +13,13 @@ import org.bukkit.OfflinePlayer;
 public class BasicPlayer {
 
     private final OfflinePlayer player;
-    String displayName;
-    boolean fly;
+    private UUID uuid;
+    private String displayName;
+    private boolean fly;
+
+    public UUID getUuid() {
+        return uuid;
+    }
 
     public boolean canFly() {
         return fly;

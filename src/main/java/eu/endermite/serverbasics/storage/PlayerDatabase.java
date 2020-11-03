@@ -1,7 +1,8 @@
 package eu.endermite.serverbasics.storage;
 
-import eu.endermite.serverbasics.BasicPlayer;
+import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import java.sql.*;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class PlayerDatabase {
                     "`fly` boolean DEFAULT false " +
                     ");";
             statement.execute(sql);
-            ServerBasics.getInstance().getLogger().log(Level.FINE, "Database connected successfully");
+            ServerBasics.getInstance().getLogger().log(Level.INFO, ChatColor.YELLOW+ "Database connected successfully");
             return true;
 
         } catch (SQLException e) {
@@ -46,10 +47,12 @@ public class PlayerDatabase {
                 return null;
             Statement statement = connection.createStatement();
             String sql = "SELECT * FROM `players` WHERE `player_uuid` = '" + uuid.toString() + "';";
-            statement.executeQuery(sql);
-            ResultSet result = statement.getResultSet();
+
+            ResultSet result = statement.executeQuery(sql);
 
             BasicPlayer basicPlayer = BasicPlayer.builder()
+                    .uuid(uuid)
+                    .player(Bukkit.getOfflinePlayer(uuid))
                     .fly(result.getBoolean("fly"))
                     .displayName(result.getString("displayname"))
                     .build();
@@ -60,6 +63,97 @@ public class PlayerDatabase {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading player data from database");
             return null;
         }
+    }
+
+    /**
+     * @param basicPlayer BasicPlayer to save
+     */
+    public static void savePlayertoStorage(BasicPlayer basicPlayer) {
+
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return;
+            Statement statement = connection.createStatement();
+            String sql = "UPDATE `players` SET `fly` = true WHERE `player_uuid` = '"+basicPlayer.getUuid().toString()+"';";
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading player data from database");
+        }
+    }
+
+    /**
+     * @param basicPlayer BasicPlayer to save
+     */
+    public static void createPlayerStorage(BasicPlayer basicPlayer) {
+
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return;
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO players (player_uuid, fly, displayname) VALUES('"+basicPlayer.getUuid().toString()+"', "+basicPlayer.canFly()+", '"+basicPlayer.getDisplayName()+"');";
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading player data from database");
+        }
+    }
+
+    public static void saveSingleOption(UUID uuid, String dbRow, Object value) {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return;
+
+            DatabaseRow.valueOf(dbRow.toUpperCase());
+            dbRow = dbRow.toLowerCase();
+
+            if (value instanceof String)
+                value = "'"+value+"'";
+
+            Statement statement = connection.createStatement();
+            String sql = "UPDATE players SET "+dbRow+"="+ value+", " +
+                    "WHERE `player_uuid` = '"+uuid.toString()+"';";
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating player data in database");
+        } catch (IllegalArgumentException e2) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided database row does not exist");
+        }
+    }
+    public static void saveSingleOption(BasicPlayer basicPlayer, String dbRow, Object value) {
+        UUID uuid = basicPlayer.getUuid();
+        saveSingleOption(uuid, dbRow, value);
+    }
+
+    public static boolean playerExists(UUID uuid) {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return false;
+
+            Statement statement = connection.createStatement();
+            String sql = "SELECT `player_uuid` from players WHERE `player_uuid` = '"+uuid.toString()+"';";
+
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next()) {
+                System.out.println(rs.getString("player_uuid"));
+                if (rs.getString("player_uuid").equals(uuid.toString())) {
+                    connection.close();
+                    return true;
+                }
+
+            }
+            return false;
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error connecting to database");
+            return false;
+        }
+    }
+
+    public enum DatabaseRow {
+        FLY, DISPLAYNAME
     }
 
 }

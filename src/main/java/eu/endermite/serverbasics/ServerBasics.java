@@ -5,6 +5,8 @@ import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FlyListener;
+import eu.endermite.serverbasics.listeners.PlayerCacheListener;
+import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ public final class ServerBasics extends JavaPlugin {
     private static LocationsCache locationsCache;
     private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
+    private static BasicPlayerCache basicPlayers;
 
     @Override
     public void onEnable() {
@@ -28,8 +31,11 @@ public final class ServerBasics extends JavaPlugin {
 
         PlayerDatabase.checkConnection();
 
+        basicPlayers = new BasicPlayerCache();
+
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FlyListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerCacheListener(), this);
 
     }
 
@@ -77,5 +83,9 @@ public final class ServerBasics extends JavaPlugin {
 
     public static LocationsCache getLocationsCache() {
         return locationsCache;
+    }
+
+    public static BasicPlayerCache getBasicPlayers() {
+        return basicPlayers;
     }
 }

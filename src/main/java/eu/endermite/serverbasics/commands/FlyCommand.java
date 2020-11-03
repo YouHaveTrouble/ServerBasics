@@ -5,11 +5,10 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
-import eu.endermite.serverbasics.PlayerUtil;
+import eu.endermite.serverbasics.players.PlayerUtil;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,15 +18,13 @@ public class FlyCommand {
         ServerBasics.getCommandManager().getAnnotationParser().parse(this);
     }
 
-    public static final NamespacedKey flyKey = new NamespacedKey(ServerBasics.getInstance(), "flying");
-
     @CommandMethod("fly")
     @CommandDescription("Toggle flight mode")
     @CommandPermission("serverbasics.command.fly")
     private void commandFly(
             final Player player
     ) {
-        PlayerUtil.toggleFlight(player);
+        PlayerUtil.toggleFlight(player.getUniqueId());
     }
 
     @CommandMethod("fly <target>")
@@ -45,7 +42,7 @@ public class FlyCommand {
             return;
         }
 
-        PlayerUtil.toggleFlight(target);
+        PlayerUtil.toggleFlight(target.getUniqueId());
     }
 
 }

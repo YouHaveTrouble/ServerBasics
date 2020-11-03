@@ -3,6 +3,9 @@ package eu.endermite.serverbasics;
 import lombok.Builder;
 import org.bukkit.OfflinePlayer;
 
+/**
+ * All player data that needs to be tracked in a plugin and convienience methods
+ */
 @Builder
 public class BasicPlayer {
 

@@ -1,7 +1,6 @@
 package eu.endermite.serverbasics.messages;
 
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,13 +8,18 @@ import org.bukkit.entity.Player;
 
 public class MessageParser {
 
+    /**
+     * Parses message string into message
+     * @param recipent Recipent of the message
+     * @param message String to parse into message
+     */
     public static void sendMessage(CommandSender recipent, String message) {
 
         MessageType messageType = MessageType.TEXT;
 
         message = ChatColor.translateAlternateColorCodes('&', message);
 
-        //TODO different message types based on prefix
+        //TODO different message types based on string prefix
 
         //TODO placeholderAPI support
 
@@ -39,6 +43,13 @@ public class MessageParser {
         }
     }
 
+    /**
+     * For sending TranslatableComponent errors that already exist in the client
+     * @param player
+     * @param translationString
+     * @param color
+     */
+    //TODO use adventureapi instead of spigot
     public static void sendDefaultTranslatedError(CommandSender player, String translationString, net.md_5.bungee.api.ChatColor color) {
         BaseComponent baseComponent = new TranslatableComponent(translationString);
         baseComponent.setColor(color);

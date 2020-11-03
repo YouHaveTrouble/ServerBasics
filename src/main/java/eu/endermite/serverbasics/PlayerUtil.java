@@ -6,12 +6,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
+
 public class PlayerUtil {
 
     /**
      * @param player
      * @return new flight state
      */
+    //TODO move this to BasicPlayer
     public static boolean toggleFlight(Player player) {
         String flying = player.getPersistentDataContainer().get(FlyCommand.flyKey, PersistentDataType.STRING);
 

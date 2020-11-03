@@ -12,18 +12,13 @@ import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
 import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import eu.endermite.serverbasics.commands.*;
 import eu.endermite.serverbasics.messages.MessageParser;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.awt.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -80,6 +75,8 @@ public class CommandManager {
                 commandMetaFunction
         );
 
+        // Command error messages
+        //TODO find which errors have according message in client and use that if possible
         manager.registerExceptionHandler(NoPermissionException.class, (sender, exception) -> {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
@@ -89,14 +86,10 @@ public class CommandManager {
             }
         });
 
-
-
-
         constructCommands();
     }
 
-
-
+    //TODO fix this \/
     private void constructCommands() {
         new HealCommand().constructCommand();
         new FeedCommand().constructCommand();

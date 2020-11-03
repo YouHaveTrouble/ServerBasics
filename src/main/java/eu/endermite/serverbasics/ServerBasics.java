@@ -31,7 +31,6 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FlyListener(), this);
 
-
     }
 
     public void reloadConfigs() {
@@ -43,6 +42,7 @@ public final class ServerBasics extends JavaPlugin {
     public void reloadLang() {
         languageCacheMap = new HashMap<>();
         try {
+            //TODO scan through all **_** files in /lang directory
             LanguageCache en_us = new LanguageCache("en_us");
             languageCacheMap.put("en_us", en_us);
         } catch (Exception e) {

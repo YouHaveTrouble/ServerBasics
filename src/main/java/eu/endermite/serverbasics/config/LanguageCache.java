@@ -3,7 +3,6 @@ package eu.endermite.serverbasics.config;
 import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 
 public class LanguageCache {

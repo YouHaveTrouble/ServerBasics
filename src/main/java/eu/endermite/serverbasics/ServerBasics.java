@@ -4,7 +4,7 @@ import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
-import eu.endermite.serverbasics.listeners.FlyListener;
+import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.listeners.PlayerCacheListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
@@ -34,7 +34,7 @@ public final class ServerBasics extends JavaPlugin {
         basicPlayers = new BasicPlayerCache();
 
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
-        getServer().getPluginManager().registerEvents(new FlyListener(), this);
+        getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerCacheListener(), this);
 
     }

@@ -4,6 +4,8 @@ import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+
 import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -24,7 +26,8 @@ public class PlayerDatabase {
             String sql = "CREATE TABLE IF NOT EXISTS `players` (`" +
                     "player_uuid` varchar(36) UNIQUE PRIMARY KEY, " +
                     "`displayname` varchar(64), " +
-                    "`fly` boolean DEFAULT false " +
+                    "`fly` boolean DEFAULT false, " +
+                    "`gamemode` varchar(10) " +
                     ");";
             statement.execute(sql);
             ServerBasics.getInstance().getLogger().log(Level.INFO, ChatColor.YELLOW+ "Database connected successfully");
@@ -55,6 +58,7 @@ public class PlayerDatabase {
                     .player(Bukkit.getOfflinePlayer(uuid))
                     .fly(result.getBoolean("fly"))
                     .displayName(result.getString("displayname"))
+                    .gameMode(GameMode.valueOf(result.getString("gamemode")))
                     .build();
 
             return basicPlayer;
@@ -74,7 +78,11 @@ public class PlayerDatabase {
             if (connection == null)
                 return;
             Statement statement = connection.createStatement();
-            String sql = "UPDATE `players` SET `fly` = true WHERE `player_uuid` = '"+basicPlayer.getUuid().toString()+"';";
+            String sql = "UPDATE `players` SET " +
+                    "fly = "+basicPlayer.canFly()+", " +
+                    "displayname = '"+basicPlayer.getDisplayName()+"', " +
+                    "gamemode = '"+basicPlayer.getGameMode().toString()+"' " +
+                    "WHERE `player_uuid` = '"+basicPlayer.getUuid().toString()+"';";
             statement.execute(sql);
 
         } catch (SQLException e) {
@@ -111,12 +119,13 @@ public class PlayerDatabase {
                 value = "'"+value+"'";
 
             Statement statement = connection.createStatement();
-            String sql = "UPDATE players SET "+dbRow+"="+ value+", " +
+            String sql = "UPDATE players SET "+dbRow+" = "+ value +" " +
                     "WHERE `player_uuid` = '"+uuid.toString()+"';";
             statement.execute(sql);
 
         } catch (SQLException e) {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating player data in database");
+            e.printStackTrace();
         } catch (IllegalArgumentException e2) {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided database row does not exist");
         }
@@ -137,7 +146,6 @@ public class PlayerDatabase {
             ResultSet rs = statement.executeQuery(sql);
 
             if(rs.next()) {
-                System.out.println(rs.getString("player_uuid"));
                 if (rs.getString("player_uuid").equals(uuid.toString())) {
                     connection.close();
                     return true;
@@ -153,7 +161,7 @@ public class PlayerDatabase {
     }
 
     public enum DatabaseRow {
-        FLY, DISPLAYNAME
+        FLY, DISPLAYNAME, GAMEMODE
     }
 
 }

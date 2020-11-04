@@ -49,8 +49,6 @@ public class PlayerUtil {
         } else {
             return false;
         }
-
-
     }
 }
 

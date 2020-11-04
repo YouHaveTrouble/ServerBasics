@@ -2,6 +2,7 @@ package eu.endermite.serverbasics.players;
 
 import lombok.Builder;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
@@ -16,6 +17,7 @@ public class BasicPlayer {
     private UUID uuid;
     private String displayName;
     private boolean fly;
+    private GameMode gameMode;
 
     public UUID getUuid() {
         return uuid;
@@ -39,6 +41,14 @@ public class BasicPlayer {
     }
     public boolean isOnline() {
         return player.isOnline();
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode newGamemode) {
+        this.gameMode = newGamemode;
     }
 
 }

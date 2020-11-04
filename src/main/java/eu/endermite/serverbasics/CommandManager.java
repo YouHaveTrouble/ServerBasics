@@ -27,7 +27,7 @@ public class CommandManager {
     private final ServerBasics plugin = ServerBasics.getInstance();
 
     public BukkitCommandManager<CommandSender> manager;
-    private BukkitAudiences bukkitAudiences;
+    public BukkitAudiences bukkitAudiences;
     private CommandConfirmationManager<CommandSender> confirmationManager;
     private AnnotationParser<CommandSender> annotationParser;
 
@@ -99,6 +99,8 @@ public class CommandManager {
         new ServerBasicsCommand().constructCommand();
         new SpawnCommand().constructCommand();
         new FlyCommand().constructCommand();
+        new NicknameCommand().constructCommand();
+        new GamemodeCommand().constructCommand();
     }
 
     public AnnotationParser getAnnotationParser() {

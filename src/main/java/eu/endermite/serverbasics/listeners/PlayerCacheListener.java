@@ -25,7 +25,8 @@ public class PlayerCacheListener implements Listener {
                     .uuid(player.getUniqueId())
                     .displayName(player.getDisplayName())
                     .player(player)
-                    .fly(false)
+                    .fly(player.getAllowFlight())
+                    .gameMode(player.getGameMode())
                     .build();
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
             PlayerDatabase.createPlayerStorage(basicPlayer);

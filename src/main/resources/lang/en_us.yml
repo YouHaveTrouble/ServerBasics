@@ -24,6 +24,8 @@ commands:
     name-changed: "&aYou changed the name of the the item you're holding to &r%s"
   itemlore:
     lore-changed: "&aYou changed the lore of the item you're holding to:"
+  gamemode:
+    no-perms-for-gm: "&cYou don't have permission to use this gamemode"
   misc:
     all-reloaded: "&aAll configurations reloaded"
     config-reloaded: "&aConfiguration reloaded"

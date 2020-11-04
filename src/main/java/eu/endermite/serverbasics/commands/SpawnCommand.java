@@ -8,6 +8,7 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
 import io.papermc.lib.PaperLib;
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -41,7 +42,7 @@ public class SpawnCommand {
         Player target = targetToParse.getPlayer();
 
         if (target == null) {
-            MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", ChatColor.RED);
+            MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", TextColor.color(255,255,255));
             return;
         }
 

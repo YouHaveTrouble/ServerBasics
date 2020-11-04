@@ -1,7 +1,9 @@
 package eu.endermite.serverbasics.messages;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TranslatableComponent;
+import eu.endermite.serverbasics.ServerBasics;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -49,12 +51,21 @@ public class MessageParser {
      * @param translationString
      * @param color
      */
-    //TODO use adventureapi instead of spigot
-    public static void sendDefaultTranslatedError(CommandSender player, String translationString, net.md_5.bungee.api.ChatColor color) {
-        BaseComponent baseComponent = new TranslatableComponent(translationString);
-        baseComponent.setColor(color);
-        player.sendMessage(baseComponent);
+    public static void sendDefaultTranslatedError(CommandSender player, String translationString, TextColor color) {
+        Component component = Component.translatable().key(translationString).colorIfAbsent(color).build();
+        BukkitAudiences bukkitAudiences = ServerBasics.getCommandManager().bukkitAudiences;
+        bukkitAudiences.sender(player).sendMessage(component);
+
     }
+
+    public static void sendDefaultTranslatedError(CommandSender player, String translationString, String suffix, TextColor color) {
+        net.kyori.adventure.text.TranslatableComponent.Builder component = Component.translatable().key(translationString).colorIfAbsent(color);
+        Component component1 = Component.translatable().key(suffix).colorIfAbsent(color).build();
+        component.append(component1);
+        BukkitAudiences bukkitAudiences = ServerBasics.getCommandManager().bukkitAudiences;
+        bukkitAudiences.sender(player).sendMessage(component.build());
+    }
+
 
 }
 

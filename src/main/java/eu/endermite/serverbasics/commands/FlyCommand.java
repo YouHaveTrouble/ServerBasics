@@ -8,6 +8,7 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.players.PlayerUtil;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class FlyCommand {
         Player target = playerSelector.getPlayer();
 
         if (target == null) {
-            MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", ChatColor.RED);
+            MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", TextColor.color(255,255,255));
             return;
         }
 

@@ -15,3 +15,4 @@ storage:
   username: root
   password: password
   ssl: true
+  verifycertificate: true

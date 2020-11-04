@@ -29,6 +29,14 @@ public class ConfigCache {
                 boolean ssl = config.getBoolean("storage.ssl", true);
                 if (ssl) {
                     connString = connString + "&useSSL=true";
+                } else {
+                    connString = connString + "&useSSL=false";
+                }
+                boolean verify = config.getBoolean("storage.verifycertificate", true);
+                if (verify) {
+                    connString = connString + "&verifyServerCertificate=true";
+                } else {
+                    connString = connString + "&verifyServerCertificate=false";
                 }
                 this.SQL_CONNECTION_STRING = connString;
                 break;

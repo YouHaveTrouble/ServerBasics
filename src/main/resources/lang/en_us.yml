@@ -26,6 +26,7 @@ commands:
     lore-changed: "&aYou changed the lore of the item you're holding to:"
   gamemode:
     no-perms-for-gm: "&cYou don't have permission to use this gamemode"
+    set_many: "Set %s players gamemode to %s"
   misc:
     all-reloaded: "&aAll configurations reloaded"
     config-reloaded: "&aConfiguration reloaded"
@@ -34,8 +35,9 @@ commands:
     have-to-hold-item: "&cYou have to hold an item in your hand."
     could-not-teleport: "&cCould not teleport"
     no-permission: "&cYou do not have permission to do this"
+    havent-played: "&cPlayer with that name hasn't played here"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:
-  join: "&e%s joined the game"
-  leave: "&e%s left the game"
+  join: "&e%s &ejoined the game"
+  leave: "&e%s &eleft the game"

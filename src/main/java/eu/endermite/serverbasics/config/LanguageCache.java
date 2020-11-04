@@ -11,7 +11,7 @@ public class LanguageCache {
             HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
             FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
             TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP, NO_PERMISSION,
-            STARTED_FLYING, STOPPED_FLYING ;
+            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED;
 
     public LanguageCache(String lang) {
 
@@ -39,6 +39,7 @@ public class LanguageCache {
 
             this.HAVE_TO_HOLD_ITEM = fileConfiguration.getString("commands.misc.have-to-hold-item", defaultMessage);
             this.NO_PERMISSION = fileConfiguration.getString("commands.misc.no-permission", defaultMessage);
+            this.HAVENT_PLAYED = fileConfiguration.getString("commands.misc.havent-played", defaultMessage);
 
             this.TPD_SPAWN = fileConfiguration.getString("commands.spawn.teleported", defaultMessage);
             this.TPD_SPAWN_OTHER = fileConfiguration.getString("commands.spawn.teleported-other", defaultMessage);
@@ -63,6 +64,9 @@ public class LanguageCache {
 
             this.STARTED_FLYING = fileConfiguration.getString("commands.fly.flight-on", defaultMessage);
             this.STOPPED_FLYING = fileConfiguration.getString("commands.fly.flight-off", defaultMessage);
+
+            this.GAMEMODE_SET_MANY = fileConfiguration.getString("commands.gamemode.set_many", defaultMessage);
+
 
             this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
             this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);

@@ -99,7 +99,11 @@ public class PlayerDatabase {
             if (connection == null)
                 return;
             Statement statement = connection.createStatement();
-            String sql = "INSERT INTO players (player_uuid, fly, displayname) VALUES('"+basicPlayer.getUuid().toString()+"', "+basicPlayer.canFly()+", '"+basicPlayer.getDisplayName()+"');";
+            String sql = "INSERT INTO players (player_uuid, fly, displayname, gamemode) VALUES(" +
+                    "'"+basicPlayer.getUuid().toString()+"', " +
+                    ""+basicPlayer.canFly()+", " +
+                    "'"+basicPlayer.getDisplayName()+"', " +
+                    "'"+basicPlayer.getGameMode().toString()+"');";
             statement.execute(sql);
 
         } catch (SQLException e) {
@@ -135,6 +139,32 @@ public class PlayerDatabase {
         saveSingleOption(uuid, dbRow, value);
     }
 
+    public static Object getSingleOption(UUID uuid, String dbRow) {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return null;
+
+            DatabaseRow.valueOf(dbRow.toUpperCase());
+            dbRow = dbRow.toLowerCase();
+
+            Statement statement = connection.createStatement();
+            String sql = "SELECT `"+dbRow+"` FROM players WHERE `player_uuid` = '"+uuid.toString()+"';";
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next()) {
+                return rs.getObject(dbRow);
+            }
+            return null;
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating player data in database");
+            e.printStackTrace();
+        } catch (IllegalArgumentException e2) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided database row does not exist");
+        }
+        return null;
+    }
+
     public static boolean playerExists(UUID uuid) {
         try (Connection connection = DriverManager.getConnection(url)) {
             if (connection == null)
@@ -150,7 +180,6 @@ public class PlayerDatabase {
                     connection.close();
                     return true;
                 }
-
             }
             return false;
 

@@ -3,3 +3,12 @@ version: ${project.version}
 main: eu.endermite.serverbasics.ServerBasics
 api-version: 1.13
 authors: [ YouHaveTrouble ]
+permissions:
+  serverbasics.gamemode.survival:
+    default: op
+  serverbasics.gamemode.creative:
+    default: op
+  serverbasics.gamemode.adventure:
+    default: op
+  serverbasics.gamemode.spectator:
+    default: op

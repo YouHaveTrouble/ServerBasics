@@ -5,7 +5,6 @@ import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
-import eu.endermite.serverbasics.listeners.PlayerCacheListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +34,6 @@ public final class ServerBasics extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerCacheListener(), this);
 
     }
 

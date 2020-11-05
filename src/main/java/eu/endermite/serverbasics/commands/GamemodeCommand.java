@@ -24,15 +24,15 @@ public class GamemodeCommand {
         ServerBasics.getCommandManager().getAnnotationParser().parse(this);
     }
 
-    @CommandMethod("gamemode <gm>" )
-    @CommandDescription("Set your gamemode" )
-    @CommandPermission("serverbasics.command.gamemode" )
+    @CommandMethod("gamemode <gm>")
+    @CommandDescription("Set your gamemode")
+    @CommandPermission("serverbasics.command.gamemode")
     private void commandGamemode(
             final Player player,
-            final @Argument(value = "gm" ) GameMode gamemode
+            final @Argument(value = "gm") GameMode gamemode
     ) {
 
-        if (!player.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !player.hasPermission("serverbasics.gamemode.*" )) {
+        if (!player.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !player.hasPermission("serverbasics.gamemode.*")) {
             MessageParser.sendDefaultTranslatedError(player, "debug.creative_spectator.error", TextColor.color(255, 255, 255));
         }
 
@@ -47,16 +47,16 @@ public class GamemodeCommand {
         ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
     }
 
-    @CommandMethod("gamemode <gm> <target>" )
-    @CommandDescription("Set someones gamemode" )
-    @CommandPermission("serverbasics.command.gamemode.others" )
+    @CommandMethod("gamemode <gm> <target>")
+    @CommandDescription("Set someones gamemode")
+    @CommandPermission("serverbasics.command.gamemode.others")
     private void commandGamemodeOthers(
             final CommandSender sender,
-            final @Argument(value = "gm" ) GameMode gamemode,
-            final @Argument(value = "target" ) MultiplePlayerSelector players
+            final @Argument(value = "gm") GameMode gamemode,
+            final @Argument(value = "target") MultiplePlayerSelector players
     ) {
 
-        if (!sender.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !sender.hasPermission("serverbasics.gamemode.*" )) {
+        if (!sender.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !sender.hasPermission("serverbasics.gamemode.*")) {
             MessageParser.sendDefaultTranslatedError(sender, "debug.creative_spectator.error", TextColor.color(255, 255, 255));
         }
 
@@ -64,35 +64,23 @@ public class GamemodeCommand {
             try {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(players.getSelector());
                 if (PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
-                    PlayerDatabase.saveSingleOption(offlinePlayer.getUniqueId(), "gamemode", gamemode.toString());
-                    String offlineName = (String) PlayerDatabase.getSingleOption(offlinePlayer.getUniqueId(), "displayname" );
-
-                    Component message = Component.translatable(
-                            "commands.gamemode.success.other",
-                            NamedTextColor.WHITE,
-                            Component.text(ChatColor.translateAlternateColorCodes('&', offlineName)),
-                            Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-                    );
-                    ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+                    sendHaventPlayedError(sender);
                     return;
                 }
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
-                    MessageParser.sendMessage(player, msg);
-                } else {
-                    String msg = ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).HAVENT_PLAYED;
-                    MessageParser.sendMessage(sender, msg);
-                }
+                PlayerDatabase.saveSingleOption(offlinePlayer.getUniqueId(), "gamemode", gamemode.toString());
+                String offlineName = (String) PlayerDatabase.getSingleOption(offlinePlayer.getUniqueId(), "displayname");
+
+                Component message = Component.translatable(
+                        "commands.gamemode.success.other",
+                        NamedTextColor.WHITE,
+                        Component.text(ChatColor.translateAlternateColorCodes('&', offlineName)),
+                        Component.translatable("gameMode." + gamemode.toString().toLowerCase())
+                );
+                ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+                return;
+
             } catch (Exception e) {
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
-                    MessageParser.sendMessage(player, msg);
-                } else {
-                    String msg = ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).HAVENT_PLAYED;
-                    MessageParser.sendMessage(sender, msg);
-                }
+                sendHaventPlayedError(sender);
             }
             return;
         }
@@ -163,7 +151,17 @@ public class GamemodeCommand {
                 );
                 ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
             }
+        }
+    }
 
+    private void sendHaventPlayedError(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
+            MessageParser.sendMessage(player, msg);
+        } else {
+            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).HAVENT_PLAYED;
+            MessageParser.sendMessage(sender, msg);
         }
     }
 }

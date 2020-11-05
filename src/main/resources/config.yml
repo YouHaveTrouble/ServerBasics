@@ -5,6 +5,8 @@ language:
 
 # Custom join and leave massages. You can change them in language files
 join-leave-messages:
+  disable-join: false
+  disable-leave: false
   custom-join-message: true
   custom-leave-message: true
 

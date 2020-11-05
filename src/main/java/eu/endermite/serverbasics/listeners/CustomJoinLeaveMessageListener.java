@@ -14,6 +14,11 @@ public class CustomJoinLeaveMessageListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
 
+        if (ServerBasics.getConfigCache().DISABLE_JOIN_MSG) {
+            event.setJoinMessage("");
+            return;
+        }
+
         if (!ServerBasics.getConfigCache().CUSTOM_JOIN_MSG)
             return;
 
@@ -40,6 +45,11 @@ public class CustomJoinLeaveMessageListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(org.bukkit.event.player.PlayerQuitEvent event) {
+
+        if (ServerBasics.getConfigCache().DISABLE_LEAVE_MSG) {
+            event.setQuitMessage("");
+            return;
+        }
 
         if (!ServerBasics.getConfigCache().CUSTOM_LEAVE_MSG)
             return;

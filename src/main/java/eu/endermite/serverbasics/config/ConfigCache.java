@@ -5,8 +5,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigCache {
 
-    public String DEFAULT_LANG;
-    public boolean AUTO_LANG, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG;
+    public String DEFAULT_LANG, CHAT_FORMAT, STAFFCHAT_FORMAT;
+    public boolean AUTO_LANG, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG, CHAT_FORMAT_ENABLED, STAFFCHAT_ENABLED;
     private String SQL_CONNECTION_STRING;
 
     public ConfigCache() {
@@ -47,6 +47,13 @@ public class ConfigCache {
 
         this.CUSTOM_JOIN_MSG = config.getBoolean("join-leave-messages.custom-join-message", true);
         this.CUSTOM_LEAVE_MSG = config.getBoolean("join-leave-messages.custom-leave-message", true);
+
+        this.CHAT_FORMAT_ENABLED = config.getBoolean("chat.format-enabled", true);
+        this.STAFFCHAT_ENABLED = config.getBoolean("chat.staffchat-enabled", true);
+
+        this.CHAT_FORMAT = config.getString("chat.format", "&f<%nickname%&f> %message%");
+        this.STAFFCHAT_FORMAT = config.getString("chat.staffchat-format", "&f<%nickname%&f> %message%");
+
     }
 
     public String getSqlConnectionString() {

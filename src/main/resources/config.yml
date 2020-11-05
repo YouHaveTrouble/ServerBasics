@@ -8,6 +8,12 @@ join-leave-messages:
   custom-join-message: true
   custom-leave-message: true
 
+chat:
+  format-enabled: true
+  format: "&f<%nickname%&f> "
+  staffchat-enabled: true
+  staffchat-format: "&f[&9STAFF&f] &f<%nickname%&f> "
+
 storage:
   type: sqlite
   host: localhost

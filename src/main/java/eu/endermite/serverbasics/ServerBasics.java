@@ -1,5 +1,6 @@
 package eu.endermite.serverbasics;
 
+import eu.endermite.serverbasics.chat.ChatListener;
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
@@ -34,6 +35,8 @@ public final class ServerBasics extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
+
+        getServer().getPluginManager().registerEvents(new ChatListener(), this);
 
     }
 

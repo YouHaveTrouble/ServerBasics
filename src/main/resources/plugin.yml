@@ -12,3 +12,5 @@ permissions:
     default: op
   serverbasics.gamemode.spectator:
     default: op
+  serverbasics.chat.color:
+    default: op

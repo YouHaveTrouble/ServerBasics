@@ -14,16 +14,22 @@ public class ChatListener implements Listener {
 
         Player player = event.getPlayer();
 
+        // Parse colors in message if player has permission for it
+        if (player.hasPermission("serverbasics.chat.color")) {
+            event.setMessage(ChatColor.translateAlternateColorCodes('&', event.getMessage()));
+        }
+
         // Staffchat
         if (ServerBasics.getConfigCache().STAFFCHAT_ENABLED && player.hasPermission("serverbasics.staffchat") && event.getMessage().startsWith("!")) {
             // Make sure only players with staffchat perms get the message
-            event.getRecipients().removeIf(recipent -> !recipent.hasPermission("serverbasics.staffchat"));
+            event.getRecipients().removeIf(recipent -> !recipent.hasPermission("serverbasics.chat.staffchat"));
 
             // Remove the staffchat symbol
             String message = event.getMessage();
             message = message.substring(1);
             event.setMessage(message);
 
+            // Set staffchat format
             String format = ServerBasics.getConfigCache().STAFFCHAT_FORMAT;
             format = format.replaceAll("%nickname%", player.getDisplayName());
             format = format+"%2$s";
@@ -41,10 +47,6 @@ public class ChatListener implements Listener {
         format = format+"%2$s";
         format = ChatColor.translateAlternateColorCodes('&', format);
         event.setFormat(format);
-
-
-
-
 
     }
 }

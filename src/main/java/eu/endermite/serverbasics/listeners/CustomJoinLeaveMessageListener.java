@@ -1,13 +1,16 @@
 package eu.endermite.serverbasics.listeners;
 
 import eu.endermite.serverbasics.ServerBasics;
-import eu.endermite.serverbasics.messages.MessageParser;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import java.util.UUID;
 
 public class CustomJoinLeaveMessageListener implements Listener {
 
@@ -24,21 +27,27 @@ public class CustomJoinLeaveMessageListener implements Listener {
 
         event.setJoinMessage("");
 
+        Player player = event.getPlayer();
+
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_JOIN_MSG;
 
-            if (!consoleMsg.equals("")) {
-                consoleMsg = String.format(consoleMsg, event.getPlayer().getDisplayName());
-                consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
-                System.out.println(consoleMsg);
+            consoleMsg = consoleMsg.replace("%nickname%", player.getDisplayName());
+            if (ServerBasics.isHooked("PlaceholderAPI")) {
+                consoleMsg = PlaceholderAPI.setPlaceholders(player, consoleMsg);
             }
+            consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
+            Bukkit.getConsoleSender().sendMessage(consoleMsg);
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                String msg = ServerBasics.getInstance().getLang(player.getLocale()).CUSTOM_JOIN_MSG;
-                if (msg.equals(""))
-                    continue;
-                msg = String.format(msg, event.getPlayer().getDisplayName());
-                MessageParser.sendMessage(player, msg);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String msg = ServerBasics.getInstance().getLang(p.getLocale()).CUSTOM_JOIN_MSG;
+                msg = msg.replace("%nickname%", player.getDisplayName());
+                msg = msg.replace("%player_displayname%", player.getDisplayName());
+                if (ServerBasics.isHooked("PlaceholderAPI")) {
+                    msg = PlaceholderAPI.setPlaceholders(player, msg);
+                }
+                msg = ChatColor.translateAlternateColorCodes('&', msg);
+                p.sendMessage(msg);
             }
         });
     }
@@ -56,21 +65,30 @@ public class CustomJoinLeaveMessageListener implements Listener {
 
         event.setQuitMessage("");
 
+        Player onlineplayer = event.getPlayer();
+        UUID uuid = onlineplayer.getUniqueId();
+
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_LEAVE_MSG;
 
-            if (!consoleMsg.equals("")) {
-                consoleMsg = String.format(consoleMsg, event.getPlayer().getDisplayName());
-                consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
-                System.out.println(consoleMsg);
-            }
+            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                String msg = ServerBasics.getInstance().getLang(player.getLocale()).CUSTOM_LEAVE_MSG;
-                if (msg.equals(""))
-                    continue;
-                msg = String.format(msg, event.getPlayer().getDisplayName());
-                MessageParser.sendMessage(player, msg);
+            consoleMsg = consoleMsg.replace("%nickname%", onlineplayer.getDisplayName());
+            consoleMsg = consoleMsg.replace("%player_displayname%", onlineplayer.getDisplayName());
+            if (ServerBasics.isHooked("PlaceholderAPI")) {
+                consoleMsg = PlaceholderAPI.setPlaceholders(player, consoleMsg);
+            }
+            consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
+            Bukkit.getConsoleSender().sendMessage(consoleMsg);
+
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String msg = ServerBasics.getInstance().getLang(p.getLocale()).CUSTOM_LEAVE_MSG;
+                msg = msg.replace("%nickname%", onlineplayer.getDisplayName());
+                if (ServerBasics.isHooked("PlaceholderAPI")) {
+                    msg = PlaceholderAPI.setPlaceholders(player, msg);
+                }
+                msg = ChatColor.translateAlternateColorCodes('&', msg);
+                p.sendMessage(msg);
             }
         });
 

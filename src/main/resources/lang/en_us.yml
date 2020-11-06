@@ -39,5 +39,5 @@ commands:
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:
-  join: "&e%s &ejoined the game"
-  leave: "&e%s &eleft the game"
+  join: "&e%nickname% &ejoined the game"
+  leave: "&e%nickname% &eleft the game"

@@ -33,7 +33,8 @@ public class CustomJoinLeaveMessageListener implements Listener {
             String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_JOIN_MSG;
 
             consoleMsg = consoleMsg.replace("%nickname%", player.getDisplayName());
-            if (ServerBasics.isHooked("PlaceholderAPI")) {
+            consoleMsg = consoleMsg.replace("%player_displayname%", player.getDisplayName());
+            if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                 consoleMsg = PlaceholderAPI.setPlaceholders(player, consoleMsg);
             }
             consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
@@ -43,7 +44,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
                 String msg = ServerBasics.getInstance().getLang(p.getLocale()).CUSTOM_JOIN_MSG;
                 msg = msg.replace("%nickname%", player.getDisplayName());
                 msg = msg.replace("%player_displayname%", player.getDisplayName());
-                if (ServerBasics.isHooked("PlaceholderAPI")) {
+                if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                     msg = PlaceholderAPI.setPlaceholders(player, msg);
                 }
                 msg = ChatColor.translateAlternateColorCodes('&', msg);
@@ -75,7 +76,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
 
             consoleMsg = consoleMsg.replace("%nickname%", onlineplayer.getDisplayName());
             consoleMsg = consoleMsg.replace("%player_displayname%", onlineplayer.getDisplayName());
-            if (ServerBasics.isHooked("PlaceholderAPI")) {
+            if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                 consoleMsg = PlaceholderAPI.setPlaceholders(player, consoleMsg);
             }
             consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
@@ -84,7 +85,8 @@ public class CustomJoinLeaveMessageListener implements Listener {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 String msg = ServerBasics.getInstance().getLang(p.getLocale()).CUSTOM_LEAVE_MSG;
                 msg = msg.replace("%nickname%", onlineplayer.getDisplayName());
-                if (ServerBasics.isHooked("PlaceholderAPI")) {
+                msg = msg.replace("%player_displayname%", onlineplayer.getDisplayName());
+                if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                     msg = PlaceholderAPI.setPlaceholders(player, msg);
                 }
                 msg = ChatColor.translateAlternateColorCodes('&', msg);

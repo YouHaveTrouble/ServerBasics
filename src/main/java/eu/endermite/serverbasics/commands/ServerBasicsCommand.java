@@ -4,12 +4,8 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.hooks.Hook;
 import eu.endermite.serverbasics.messages.MessageParser;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -49,18 +45,31 @@ public class ServerBasicsCommand {
         base.append("Hooks (%s): ");
 
         int hooks = 0;
-        for (Map.Entry<String, Boolean> s : ServerBasics.getHooks().entrySet()) {
-            if (hooks > 0 && s.getValue()) {
+        for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getSoftwareHooks().entrySet()) {
+            if (hooks > 0 && e.getValue().classExists()) {
                 base.append(ChatColor.WHITE).append(", ");
             }
-            if (s.getValue()) {
-                if (Bukkit.getPluginManager().isPluginEnabled(s.getKey())) {
-                    base.append(ChatColor.GREEN).append(s.getKey());
-                } else {
-                    base.append(ChatColor.RED).append(s.getKey());
-                }
-                hooks++;
+
+            if (e.getValue().classExists()) {
+                base.append(ChatColor.GREEN).append(e.getKey());
+            } else {
+                base.append(ChatColor.RED).append(e.getKey());
             }
+            hooks++;
+
+        }
+        for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getPluginHooks().entrySet()) {
+            if (hooks > 0 && e.getValue().pluginEnabled()) {
+                base.append(ChatColor.WHITE).append(", ");
+            }
+
+            if (e.getValue().pluginEnabled()) {
+                base.append(ChatColor.GREEN).append(e.getKey());
+            } else {
+                base.append(ChatColor.RED).append(e.getKey());
+            }
+            hooks++;
+
         }
         String msg = base.toString();
         msg = String.format(msg, hooks);

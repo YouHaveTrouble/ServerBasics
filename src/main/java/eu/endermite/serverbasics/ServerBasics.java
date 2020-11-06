@@ -4,6 +4,7 @@ import eu.endermite.serverbasics.chat.ChatListener;
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
+import eu.endermite.serverbasics.enums.Hooks;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
@@ -20,11 +21,12 @@ public final class ServerBasics extends JavaPlugin {
     private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
     private static BasicPlayerCache basicPlayers;
-    private static HashMap<String, Boolean> hooks;
+    private static Hooks hooks;
 
     @Override
     public void onEnable() {
         plugin = this;
+        hooks = new Hooks();
         reloadConfigs();
         reloadLang();
         reloadLocations();
@@ -40,12 +42,8 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
 
 
-        hooks = new HashMap<>();
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            hooks.put("PlaceholderAPI", true);
-        } else {
-            hooks.put("PlaceholderAPI", false);
-        }
+
+
 
     }
 
@@ -93,10 +91,8 @@ public final class ServerBasics extends JavaPlugin {
     public static BasicPlayerCache getBasicPlayers() {
         return basicPlayers;
     }
-    public static boolean isHooked(String hook) {
-        return hooks.get(hook);
-    }
-    public static HashMap<String, Boolean> getHooks() {
+
+    public static Hooks getHooks() {
         return hooks;
     }
 

@@ -1,7 +1,6 @@
 package eu.endermite.serverbasics.messages;
 
 import eu.endermite.serverbasics.ServerBasics;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -27,19 +26,14 @@ public class MessageParser {
 
         //TODO different message types based on string prefix
 
-
+        message = ChatColor.translateAlternateColorCodes('&', message);
 
         if (!(recipent instanceof Player)) {
             recipent.sendMessage(message);
             return;
         }
+
         Player player = (Player) recipent;
-
-        if (ServerBasics.isHooked("PlaceholderAPI")) {
-            message = PlaceholderAPI.setPlaceholders(player, message);
-        }
-
-        message = ChatColor.translateAlternateColorCodes('&', message);
 
         if (messageType.equals(MessageType.TEXT)) {
             player.sendMessage(message);
@@ -70,7 +64,7 @@ public class MessageParser {
     }
 
     @Nullable
-    public static String replaceHex(@Nullable String str) {
+    private static String replaceHex(@Nullable String str) {
         if (str != null) {
             java.util.regex.Matcher matcher = HEX_PATTERN.matcher(str);
             while (matcher.find()) {
@@ -88,7 +82,10 @@ public class MessageParser {
 
     @Nullable
     public static String color(@Nullable String str, boolean parseHex) {
-        return str != null ? net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', parseHex ? replaceHex(str) : str) : str;
+        if (ServerBasics.getHooks().isHooked("Spigot"))
+            return str != null ? net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', parseHex ? replaceHex(str) : str) : str;
+        else
+            return ChatColor.translateAlternateColorCodes('&', str);
     }
 
 

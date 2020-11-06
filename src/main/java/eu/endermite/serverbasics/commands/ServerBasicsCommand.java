@@ -5,9 +5,17 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Map;
 
 public class ServerBasicsCommand {
 
@@ -26,6 +34,39 @@ public class ServerBasicsCommand {
         MessageParser.sendMessage(sender, msg);
     }
 
+    @CommandMethod("serverbasics debug")
+    @CommandDescription("Display ServerBasics version")
+    @CommandPermission("serverbasics.command.serverbasics")
+    private void commandServerBasicsDebug(
+            final CommandSender sender
+    ) {
+
+        MessageParser.sendMessage(sender, "Version: " + Bukkit.getVersion());
+        MessageParser.sendMessage(sender, "NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", ""));
+
+        StringBuilder base = new StringBuilder();
+
+        base.append("Hooks (%s): ");
+
+        int hooks = 0;
+        for (Map.Entry<String, Boolean> s : ServerBasics.getHooks().entrySet()) {
+            if (hooks > 0 && s.getValue()) {
+                base.append(ChatColor.WHITE).append(", ");
+            }
+            if (s.getValue()) {
+                if (Bukkit.getPluginManager().isPluginEnabled(s.getKey())) {
+                    base.append(ChatColor.GREEN).append(s.getKey());
+                } else {
+                    base.append(ChatColor.RED).append(s.getKey());
+                }
+                hooks++;
+            }
+        }
+        String msg = base.toString();
+        msg = String.format(msg, hooks);
+        MessageParser.sendMessage(sender, msg);
+    }
+
     @CommandMethod("serverbasics reload")
     @CommandDescription("Reload all ServerBasics configurations")
     @CommandPermission("serverbasics.command.serverbasics.reload")
@@ -33,20 +74,17 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.reloadConfigs();
-                plugin.reloadLang();
-                plugin.reloadLocations();
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).ALL_CONFIG_RELOADED);
-                } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).ALL_CONFIG_RELOADED);
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
+            plugin.reloadConfigs();
+            plugin.reloadLang();
+            plugin.reloadLocations();
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).ALL_CONFIG_RELOADED);
+            } else {
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).ALL_CONFIG_RELOADED);
             }
-        }.runTaskAsynchronously(plugin);
+        });
     }
 
     @CommandMethod("serverbasics reload config")
@@ -56,18 +94,15 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.reloadConfigs();
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).CONFIG_RELOADED);
-                } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CONFIG_RELOADED);
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
+            plugin.reloadConfigs();
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).CONFIG_RELOADED);
+            } else {
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CONFIG_RELOADED);
             }
-        }.runTaskAsynchronously(plugin);
+        });
     }
 
     @CommandMethod("serverbasics reload language")
@@ -77,18 +112,16 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.reloadLang();
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LANG_RELOADED);
-                } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LANG_RELOADED);
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
+            plugin.reloadLang();
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LANG_RELOADED);
+            } else {
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LANG_RELOADED);
             }
-        }.runTaskAsynchronously(plugin);
+
+        });
     }
 
     @CommandMethod("serverbasics reload locations")
@@ -98,18 +131,15 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.reloadLocations();
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LOCATIONS_RELOADED);
-                } else {
-                    MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LOCATIONS_RELOADED);
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
+            plugin.reloadLocations();
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LOCATIONS_RELOADED);
+            } else {
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LOCATIONS_RELOADED);
             }
-        }.runTaskAsynchronously(plugin);
+        });
     }
 
     @CommandMethod("serverbasics")

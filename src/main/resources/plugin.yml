@@ -3,6 +3,8 @@ version: ${project.version}
 main: eu.endermite.serverbasics.ServerBasics
 api-version: 1.13
 authors: [ YouHaveTrouble ]
+softdepend:
+  - PlaceholderAPI
 permissions:
   serverbasics.gamemode.survival:
     default: op

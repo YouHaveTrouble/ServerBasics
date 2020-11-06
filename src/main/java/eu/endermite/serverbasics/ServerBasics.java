@@ -8,6 +8,7 @@ import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
@@ -19,6 +20,7 @@ public final class ServerBasics extends JavaPlugin {
     private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
     private static BasicPlayerCache basicPlayers;
+    private static HashMap<String, Boolean> hooks;
 
     @Override
     public void onEnable() {
@@ -35,8 +37,15 @@ public final class ServerBasics extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
-
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
+
+
+        hooks = new HashMap<>();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            hooks.put("PlaceholderAPI", true);
+        } else {
+            hooks.put("PlaceholderAPI", false);
+        }
 
     }
 
@@ -65,15 +74,12 @@ public final class ServerBasics extends JavaPlugin {
     public static ServerBasics getInstance() {
         return plugin;
     }
-
     public static CommandManager getCommandManager() {
         return commandManager;
     }
-
     public static ConfigCache getConfigCache() {
         return configCache;
     }
-
     public static LanguageCache getLang(String lang) {
         LanguageCache cache;
          cache = languageCacheMap.get(lang);
@@ -81,12 +87,17 @@ public final class ServerBasics extends JavaPlugin {
             cache = languageCacheMap.get(configCache.DEFAULT_LANG);
         return cache;
     }
-
     public static LocationsCache getLocationsCache() {
         return locationsCache;
     }
-
     public static BasicPlayerCache getBasicPlayers() {
         return basicPlayers;
     }
+    public static boolean isHooked(String hook) {
+        return hooks.get(hook);
+    }
+    public static HashMap<String, Boolean> getHooks() {
+        return hooks;
+    }
+
 }

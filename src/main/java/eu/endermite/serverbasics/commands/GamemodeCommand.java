@@ -63,7 +63,7 @@ public class GamemodeCommand {
         if (!players.hasAny()) {
             try {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(players.getSelector());
-                if (PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
+                if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
                     sendHaventPlayedError(sender);
                     return;
                 }

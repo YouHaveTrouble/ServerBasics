@@ -5,14 +5,14 @@ import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-
 import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public class PlayerDatabase {
 
-    private static String url = ServerBasics.getConfigCache().getSqlConnectionString();
+    private static final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
+    private static final String table = ServerBasics.getConfigCache().getSqlPlayersTable();
 
     /**
      * Checks if plugin connected to database successfully and creates all tables
@@ -23,18 +23,18 @@ public class PlayerDatabase {
             if (conn == null)
                 return false;
             Statement statement = conn.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS `players` (`" +
+            String sql = "CREATE TABLE IF NOT EXISTS `"+table+"` (`" +
                     "player_uuid` varchar(36) UNIQUE PRIMARY KEY, " +
                     "`displayname` varchar(64), " +
                     "`fly` boolean DEFAULT false, " +
                     "`gamemode` varchar(10) " +
                     ");";
             statement.execute(sql);
-            ServerBasics.getInstance().getLogger().log(Level.INFO, ChatColor.YELLOW+ "Database connected successfully");
+            ServerBasics.getInstance().getLogger().log(Level.INFO, ChatColor.YELLOW+ "Playerdata database connected successfully");
             return true;
 
         } catch (SQLException e) {
-            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error initializing database");
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error initializing playerdata database");
             return false;
         }
     }
@@ -49,7 +49,7 @@ public class PlayerDatabase {
             if (connection == null)
                 return null;
             Statement statement = connection.createStatement();
-            String sql = "SELECT * FROM `players` WHERE `player_uuid` = '" + uuid.toString() + "';";
+            String sql = "SELECT * FROM `"+table+"` WHERE `player_uuid` = '" + uuid.toString() + "';";
 
             ResultSet result = statement.executeQuery(sql);
 
@@ -78,7 +78,7 @@ public class PlayerDatabase {
             if (connection == null)
                 return;
             Statement statement = connection.createStatement();
-            String sql = "UPDATE `players` SET " +
+            String sql = "UPDATE `"+table+"` SET " +
                     "fly = "+basicPlayer.canFly()+", " +
                     "displayname = '"+basicPlayer.getDisplayName()+"', " +
                     "gamemode = '"+basicPlayer.getGameMode().toString()+"' " +
@@ -99,7 +99,7 @@ public class PlayerDatabase {
             if (connection == null)
                 return;
             Statement statement = connection.createStatement();
-            String sql = "INSERT INTO players (player_uuid, fly, displayname, gamemode) VALUES(" +
+            String sql = "INSERT INTO "+table+" (player_uuid, fly, displayname, gamemode) VALUES(" +
                     "'"+basicPlayer.getUuid().toString()+"', " +
                     ""+basicPlayer.canFly()+", " +
                     "'"+basicPlayer.getDisplayName()+"', " +
@@ -123,7 +123,7 @@ public class PlayerDatabase {
                 value = "'"+value+"'";
 
             Statement statement = connection.createStatement();
-            String sql = "UPDATE players SET "+dbRow+" = "+ value +" " +
+            String sql = "UPDATE "+table+" SET "+dbRow+" = "+ value +" " +
                     "WHERE `player_uuid` = '"+uuid.toString()+"';";
             statement.execute(sql);
 
@@ -131,7 +131,7 @@ public class PlayerDatabase {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating player data in database");
             e.printStackTrace();
         } catch (IllegalArgumentException e2) {
-            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided database row does not exist");
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided player database row does not exist");
         }
     }
     public static void saveSingleOption(BasicPlayer basicPlayer, String dbRow, Object value) {
@@ -148,7 +148,7 @@ public class PlayerDatabase {
             dbRow = dbRow.toLowerCase();
 
             Statement statement = connection.createStatement();
-            String sql = "SELECT `"+dbRow+"` FROM players WHERE `player_uuid` = '"+uuid.toString()+"';";
+            String sql = "SELECT `"+dbRow+"` FROM "+table+" WHERE `player_uuid` = '"+uuid.toString()+"';";
             ResultSet rs = statement.executeQuery(sql);
 
             if(rs.next()) {
@@ -160,7 +160,7 @@ public class PlayerDatabase {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating player data in database");
             e.printStackTrace();
         } catch (IllegalArgumentException e2) {
-            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided database row does not exist");
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided player database row does not exist");
         }
         return null;
     }
@@ -171,7 +171,7 @@ public class PlayerDatabase {
                 return false;
 
             Statement statement = connection.createStatement();
-            String sql = "SELECT `player_uuid` from players WHERE `player_uuid` = '"+uuid.toString()+"';";
+            String sql = "SELECT `player_uuid` from "+table+" WHERE `player_uuid` = '"+uuid.toString()+"';";
 
             ResultSet rs = statement.executeQuery(sql);
 
@@ -184,7 +184,7 @@ public class PlayerDatabase {
             return false;
 
         } catch (SQLException e) {
-            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error connecting to database");
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error connecting to player database");
             return false;
         }
     }

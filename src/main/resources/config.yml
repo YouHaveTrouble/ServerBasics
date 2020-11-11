@@ -16,11 +16,29 @@ chat:
   staffchat-enabled: true
   staffchat-format: "&f[&9STAFF&f] &f<%nickname%&f> "
 
+# Storage options: sqlite, mysql
+# If you're not sure what to do here, leave both "type" fields at sqlite, plugin will take care of the rest
 storage:
-  type: sqlite
-  host: localhost
-  port: 3306
-  username: root
-  password: password
-  ssl: true
-  verifycertificate: true
+  #If you want to sync player data in bungeecord setup set this one separate to server data
+  playerdata:
+    type: sqlite
+    host: localhost
+    table: sbasics_players
+    database: database
+    port: 3306
+    username: root
+    password: password
+    ssl: true
+    verifycertificate: true
+  # Server specific data like warps and homes that should not be synced in bungeecord setup
+  # Remember to change "table" name to a unique name to avoid issues
+  serverdata:
+    type: sqlite
+    host: localhost
+    table: sbasics_serverdata
+    database: database
+    port: 3306
+    username: root
+    password: password
+    ssl: true
+    verifycertificate: true

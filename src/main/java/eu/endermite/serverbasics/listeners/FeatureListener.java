@@ -19,7 +19,6 @@ public class FeatureListener implements Listener {
         if (PlayerDatabase.playerExists(player.getUniqueId())) {
             BasicPlayer basicPlayer = PlayerDatabase.getPlayerfromStorage(player.getUniqueId());
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
-
         } else {
             BasicPlayer basicPlayer = BasicPlayer.builder()
                     .uuid(player.getUniqueId())

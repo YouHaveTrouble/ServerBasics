@@ -4,7 +4,7 @@ import eu.endermite.serverbasics.chat.ChatListener;
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
-import eu.endermite.serverbasics.enums.Hooks;
+import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;

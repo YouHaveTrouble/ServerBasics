@@ -16,7 +16,7 @@ public class ConfigCache {
         this.AUTO_LANG = config.getBoolean("language.auto-language", true);
 
         String playerdbType = config.getString("storage.type", "sqlite");
-        assert playerdbType != null;
+
         playerdbType = playerdbType.toLowerCase();
 
         switch (playerdbType) {

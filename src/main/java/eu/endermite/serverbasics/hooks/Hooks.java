@@ -1,6 +1,4 @@
-package eu.endermite.serverbasics.enums;
-
-import eu.endermite.serverbasics.hooks.Hook;
+package eu.endermite.serverbasics.hooks;
 
 import java.util.HashMap;
 

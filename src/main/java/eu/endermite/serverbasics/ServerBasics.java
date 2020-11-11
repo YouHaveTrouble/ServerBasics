@@ -9,7 +9,6 @@ import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
@@ -40,9 +39,6 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
-
-
-
 
 
     }

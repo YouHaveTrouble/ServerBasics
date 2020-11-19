@@ -10,11 +10,8 @@ import eu.endermite.serverbasics.messages.MessageParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRegistration
 public class FeedCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("feed")
     @CommandDescription("Feed yourself")

@@ -19,6 +19,10 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.reflections.Reflections;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -89,18 +93,16 @@ public class CommandManager {
         constructCommands();
     }
 
-    //TODO fix this \/
     private void constructCommands() {
-        new HealCommand().constructCommand();
-        new FeedCommand().constructCommand();
-        new PlayTimeCommand().constructCommand();
-        new ItemNameCommand().constructCommand();
-        new ItemLoreCommand().constructCommand();
-        new ServerBasicsCommand().constructCommand();
-        new SpawnCommand().constructCommand();
-        new FlyCommand().constructCommand();
-        new NicknameCommand().constructCommand();
-        new GamemodeCommand().constructCommand();
+        Reflections reflections = new Reflections(new String[]{"eu.endermite.serverbasics.commands"});
+        Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(CommandRegistration.class);
+        listenerClasses.forEach((command)-> {
+            try {
+                ServerBasics.getCommandManager().getAnnotationParser().parse(command.getConstructor().newInstance()) ;
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public AnnotationParser getAnnotationParser() {

@@ -18,7 +18,6 @@ chat:
 
 # Storage options: sqlite, mysql
 # If you're not sure what to do here, leave "type" field at sqlite, plugin will take care of the rest
-# If you want to sync player data in bungeecord, set mysql identical in servers you want this data synced on
 storage:
   type: sqlite
   host: localhost
@@ -29,3 +28,7 @@ storage:
   password: password
   ssl: true
   verifycertificate: true
+
+
+# DO NOT TOUCH THIS LINE! It's used for server identification in bungeecord setup
+server-uuid: <this should generate automatically>

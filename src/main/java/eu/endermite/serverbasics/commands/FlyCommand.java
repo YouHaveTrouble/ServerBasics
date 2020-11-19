@@ -12,11 +12,8 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRegistration
 public class FlyCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("fly")
     @CommandDescription("Toggle flight mode")

@@ -14,11 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+@CommandRegistration
 public class ItemNameCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("itemname <name>")
     @CommandDescription("Change the name of the held item")

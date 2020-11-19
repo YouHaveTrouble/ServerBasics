@@ -12,11 +12,8 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRegistration
 public class HealCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("heal")
     @CommandDescription("Heal yourself")

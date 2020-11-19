@@ -17,11 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@CommandRegistration
 public class ItemLoreCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("itemlore <lore>")
     @CommandDescription("Change the lore of the held item")

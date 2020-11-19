@@ -3,11 +3,16 @@ package eu.endermite.serverbasics.config;
 import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 public class ConfigCache {
 
     public String DEFAULT_LANG, CHAT_FORMAT, STAFFCHAT_FORMAT;
     public boolean AUTO_LANG, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG, DISABLE_JOIN_MSG, DISABLE_LEAVE_MSG, CHAT_FORMAT_ENABLED, STAFFCHAT_ENABLED;
-    private final String SQL_PLAYERS_CONNECTION_STRING, SQL_PLAYERS_TABLE;
+    private final String SQL_CONNECTION_STRING;
+    private String server_uuid;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
@@ -39,14 +44,12 @@ public class ConfigCache {
                 } else {
                     connString = connString + "&verifyServerCertificate=false";
                 }
-                this.SQL_PLAYERS_CONNECTION_STRING = connString;
+                this.SQL_CONNECTION_STRING = connString;
                 break;
             default:
-                this.SQL_PLAYERS_CONNECTION_STRING = "jdbc:sqlite:plugins/ServerBasics/users.db";
+                this.SQL_CONNECTION_STRING = "jdbc:sqlite:plugins/ServerBasics/data.db";
                 break;
         }
-
-        this.SQL_PLAYERS_TABLE = config.getString("storage.table", "sbasics_players");
 
         this.DISABLE_JOIN_MSG = config.getBoolean("join-leave-messages.disable-join", false);
         this.DISABLE_LEAVE_MSG = config.getBoolean("join-leave-messages.disable-leave", false);
@@ -60,12 +63,23 @@ public class ConfigCache {
         this.CHAT_FORMAT = config.getString("chat.format", "&f<%nickname%&f> %message%");
         this.STAFFCHAT_FORMAT = config.getString("chat.staffchat-format", "&f<%nickname%&f> %message%");
 
+        this.server_uuid = config.getString("server-uuid", "<this should generate automatically>");
+        if (server_uuid.equals("<this should generate automatically>")) {
+            try {
+                server_uuid = UUID.randomUUID().toString();
+                config.set("server-uuid", server_uuid);
+                config.save(new File("/ServerBasics/config"));
+            } catch (IOException e) {
+                ServerBasics.getInstance().getLogger().severe("Could not save generated server UUID");
+            }
+        }
+
     }
 
     public String getSqlPlayersConnectionString() {
-        return SQL_PLAYERS_CONNECTION_STRING;
+        return SQL_CONNECTION_STRING;
     }
-    public String getSqlPlayersTable() {
-        return SQL_PLAYERS_TABLE;
+    public String getServerUuid() {
+        return server_uuid;
     }
 }

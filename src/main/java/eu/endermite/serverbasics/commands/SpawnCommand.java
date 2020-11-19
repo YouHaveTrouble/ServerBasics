@@ -6,21 +6,18 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.locations.SBasicLocation;
 import eu.endermite.serverbasics.messages.MessageParser;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.format.TextColor;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+@CommandRegistration
 public class SpawnCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("spawn <target>")
     @CommandDescription("Teleports player to spawn")
@@ -49,7 +46,7 @@ public class SpawnCommand {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PaperLib.teleportAsync(target, ServerBasics.getLocationsCache().spawn, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                PaperLib.teleportAsync(target, ServerBasics.getLocationsCache().spawn.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
                     if (result) {
                         MessageParser.sendMessage(target, ServerBasics.getLang(target.getLocale()).TPD_SPAWN);
                     } else {
@@ -73,7 +70,7 @@ public class SpawnCommand {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PaperLib.teleportAsync(player, ServerBasics.getLocationsCache().spawn, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                PaperLib.teleportAsync(player, ServerBasics.getLocationsCache().spawn.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
                     if (result) {
                         MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).TPD_SPAWN);
                     } else {
@@ -91,7 +88,8 @@ public class SpawnCommand {
             final Player player
     ) {
         Location newSpawn = player.getLocation();
-        ServerBasics.getLocationsCache().setSpawn(newSpawn);
+        SBasicLocation sBasicLocation = new SBasicLocation(newSpawn, "spawn");
+        ServerBasics.getLocationsCache().setSpawn(sBasicLocation);
         MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).SPAWN_SET);
     }
 

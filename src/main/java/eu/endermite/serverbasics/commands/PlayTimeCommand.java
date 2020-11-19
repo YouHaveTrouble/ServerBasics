@@ -8,11 +8,8 @@ import eu.endermite.serverbasics.messages.MessageParser;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
+@CommandRegistration
 public class PlayTimeCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("playtime")
     @CommandDescription("Check playtime")

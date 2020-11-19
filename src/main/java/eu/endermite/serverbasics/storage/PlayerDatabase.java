@@ -12,7 +12,7 @@ import java.util.logging.Level;
 public class PlayerDatabase {
 
     private static final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
-    private static final String table = ServerBasics.getConfigCache().getSqlPlayersTable();
+    private static final String table = "sbasics_players";
 
     /**
      * Checks if plugin connected to database successfully and creates all tables

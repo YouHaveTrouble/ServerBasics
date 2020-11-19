@@ -9,6 +9,7 @@ import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
+import eu.endermite.serverbasics.storage.ServerDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
@@ -28,13 +29,15 @@ public final class ServerBasics extends JavaPlugin {
         hooks = new Hooks();
         reloadConfigs();
         reloadLang();
-        reloadLocations();
         commandManager = new CommandManager();
         commandManager.initCommands();
 
         PlayerDatabase.checkConnection();
+        ServerDatabase.checkConnection();
 
         basicPlayers = new BasicPlayerCache();
+        reloadLocations();
+
 
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);

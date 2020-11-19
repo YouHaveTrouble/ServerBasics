@@ -13,11 +13,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
+@CommandRegistration
 public class ServerBasicsCommand {
-
-    public void constructCommand() {
-        ServerBasics.getCommandManager().getAnnotationParser().parse(this);
-    }
 
     @CommandMethod("serverbasics version")
     @CommandDescription("Display ServerBasics version")

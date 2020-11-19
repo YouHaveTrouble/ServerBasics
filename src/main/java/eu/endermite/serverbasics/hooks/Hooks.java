@@ -30,7 +30,8 @@ public class Hooks {
         Hook papiHook = Hook.builder()
                 .name("PlaceholderAPI")
                 .build();
-        pluginHooks.put(papiHook.getName(), papiHook);
+        if (papiHook.pluginEnabled())
+            pluginHooks.put(papiHook.getName(), papiHook);
 
     }
 

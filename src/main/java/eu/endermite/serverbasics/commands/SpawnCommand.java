@@ -9,7 +9,8 @@ import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.locations.SBasicLocation;
 import eu.endermite.serverbasics.messages.MessageParser;
 import io.papermc.lib.PaperLib;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,7 +40,10 @@ public class SpawnCommand {
         Player target = targetToParse.getPlayer();
 
         if (target == null) {
-            MessageParser.sendDefaultTranslatedError(sender, "argument.entity.notfound.entity", TextColor.color(255,255,255));
+            final Component message = Component.translatable(
+                    "argument.entity.notfound.entity",
+                    NamedTextColor.WHITE);
+            ServerBasics.getCommandManager().bukkitAudiences.player(target).sendMessage(message);
             return;
         }
 

@@ -1,18 +1,10 @@
 package eu.endermite.serverbasics.messages;
 
-import eu.endermite.serverbasics.ServerBasics;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import javax.annotation.Nullable;
-import java.util.regex.Pattern;
 
 public class MessageParser {
-
-    public static final Pattern HEX_PATTERN = Pattern.compile("(#[A-Fa-f0-9]{6})");
 
     /**
      * Parses message string into message
@@ -48,46 +40,6 @@ public class MessageParser {
             return;
         }
     }
-
-    /**
-     * For sending TranslatableComponent errors that already exist in the client
-     *
-     * @param player
-     * @param translationString
-     * @param color
-     */
-    public static void sendDefaultTranslatedError(CommandSender player, String translationString, TextColor color) {
-        Component component = Component.translatable().key(translationString).colorIfAbsent(color).build();
-        BukkitAudiences bukkitAudiences = ServerBasics.getCommandManager().bukkitAudiences;
-        bukkitAudiences.sender(player).sendMessage(component);
-
-    }
-
-    @Nullable
-    private static String replaceHex(@Nullable String str) {
-        if (str != null) {
-            java.util.regex.Matcher matcher = HEX_PATTERN.matcher(str);
-            while (matcher.find()) {
-                String group = matcher.group(1);
-                str = str.replace(group, net.md_5.bungee.api.ChatColor.of(group).toString());
-            }
-        }
-        return str;
-    }
-
-    @Nullable
-    public static String color(@Nullable String str) {
-        return color(str, true);
-    }
-
-    @Nullable
-    public static String color(@Nullable String str, boolean parseHex) {
-        if (ServerBasics.getHooks().isHooked("Spigot"))
-            return str != null ? net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', parseHex ? replaceHex(str) : str) : str;
-        else
-            return ChatColor.translateAlternateColorCodes('&', str);
-    }
-
 
 }
 

@@ -56,7 +56,7 @@ public class ServerBasicsCommand {
 
         }
         for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getPluginHooks().entrySet()) {
-            if (hooks > 0 && e.getValue().pluginEnabled()) {
+            if (hooks > 0) {
                 base.append(ChatColor.WHITE).append(", ");
             }
 

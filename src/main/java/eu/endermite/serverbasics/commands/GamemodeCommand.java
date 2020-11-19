@@ -10,7 +10,6 @@ import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -30,7 +29,10 @@ public class GamemodeCommand {
     ) {
 
         if (!player.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !player.hasPermission("serverbasics.gamemode.*")) {
-            MessageParser.sendDefaultTranslatedError(player, "debug.creative_spectator.error", TextColor.color(255, 255, 255));
+            final Component message = Component.translatable(
+                    "debug.creative_spectator.error",
+                    NamedTextColor.WHITE);
+            ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
         }
 
         ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).setGameMode(gamemode);
@@ -54,7 +56,10 @@ public class GamemodeCommand {
     ) {
 
         if (!sender.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !sender.hasPermission("serverbasics.gamemode.*")) {
-            MessageParser.sendDefaultTranslatedError(sender, "debug.creative_spectator.error", TextColor.color(255, 255, 255));
+            final Component message = Component.translatable(
+                    "debug.creative_spectator.error",
+                    NamedTextColor.WHITE);
+            ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
         }
 
         if (!players.hasAny()) {

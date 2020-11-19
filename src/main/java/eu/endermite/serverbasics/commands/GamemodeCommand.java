@@ -121,7 +121,7 @@ public class GamemodeCommand {
                 message = Component.translatable(
                         "commands.gamemode.success.other",
                         NamedTextColor.WHITE,
-                        Component.text(player.getDisplayName()),
+                        Component.text(ChatColor.translateAlternateColorCodes('&', player.getDisplayName())),
                         Component.translatable("gameMode." + gamemode.toString().toLowerCase())
                 );
                 ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);

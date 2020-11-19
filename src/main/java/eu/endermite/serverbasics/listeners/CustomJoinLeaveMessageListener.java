@@ -1,7 +1,10 @@
 package eu.endermite.serverbasics.listeners;
 
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.messages.MessageParser;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -37,8 +40,10 @@ public class CustomJoinLeaveMessageListener implements Listener {
             if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                 consoleMsg = PlaceholderAPI.setPlaceholders(player, consoleMsg);
             }
-            consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
-            Bukkit.getConsoleSender().sendMessage(consoleMsg);
+            consoleMsg = MessageParser.makeColorsWork('&', consoleMsg);
+            MiniMessage minimsg = MiniMessage.builder().markdown().build();
+            Component component = minimsg.parse(consoleMsg);
+            ServerBasics.getCommandManager().bukkitAudiences.console().sendMessage(component);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 String msg = ServerBasics.getInstance().getLang(p.getLocale()).CUSTOM_JOIN_MSG;
@@ -47,8 +52,9 @@ public class CustomJoinLeaveMessageListener implements Listener {
                 if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                     msg = PlaceholderAPI.setPlaceholders(player, msg);
                 }
-                msg = ChatColor.translateAlternateColorCodes('&', msg);
-                p.sendMessage(msg);
+                msg = MessageParser.makeColorsWork('&', msg);
+                Component component2 = minimsg.parse(msg);
+                ServerBasics.getCommandManager().bukkitAudiences.player(p).sendMessage(component2);
             }
         });
     }
@@ -79,8 +85,10 @@ public class CustomJoinLeaveMessageListener implements Listener {
             if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                 consoleMsg = PlaceholderAPI.setPlaceholders(player, consoleMsg);
             }
-            consoleMsg = ChatColor.translateAlternateColorCodes('&', consoleMsg);
-            Bukkit.getConsoleSender().sendMessage(consoleMsg);
+            consoleMsg = MessageParser.makeColorsWork('&', consoleMsg);
+            MiniMessage minimsg = MiniMessage.builder().markdown().build();
+            Component component = minimsg.parse(consoleMsg);
+            ServerBasics.getCommandManager().bukkitAudiences.console().sendMessage(component);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 String msg = ServerBasics.getInstance().getLang(p.getLocale()).CUSTOM_LEAVE_MSG;
@@ -89,8 +97,9 @@ public class CustomJoinLeaveMessageListener implements Listener {
                 if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
                     msg = PlaceholderAPI.setPlaceholders(player, msg);
                 }
-                msg = ChatColor.translateAlternateColorCodes('&', msg);
-                p.sendMessage(msg);
+                msg = MessageParser.makeColorsWork('&', msg);
+                Component component2 = minimsg.parse(msg);
+                ServerBasics.getCommandManager().bukkitAudiences.player(p).sendMessage(component2);
             }
         });
 

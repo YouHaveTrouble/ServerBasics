@@ -8,6 +8,7 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.locations.SBasicLocation;
 import eu.endermite.serverbasics.messages.MessageParser;
+import eu.endermite.serverbasics.storage.ServerDatabase;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -94,6 +95,7 @@ public class SpawnCommand {
         Location newSpawn = player.getLocation();
         SBasicLocation sBasicLocation = new SBasicLocation(newSpawn, "spawn");
         ServerBasics.getLocationsCache().setSpawn(sBasicLocation);
+        ServerDatabase.saveSpawn(sBasicLocation);
         MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).SPAWN_SET);
     }
 

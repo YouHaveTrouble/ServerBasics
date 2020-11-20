@@ -68,7 +68,7 @@ public class ConfigCache {
             try {
                 server_uuid = UUID.randomUUID().toString();
                 config.set("server-uuid", server_uuid);
-                config.save(new File("/ServerBasics/config"));
+                config.save(ServerBasics.getInstance().getDataFolder()+"/config.yml");
             } catch (IOException e) {
                 ServerBasics.getInstance().getLogger().severe("Could not save generated server UUID");
             }

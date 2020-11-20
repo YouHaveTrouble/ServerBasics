@@ -9,9 +9,7 @@ import org.bukkit.World;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.sql.*;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class ServerDatabase {
@@ -79,10 +77,13 @@ public class ServerDatabase {
             double x = (double) json.get("x");
             double y = (double) json.get("y");
             double z = (double) json.get("z");
+            Double pitch = (Double) json.get("pitch");
+            Double yaw = (Double) json.get("yaw");
+
 
             World world = Bukkit.getWorld(worldString);
 
-            Location location = new Location(world, x, y, z);
+            Location location = new Location(world, x, y, z, yaw.floatValue(), pitch.floatValue());
 
             SBasicLocation sBasicLocation = new SBasicLocation(location, "Spawn");
             return sBasicLocation;
@@ -92,7 +93,92 @@ public class ServerDatabase {
             e.printStackTrace();
             return null;
         }
+    }
 
+    public static void createSpawn(SBasicLocation location) {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return;
+
+            String serverUuid = ServerBasics.getConfigCache().getServerUuid();
+
+            JSONObject json = new JSONObject();
+            json.put("world", location.getLocation().getWorld().getName());
+            json.put("x", location.getLocation().getX());
+            json.put("y", location.getLocation().getY());
+            json.put("z", location.getLocation().getZ());
+            json.put("pitch", location.getLocation().getPitch());
+            json.put("yaw", location.getLocation().getYaw());
+
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO `sbasics_spawns` (server_uuid, location) VALUES ('" + serverUuid + "', '" + json.toJSONString() + "');";
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating spawn data in database");
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateSpawn(SBasicLocation location) {
+
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return;
+
+            String serverUuid = ServerBasics.getConfigCache().getServerUuid();
+
+            JSONObject json = new JSONObject();
+            json.put("world", location.getLocation().getWorld().getName());
+            json.put("x", location.getLocation().getX());
+            json.put("y", location.getLocation().getY());
+            json.put("z", location.getLocation().getZ());
+            json.put("pitch", location.getLocation().getPitch());
+            json.put("yaw", location.getLocation().getYaw());
+
+            Statement statement = connection.createStatement();
+            String sql = "UPDATE `sbasics_spawns` SET " +
+                    "location = '"+json.toJSONString()+"' " +
+                    "WHERE `server_uuid` = '"+serverUuid+"';";
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading spawn data from database");
+        }
+    }
+
+    public static boolean spawnExists() {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection == null)
+                return false;
+
+            String serverId = ServerBasics.getConfigCache().getServerUuid();
+
+            Statement statement = connection.createStatement();
+            String sql = "SELECT `server_uuid` from sbasics_spawns WHERE `server_uuid` = '"+serverId+"';";
+
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next()) {
+                if (rs.getString("server_uuid").equals(serverId)) {
+                    connection.close();
+                    return true;
+                }
+            }
+            return false;
+
+        } catch (SQLException e) {
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error connecting to serverdata database");
+            return false;
+        }
+    }
+
+    public static void saveSpawn(SBasicLocation location) {
+        if (spawnExists()) {
+            updateSpawn(location);
+        } else {
+            createSpawn(location);
+        }
     }
 
 

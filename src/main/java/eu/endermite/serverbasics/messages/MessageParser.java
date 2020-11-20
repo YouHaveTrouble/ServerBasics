@@ -3,6 +3,7 @@ package eu.endermite.serverbasics.messages;
 import eu.endermite.serverbasics.ServerBasics;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.title.Title;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,11 @@ public class MessageParser {
         if (message.startsWith("!actionbar ")) {
             message = message.replaceFirst("!actionbar ", "");
             messageType = MessageType.ACTIONBAR;
+        } else if (message.startsWith("!subtitle ")) {
+            message = message.replaceFirst("!subtitle ", "");
+            messageType = MessageType.SUBTITLE;
         }
+
 
         message = makeColorsWork('&', message);
         MiniMessage minimsg = MiniMessage.builder().markdown().build();
@@ -39,6 +44,9 @@ public class MessageParser {
             case ACTIONBAR:
                 ServerBasics.getCommandManager().bukkitAudiences.player(player).sendActionBar(component);
                 break;
+            case SUBTITLE:
+                Title title = Title.title(Component.empty(), component);
+                ServerBasics.getCommandManager().bukkitAudiences.player(player).showTitle(title);
             case TEXT:
             default:
                 ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(component);

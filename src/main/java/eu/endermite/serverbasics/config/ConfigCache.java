@@ -8,7 +8,8 @@ import java.util.UUID;
 public class ConfigCache {
 
     public String default_lang, chat_format, staffchat_format;
-    public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg, chat_format_enabled, staffchat_enabled;
+    public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
+            chat_format_enabled, staffchat_enabled, spawn_on_join;
     private final String sql_connection_string;
     private String server_uuid;
 
@@ -60,6 +61,8 @@ public class ConfigCache {
 
         this.chat_format = config.getString("chat.format", "&f<%nickname%&f> %message%");
         this.staffchat_format = config.getString("chat.staffchat-format", "&f<%nickname%&f> %message%");
+
+        this.spawn_on_join = config.getBoolean("spawn.players-always-join-spawn", false);
 
         this.server_uuid = config.getString("server-uuid", "<this should generate automatically>");
         if (server_uuid.equals("<this should generate automatically>")) {

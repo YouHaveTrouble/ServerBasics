@@ -3,6 +3,9 @@ language:
   auto-language: true
   default-language: "en_us"
 
+spawn:
+  players-always-join-spawn: false
+
 # Custom join and leave massages. You can change them in language files
 join-leave-messages:
   disable-join: false

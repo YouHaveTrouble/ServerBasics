@@ -1,12 +1,13 @@
 package eu.endermite.serverbasics.players;
 
 import eu.endermite.serverbasics.ServerBasics;
-import eu.endermite.serverbasics.commands.FlyCommand;
 import eu.endermite.serverbasics.messages.MessageParser;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -49,6 +50,21 @@ public class PlayerUtil {
         } else {
             return false;
         }
+    }
+
+    public static void teleportPlayerToSpawn(Player player) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PaperLib.teleportAsync(player, ServerBasics.getLocationsCache().spawn.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                    if (result) {
+                        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).TPD_SPAWN);
+                    } else {
+                        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).COULD_NOT_TP);
+                    }
+                });
+            }
+        }.runTask(ServerBasics.getInstance());
     }
 }
 

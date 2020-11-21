@@ -146,7 +146,7 @@ public class GamemodeCommand {
                 ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
             } else {
                 Component message = Component.translatable(
-                        ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).GAMEMODE_SET_MANY,
+                        ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).GAMEMODE_SET_MANY,
                         NamedTextColor.WHITE,
                         Component.text(players.getPlayers().size()),
                         Component.translatable("gameMode." + gamemode.toString().toLowerCase())
@@ -162,7 +162,7 @@ public class GamemodeCommand {
             String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
             MessageParser.sendMessage(player, msg);
         } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).HAVENT_PLAYED;
+            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).HAVENT_PLAYED;
             MessageParser.sendMessage(sender, msg);
         }
     }

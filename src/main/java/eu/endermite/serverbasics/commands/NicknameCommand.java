@@ -129,7 +129,7 @@ public class NicknameCommand {
             String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
             MessageParser.sendMessage(player, msg);
         } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).HAVENT_PLAYED;
+            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).HAVENT_PLAYED;
             MessageParser.sendMessage(sender, msg);
         }
     }

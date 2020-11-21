@@ -86,7 +86,7 @@ public class CommandManager {
                 Player player = (Player) sender;
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).NO_PERMISSION);
             } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).NO_PERMISSION);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).NO_PERMISSION);
             }
         });
 

@@ -6,7 +6,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,12 +19,12 @@ public class CustomJoinLeaveMessageListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
 
-        if (ServerBasics.getConfigCache().DISABLE_JOIN_MSG) {
+        if (ServerBasics.getConfigCache().disable_join_msg) {
             event.setJoinMessage("");
             return;
         }
 
-        if (!ServerBasics.getConfigCache().CUSTOM_JOIN_MSG)
+        if (!ServerBasics.getConfigCache().custom_join_msg)
             return;
 
         event.setJoinMessage("");
@@ -33,7 +32,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
         Player player = event.getPlayer();
 
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
-            String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_JOIN_MSG;
+            String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().default_lang).CUSTOM_JOIN_MSG;
 
             consoleMsg = consoleMsg.replace("%nickname%", player.getDisplayName());
             consoleMsg = consoleMsg.replace("%player_displayname%", player.getDisplayName());
@@ -62,12 +61,12 @@ public class CustomJoinLeaveMessageListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(org.bukkit.event.player.PlayerQuitEvent event) {
 
-        if (ServerBasics.getConfigCache().DISABLE_LEAVE_MSG) {
+        if (ServerBasics.getConfigCache().disable_leave_msg) {
             event.setQuitMessage("");
             return;
         }
 
-        if (!ServerBasics.getConfigCache().CUSTOM_LEAVE_MSG)
+        if (!ServerBasics.getConfigCache().custom_leave_msg)
             return;
 
         event.setQuitMessage("");
@@ -76,7 +75,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
         UUID uuid = onlineplayer.getUniqueId();
 
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
-            String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CUSTOM_LEAVE_MSG;
+            String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().default_lang).CUSTOM_LEAVE_MSG;
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 

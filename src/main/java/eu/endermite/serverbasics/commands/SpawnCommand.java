@@ -34,7 +34,7 @@ public class SpawnCommand {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).SPAWN_NOT_SET);
             }
             else
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).SPAWN_NOT_SET);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).SPAWN_NOT_SET);
             return;
         }
 

@@ -20,7 +20,7 @@ public class ChatListener implements Listener {
         }
 
         // Staffchat
-        if (ServerBasics.getConfigCache().STAFFCHAT_ENABLED && player.hasPermission("serverbasics.staffchat") && event.getMessage().startsWith("!")) {
+        if (ServerBasics.getConfigCache().staffchat_enabled && player.hasPermission("serverbasics.staffchat") && event.getMessage().startsWith("!")) {
             // Make sure only players with staffchat perms get the message
             event.getRecipients().removeIf(recipent -> !recipent.hasPermission("serverbasics.chat.staffchat"));
 
@@ -30,7 +30,7 @@ public class ChatListener implements Listener {
             event.setMessage(message);
 
             // Set staffchat format
-            String format = ServerBasics.getConfigCache().STAFFCHAT_FORMAT;
+            String format = ServerBasics.getConfigCache().staffchat_format;
             format = format.replaceAll("%nickname%", player.getDisplayName());
             format = format+"%2$s";
             format = ChatColor.translateAlternateColorCodes('&', format);
@@ -39,10 +39,10 @@ public class ChatListener implements Listener {
         }
 
         // Chat format
-        if (!ServerBasics.getConfigCache().CHAT_FORMAT_ENABLED)
+        if (!ServerBasics.getConfigCache().chat_format_enabled)
             return;
 
-        String format = ServerBasics.getConfigCache().CHAT_FORMAT;
+        String format = ServerBasics.getConfigCache().chat_format;
         format = format.replaceAll("%nickname%", player.getDisplayName());
         format = format+"%2$s";
         format = ChatColor.translateAlternateColorCodes('&', format);

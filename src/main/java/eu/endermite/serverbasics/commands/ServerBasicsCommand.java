@@ -88,7 +88,7 @@ public class ServerBasicsCommand {
                 Player player = (Player) sender;
                 MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).ALL_CONFIG_RELOADED);
             } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).ALL_CONFIG_RELOADED);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).ALL_CONFIG_RELOADED);
             }
         });
     }
@@ -106,7 +106,7 @@ public class ServerBasicsCommand {
                 Player player = (Player) sender;
                 MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).CONFIG_RELOADED);
             } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).CONFIG_RELOADED);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).CONFIG_RELOADED);
             }
         });
     }
@@ -124,7 +124,7 @@ public class ServerBasicsCommand {
                 Player player = (Player) sender;
                 MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LANG_RELOADED);
             } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LANG_RELOADED);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).LANG_RELOADED);
             }
 
         });
@@ -143,7 +143,7 @@ public class ServerBasicsCommand {
                 Player player = (Player) sender;
                 MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).LOCATIONS_RELOADED);
             } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().DEFAULT_LANG).LOCATIONS_RELOADED);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).LOCATIONS_RELOADED);
             }
         });
     }

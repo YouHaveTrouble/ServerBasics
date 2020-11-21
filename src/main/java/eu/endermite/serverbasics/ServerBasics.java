@@ -81,7 +81,7 @@ public final class ServerBasics extends JavaPlugin {
         LanguageCache cache;
          cache = languageCacheMap.get(lang);
         if (cache == null)
-            cache = languageCacheMap.get(configCache.DEFAULT_LANG);
+            cache = languageCacheMap.get(configCache.default_lang);
         return cache;
     }
     public static LocationsCache getLocationsCache() {

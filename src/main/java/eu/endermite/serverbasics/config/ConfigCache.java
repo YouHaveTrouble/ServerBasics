@@ -2,23 +2,21 @@ package eu.endermite.serverbasics.config;
 
 import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
 public class ConfigCache {
 
-    public String DEFAULT_LANG, CHAT_FORMAT, STAFFCHAT_FORMAT;
-    public boolean AUTO_LANG, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG, DISABLE_JOIN_MSG, DISABLE_LEAVE_MSG, CHAT_FORMAT_ENABLED, STAFFCHAT_ENABLED;
-    private final String SQL_CONNECTION_STRING;
+    public String default_lang, chat_format, staffchat_format;
+    public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg, chat_format_enabled, staffchat_enabled;
+    private final String sql_connection_string;
     private String server_uuid;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
 
-        this.DEFAULT_LANG = config.getString("language.default-language", "en_us");
-        this.AUTO_LANG = config.getBoolean("language.auto-language", true);
+        this.default_lang = config.getString("language.default-language", "en_us");
+        this.auto_lang = config.getBoolean("language.auto-language", true);
 
         String playerdbType = config.getString("storage.type", "sqlite");
 
@@ -44,24 +42,24 @@ public class ConfigCache {
                 } else {
                     connString = connString + "&verifyServerCertificate=false";
                 }
-                this.SQL_CONNECTION_STRING = connString;
+                this.sql_connection_string = connString;
                 break;
             default:
-                this.SQL_CONNECTION_STRING = "jdbc:sqlite:plugins/ServerBasics/data.db";
+                this.sql_connection_string = "jdbc:sqlite:plugins/ServerBasics/data.db";
                 break;
         }
 
-        this.DISABLE_JOIN_MSG = config.getBoolean("join-leave-messages.disable-join", false);
-        this.DISABLE_LEAVE_MSG = config.getBoolean("join-leave-messages.disable-leave", false);
+        this.disable_join_msg = config.getBoolean("join-leave-messages.disable-join", false);
+        this.disable_leave_msg = config.getBoolean("join-leave-messages.disable-leave", false);
 
-        this.CUSTOM_JOIN_MSG = config.getBoolean("join-leave-messages.custom-join-message", true);
-        this.CUSTOM_LEAVE_MSG = config.getBoolean("join-leave-messages.custom-leave-message", true);
+        this.custom_join_msg = config.getBoolean("join-leave-messages.custom-join-message", true);
+        this.custom_leave_msg = config.getBoolean("join-leave-messages.custom-leave-message", true);
 
-        this.CHAT_FORMAT_ENABLED = config.getBoolean("chat.format-enabled", true);
-        this.STAFFCHAT_ENABLED = config.getBoolean("chat.staffchat-enabled", true);
+        this.chat_format_enabled = config.getBoolean("chat.format-enabled", true);
+        this.staffchat_enabled = config.getBoolean("chat.staffchat-enabled", true);
 
-        this.CHAT_FORMAT = config.getString("chat.format", "&f<%nickname%&f> %message%");
-        this.STAFFCHAT_FORMAT = config.getString("chat.staffchat-format", "&f<%nickname%&f> %message%");
+        this.chat_format = config.getString("chat.format", "&f<%nickname%&f> %message%");
+        this.staffchat_format = config.getString("chat.staffchat-format", "&f<%nickname%&f> %message%");
 
         this.server_uuid = config.getString("server-uuid", "<this should generate automatically>");
         if (server_uuid.equals("<this should generate automatically>")) {
@@ -77,7 +75,7 @@ public class ConfigCache {
     }
 
     public String getSqlPlayersConnectionString() {
-        return SQL_CONNECTION_STRING;
+        return sql_connection_string;
     }
     public String getServerUuid() {
         return server_uuid;

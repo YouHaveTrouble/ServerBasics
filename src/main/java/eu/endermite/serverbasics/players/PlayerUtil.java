@@ -4,9 +4,11 @@ import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
@@ -65,6 +67,21 @@ public class PlayerUtil {
                 });
             }
         }.runTask(ServerBasics.getInstance());
+    }
+
+    public static ItemStack setHat(Player player, ItemStack itemStack) {
+
+        ItemStack hatItem = itemStack.clone();
+        hatItem.setAmount(1);
+
+        itemStack.setAmount(itemStack.getAmount()-1);
+        if (player.getInventory().getHelmet() != null) {
+            player.getInventory().addItem(player.getInventory().getHelmet());
+            player.getInventory().setHelmet(null);
+        }
+        player.getInventory().setHelmet(hatItem);
+
+        return itemStack;
     }
 }
 

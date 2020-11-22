@@ -11,7 +11,7 @@ public class LanguageCache {
             HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
             FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
             TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP, NO_PERMISSION,
-            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED;
+            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED, hat_set, hat_curse;
 
     public LanguageCache(String lang) {
 
@@ -64,6 +64,9 @@ public class LanguageCache {
 
             this.STARTED_FLYING = fileConfiguration.getString("commands.fly.flight-on", defaultMessage);
             this.STOPPED_FLYING = fileConfiguration.getString("commands.fly.flight-off", defaultMessage);
+
+            this.hat_set = fileConfiguration.getString("commands.hat.hat-set", defaultMessage);
+            this.hat_curse = fileConfiguration.getString("commands.hat.binding-curse", defaultMessage);
 
             this.GAMEMODE_SET_MANY = fileConfiguration.getString("commands.gamemode.set_many", defaultMessage);
 

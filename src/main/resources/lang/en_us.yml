@@ -20,6 +20,9 @@ commands:
   fly:
     flight-on: "<green>You toggled fly on"
     flight-off: "<green>You toggled fly off"
+  hat:
+    hat-set: "<green>You changed your hat!"
+    binding-curse: "<red>Your current hat has curse of binding!"
   itemname:
     name-changed: "<green>You changed the name of the the item you're holding to &r%s"
   itemlore:

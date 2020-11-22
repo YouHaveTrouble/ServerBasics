@@ -16,3 +16,5 @@ permissions:
     default: op
   serverbasics.chat.color:
     default: op
+  serverbasics.command.hat.equip:
+    default: op

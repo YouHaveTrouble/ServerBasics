@@ -2,6 +2,7 @@ package eu.endermite.serverbasics.listeners;
 
 import eu.endermite.serverbasics.players.PlayerUtil;
 import org.bukkit.GameMode;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,6 +35,9 @@ public class HatListener implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         if (player.getGameMode() == GameMode.CREATIVE)
+            return;
+
+        if (player.getInventory().getHelmet() != null && player.getInventory().getHelmet().containsEnchantment(Enchantment.BINDING_CURSE))
             return;
 
         if (event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PLACE_ONE)) {

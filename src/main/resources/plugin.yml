@@ -7,14 +7,20 @@ softdepend:
   - PlaceholderAPI
 permissions:
   serverbasics.gamemode.survival:
+    description: Allows switching to survival mode
     default: op
   serverbasics.gamemode.creative:
+    description: Allows switching to creative mode
     default: op
   serverbasics.gamemode.adventure:
+    description: Allows switching to adventure mode
     default: op
   serverbasics.gamemode.spectator:
+    description: Allows switching to spectator mode
     default: op
   serverbasics.chat.color:
+    description: Allows usage of colors in chat
     default: op
   serverbasics.command.hat.equip:
+    description: Allows equipping hat in the survival inventory
     default: op

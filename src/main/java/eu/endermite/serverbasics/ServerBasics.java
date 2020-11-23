@@ -12,7 +12,11 @@ import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
 import eu.endermite.serverbasics.storage.ServerDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class ServerBasics extends JavaPlugin {
 
@@ -57,12 +61,20 @@ public final class ServerBasics extends JavaPlugin {
     public void reloadLang() {
         languageCacheMap = new HashMap<>();
         try {
-            //TODO scan through all **_** files in /lang directory
-            LanguageCache en_us = new LanguageCache("en_us");
-            languageCacheMap.put("en_us", en_us);
+            File langDirectory = new File(plugin.getDataFolder()+"/lang");
+            Pattern langPattern = Pattern.compile("([a-z]{1,3}_[a-z]{1,3})(\\.yml)", Pattern.CASE_INSENSITIVE);
+            for (File langFile : langDirectory.listFiles()) {
+                Matcher langMatcher = langPattern.matcher(langFile.getName());
+                if (langMatcher.find()){
+                    String localeString = langMatcher.group(1);
+                    getLogger().info(String.format("Found language file for %s", localeString));
+                    LanguageCache langCache = new LanguageCache(localeString);
+                    languageCacheMap.put(localeString, langCache);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            getLogger().severe("Error loading default language file (en_us.yml)! Language files will not reload to avoid errors, make sure to correct this before restarting the server!");
+            getLogger().severe("Error loading language files! Language files will not reload to avoid errors, make sure to correct this before restarting the server!");
         }
     }
 

@@ -66,7 +66,7 @@ public final class ServerBasics extends JavaPlugin {
             for (File langFile : langDirectory.listFiles()) {
                 Matcher langMatcher = langPattern.matcher(langFile.getName());
                 if (langMatcher.find()){
-                    String localeString = langMatcher.group(1);
+                    String localeString = langMatcher.group(1).toLowerCase();
                     getLogger().info(String.format("Found language file for %s", localeString));
                     LanguageCache langCache = new LanguageCache(localeString);
                     languageCacheMap.put(localeString, langCache);

@@ -1,12 +1,14 @@
 package eu.endermite.serverbasics.messages;
 
 import eu.endermite.serverbasics.ServerBasics;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@UtilityClass
 public class MessageParser {
 
     /**
@@ -15,7 +17,7 @@ public class MessageParser {
      * @param recipent Recipent of the message
      * @param message  String to parse into message
      */
-    public static void sendMessage(CommandSender recipent, String message) {
+    public void sendMessage(CommandSender recipent, String message) {
 
         MessageType messageType = MessageType.TEXT;
 
@@ -54,7 +56,7 @@ public class MessageParser {
         }
     }
 
-    public static String makeColorsWork(Character symbol, String string) {
+    public String makeColorsWork(Character symbol, String string) {
 
         // Adventure and ChatColor do not like each other, so this is a thing.
 

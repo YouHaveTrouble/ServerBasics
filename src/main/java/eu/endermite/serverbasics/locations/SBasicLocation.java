@@ -1,26 +1,12 @@
 package eu.endermite.serverbasics.locations;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.bukkit.Location;
 
+@Data
+@AllArgsConstructor
 public class SBasicLocation {
-
     private Location location;
     private final String name;
-
-    public SBasicLocation(Location location, String name) {
-        this.location = location;
-        this.name = name;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
 }

@@ -1,11 +1,13 @@
 package eu.endermite.serverbasics.hooks;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 
 public class Hooks {
 
-    private HashMap<String, Hook> softwareHooks = new HashMap<>();
-    private HashMap<String, Hook> pluginHooks = new HashMap<>();
+    @Getter private HashMap<String, Hook> softwareHooks = new HashMap<>();
+    @Getter private HashMap<String, Hook> pluginHooks = new HashMap<>();
 
     public Hooks() {
 
@@ -33,14 +35,6 @@ public class Hooks {
         if (papiHook.pluginEnabled())
             pluginHooks.put(papiHook.getName(), papiHook);
 
-    }
-
-    public HashMap<String, Hook> getSoftwareHooks() {
-        return softwareHooks;
-    }
-
-    public HashMap<String, Hook> getPluginHooks() {
-        return pluginHooks;
     }
 
     public boolean isHooked(String name) {

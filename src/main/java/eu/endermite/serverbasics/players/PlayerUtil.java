@@ -3,6 +3,7 @@ package eu.endermite.serverbasics.players;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
 import io.papermc.lib.PaperLib;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -13,9 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
+@UtilityClass
 public class PlayerUtil {
-
-
 
     /**
      * Toggles players flight status. Requires check if player played before.
@@ -23,7 +23,7 @@ public class PlayerUtil {
      * @return new flight state
      */
     // Decided to not move it to BasicPlayer for more convinient offline player support
-    public static boolean toggleFlight(UUID uuid) {
+    public boolean toggleFlight(UUID uuid) {
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
@@ -54,7 +54,7 @@ public class PlayerUtil {
         }
     }
 
-    public static void teleportPlayerToSpawn(Player player) {
+    public void teleportPlayerToSpawn(Player player) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -69,7 +69,7 @@ public class PlayerUtil {
         }.runTask(ServerBasics.getInstance());
     }
 
-    public static ItemStack setHat(Player player, ItemStack itemStack) {
+    public ItemStack setHat(Player player, ItemStack itemStack) {
 
         ItemStack hatItem = itemStack.clone();
         hatItem.setAmount(1);

@@ -15,6 +15,7 @@ import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import eu.endermite.serverbasics.commands.*;
 import eu.endermite.serverbasics.messages.MessageParser;
+import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +34,7 @@ public class CommandManager {
     public BukkitCommandManager<CommandSender> manager;
     public BukkitAudiences bukkitAudiences;
     private CommandConfirmationManager<CommandSender> confirmationManager;
-    private AnnotationParser<CommandSender> annotationParser;
+    @Getter private AnnotationParser<CommandSender> annotationParser;
 
     public void initCommands() {
         final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
@@ -103,10 +104,6 @@ public class CommandManager {
                 e.printStackTrace();
             }
         });
-    }
-
-    public AnnotationParser getAnnotationParser() {
-        return annotationParser;
     }
 
 }

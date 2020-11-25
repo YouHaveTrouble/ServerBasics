@@ -63,7 +63,12 @@ public final class ServerBasics extends JavaPlugin {
         try {
             File langDirectory = new File(instance.getDataFolder()+"/lang");
             Pattern langPattern = Pattern.compile("([a-z]{1,3}_[a-z]{1,3})(\\.yml)", Pattern.CASE_INSENSITIVE);
-            for (File langFile : langDirectory.listFiles()) {
+            File[] files = langDirectory.listFiles();
+            if(files == null){
+                getLogger().info("No lang files were found!");
+                return;
+            }
+            for (File langFile : files) {
                 Matcher langMatcher = langPattern.matcher(langFile.getName());
                 if (langMatcher.find()){
                     String localeString = langMatcher.group(1).toLowerCase();

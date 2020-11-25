@@ -20,6 +20,11 @@ commands:
   fly:
     flight-on: "<green>You toggled fly on"
     flight-off: "<green>You toggled fly off"
+  fix:
+    item-fixed: "<green>Held item has been fixed"
+    all-fixed: "<green>All items have been fixed"
+    item-fixed-other: "<green>Fixed item in %s's hand"
+    all-fixed-other: "<green>Fixed all items in %s's inventory"
   hat:
     hat-set: "<green>You changed your hat!"
     binding-curse: "<red>Your current hat has curse of binding!"

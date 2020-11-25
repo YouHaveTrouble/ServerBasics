@@ -11,7 +11,8 @@ public class LanguageCache {
             HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
             FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
             TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP, NO_PERMISSION,
-            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED, hat_set, hat_curse;
+            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED, hat_set, hat_curse, fixed_hand,
+            fixed_hand_other, fixed_inventory, fixed_inventory_other;
 
     public LanguageCache(String lang) {
 
@@ -68,8 +69,12 @@ public class LanguageCache {
             this.hat_set = fileConfiguration.getString("commands.hat.hat-set", defaultMessage);
             this.hat_curse = fileConfiguration.getString("commands.hat.binding-curse", defaultMessage);
 
-            this.GAMEMODE_SET_MANY = fileConfiguration.getString("commands.gamemode.set_many", defaultMessage);
+            this.fixed_hand = fileConfiguration.getString("commands.fix.item-fixed", defaultMessage);
+            this.fixed_hand_other = fileConfiguration.getString("commands.fix.item-fixed-other", defaultMessage);
+            this.fixed_inventory = fileConfiguration.getString("commands.fix.all-fixed", defaultMessage);
+            this.fixed_inventory_other = fileConfiguration.getString("commands.fix.all-fixed-other", defaultMessage);
 
+            this.GAMEMODE_SET_MANY = fileConfiguration.getString("commands.gamemode.set_many", defaultMessage);
 
             this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
             this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);

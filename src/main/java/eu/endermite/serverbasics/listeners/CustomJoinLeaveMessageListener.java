@@ -2,7 +2,9 @@ package eu.endermite.serverbasics.listeners;
 
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
+import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.players.PlayerUtil;
+import io.papermc.lib.PaperLib;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.UUID;
 
@@ -31,10 +34,6 @@ public class CustomJoinLeaveMessageListener implements Listener {
         event.setJoinMessage("");
 
         Player player = event.getPlayer();
-
-        if (ServerBasics.getConfigCache().spawn_on_join)
-            PlayerUtil.teleportPlayerToSpawn(player);
-
 
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             String consoleMsg = ServerBasics.getInstance().getLang(ServerBasics.getConfigCache().default_lang).CUSTOM_JOIN_MSG;

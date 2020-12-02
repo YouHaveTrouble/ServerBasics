@@ -2,12 +2,15 @@ package eu.endermite.serverbasics.listeners;
 
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.players.BasicPlayer;
+import eu.endermite.serverbasics.players.PlayerUtil;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
+import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class FeatureListener implements Listener {
 
@@ -16,20 +19,29 @@ public class FeatureListener implements Listener {
 
         Player player = event.getPlayer();
 
+        BasicPlayer basicPlayer;
+
         if (PlayerDatabase.playerExists(player.getUniqueId())) {
-            BasicPlayer basicPlayer = PlayerDatabase.getPlayerfromStorage(player.getUniqueId());
+            basicPlayer = PlayerDatabase.getPlayerfromStorage(player.getUniqueId());
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
         } else {
-            BasicPlayer basicPlayer = BasicPlayer.builder()
+            basicPlayer = BasicPlayer.builder()
                     .uuid(player.getUniqueId())
                     .displayName(player.getDisplayName())
                     .player(player)
                     .fly(player.getAllowFlight())
                     .gameMode(player.getGameMode())
+                    .location(player.getLocation())
                     .build();
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
             PlayerDatabase.createPlayerStorage(basicPlayer);
         }
+
+        if (ServerBasics.getConfigCache().spawn_on_join)
+            PlayerUtil.teleportPlayerToSpawn(player);
+        else
+            PaperLib.teleportAsync(player, basicPlayer.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+
 
         boolean flying = ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).canFly();
         if (flying) {
@@ -47,6 +59,7 @@ public class FeatureListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(org.bukkit.event.player.PlayerQuitEvent event) {
         BasicPlayer basicPlayer = ServerBasics.getBasicPlayers().getBasicPlayer(event.getPlayer().getUniqueId());
+        basicPlayer.setLocation(event.getPlayer().getLocation());
         PlayerDatabase.savePlayertoStorage(basicPlayer);
         ServerBasics.getBasicPlayers().removeBasicPlayer(basicPlayer);
     }

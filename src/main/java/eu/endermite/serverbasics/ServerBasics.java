@@ -15,7 +15,6 @@ import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -35,6 +34,7 @@ public final class ServerBasics extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         instance = this;
         hooks = new Hooks();
         reloadConfigs();

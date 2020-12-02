@@ -2,9 +2,11 @@ package eu.endermite.serverbasics.storage;
 
 import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
+import eu.endermite.serverbasics.players.FunctionUtil;
+import org.bukkit.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -27,7 +29,8 @@ public class PlayerDatabase {
                     "player_uuid` varchar(36) UNIQUE PRIMARY KEY, " +
                     "`displayname` varchar(64), " +
                     "`fly` boolean DEFAULT false, " +
-                    "`gamemode` varchar(10) " +
+                    "`gamemode` varchar(10), " +
+                    "`position` json " +
                     ");";
             statement.execute(sql);
             ServerBasics.getInstance().getLogger().log(Level.INFO, ChatColor.YELLOW+ "Playerdata database connected successfully");
@@ -59,6 +62,7 @@ public class PlayerDatabase {
                     .fly(result.getBoolean("fly"))
                     .displayName(result.getString("displayname"))
                     .gameMode(GameMode.valueOf(result.getString("gamemode")))
+                    .location(FunctionUtil.locationFromJson(result.getString("location")))
                     .build();
 
             return basicPlayer;
@@ -99,11 +103,13 @@ public class PlayerDatabase {
             if (connection == null)
                 return;
             Statement statement = connection.createStatement();
-            String sql = "INSERT INTO "+table+" (player_uuid, fly, displayname, gamemode) VALUES(" +
+            String sql = "INSERT INTO "+table+" (player_uuid, fly, displayname, gamemode, location) VALUES(" +
                     "'"+basicPlayer.getUuid().toString()+"', " +
                     ""+basicPlayer.canFly()+", " +
                     "'"+basicPlayer.getDisplayName()+"', " +
-                    "'"+basicPlayer.getGameMode().toString()+"');";
+                    "'"+basicPlayer.getGameMode().toString()+"'," +
+                    "'"+FunctionUtil.jsonFromLocation(basicPlayer.getLocation())+"'" +
+                    ");";
             statement.execute(sql);
 
         } catch (SQLException e) {

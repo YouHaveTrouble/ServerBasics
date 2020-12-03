@@ -8,6 +8,7 @@ import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.listeners.HatListener;
+import eu.endermite.serverbasics.listeners.WorldSaveListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.PlayerDatabase;
 import eu.endermite.serverbasics.storage.ServerDatabase;
@@ -53,6 +54,7 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new HatListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldSaveListener(), this);
 
     }
 

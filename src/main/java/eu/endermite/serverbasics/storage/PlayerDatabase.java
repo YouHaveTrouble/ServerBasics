@@ -4,8 +4,6 @@ import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.players.FunctionUtil;
 import org.bukkit.*;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.sql.*;
 import java.util.UUID;
@@ -30,7 +28,7 @@ public class PlayerDatabase {
                     "`displayname` varchar(64), " +
                     "`fly` boolean DEFAULT false, " +
                     "`gamemode` varchar(10), " +
-                    "`position` json " +
+                    "`location` json " +
                     ");";
             statement.execute(sql);
             ServerBasics.getInstance().getLogger().log(Level.INFO, ChatColor.YELLOW+ "Playerdata database connected successfully");
@@ -69,6 +67,7 @@ public class PlayerDatabase {
 
         } catch (SQLException e) {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading player data from database");
+            e.printStackTrace();
             return null;
         }
     }
@@ -85,7 +84,8 @@ public class PlayerDatabase {
             String sql = "UPDATE `"+table+"` SET " +
                     "fly = "+basicPlayer.canFly()+", " +
                     "displayname = '"+basicPlayer.getDisplayName()+"', " +
-                    "gamemode = '"+basicPlayer.getGameMode().toString()+"' " +
+                    "gamemode = '"+basicPlayer.getGameMode().toString()+"', " +
+                    "location = '"+FunctionUtil.jsonFromLocation(basicPlayer.getLocation())+"'" +
                     "WHERE `player_uuid` = '"+basicPlayer.getUuid().toString()+"';";
             statement.execute(sql);
 
@@ -113,7 +113,8 @@ public class PlayerDatabase {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading player data from database");
+            e.printStackTrace();
+            ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while creating player entry in database");
         }
     }
 
@@ -122,7 +123,7 @@ public class PlayerDatabase {
             if (connection == null)
                 return;
 
-            DatabaseRow.valueOf(dbRow.toUpperCase());
+            PlayerDatabaseRow.valueOf(dbRow.toUpperCase());
             dbRow = dbRow.toLowerCase();
 
             if (value instanceof String)
@@ -137,6 +138,7 @@ public class PlayerDatabase {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while updating player data in database");
             e.printStackTrace();
         } catch (IllegalArgumentException e2) {
+            e2.printStackTrace();
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Provided player database row does not exist");
         }
     }
@@ -150,7 +152,7 @@ public class PlayerDatabase {
             if (connection == null)
                 return null;
 
-            DatabaseRow.valueOf(dbRow.toUpperCase());
+            PlayerDatabaseRow.valueOf(dbRow.toUpperCase());
             dbRow = dbRow.toLowerCase();
 
             Statement statement = connection.createStatement();
@@ -195,8 +197,11 @@ public class PlayerDatabase {
         }
     }
 
-    public enum DatabaseRow {
-        FLY, DISPLAYNAME, GAMEMODE
+    /**
+     * All data rows for player database
+     */
+    public enum PlayerDatabaseRow {
+        FLY, DISPLAYNAME, GAMEMODE, LOCATION
     }
 
 }

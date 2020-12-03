@@ -36,7 +36,15 @@ public class KickCommand {
 
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
             for (Player player : playerSelector.getPlayers()) {
-                String kickReason = ServerBasics.getLang(player.getLocale()).kick_default;
+
+                StringBuilder kickReasonBuilder = new StringBuilder();
+
+                for (String line : ServerBasics.getLang(player.getLocale()).kick_message) {
+                    line = line.replaceAll("%reason%", ServerBasics.getLang(player.getLocale()).kick_reason);
+                    kickReasonBuilder.append(line).append("\n");
+                }
+
+                String kickReason = kickReasonBuilder.toString();
                 kickReason = MessageParser.makeColorsWorkButReverse(kickReason);
                 String finalKickReason = ChatColor.translateAlternateColorCodes('&', kickReason);
                 player.kickPlayer(finalKickReason);
@@ -65,13 +73,17 @@ public class KickCommand {
 
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
             for (Player player : playerSelector.getPlayers()) {
-                String personalizedFinalKickReason =
-                        ServerBasics.getLang(player.getLocale()).kick_default+"\n"
-                        +ServerBasics.getLang(player.getLocale()).kick_reason+"\n"
-                        + kickReason;
-                personalizedFinalKickReason = MessageParser.makeColorsWorkButReverse(personalizedFinalKickReason);
-                personalizedFinalKickReason = ChatColor.translateAlternateColorCodes('&', personalizedFinalKickReason);
-                player.kickPlayer(personalizedFinalKickReason);
+                StringBuilder kickReasonBuilder = new StringBuilder();
+
+                for (String line : ServerBasics.getLang(player.getLocale()).kick_message) {
+                    line = line.replaceAll("%reason%", kickReason);
+                    kickReasonBuilder.append(line).append("\n");
+                }
+
+                String kickReasonParsed = kickReasonBuilder.toString();
+                kickReasonParsed = MessageParser.makeColorsWorkButReverse(kickReasonParsed);
+                kickReasonParsed = ChatColor.translateAlternateColorCodes('&', kickReasonParsed);
+                player.kickPlayer(kickReasonParsed);
             }
         });
 

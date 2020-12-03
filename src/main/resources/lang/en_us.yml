@@ -36,8 +36,17 @@ commands:
     no-perms-for-gm: "<red>You don't have permission to use this gamemode"
     set_many: "Set %s players gamemode to %s"
   kick:
-    default-message: "<red>You have been kicked from the server"
-    reason: "<red>Reason:"
+    kick-message:
+    - "<red>You have been kicked from the server"
+    - "<white>Reason: %reason%"
+    default-reason: "<white>Kicked by a moderator"
+  ban:
+    ban-message:
+    - "<white>%reason%"
+    tempban-message:
+    - "<red>Ban will expire in: <yellow>%time%"
+    - "<white>%reason%"
+    default-reason: "<white>Banned by a moderator"
   misc:
     all-reloaded: "<green>All configurations reloaded"
     config-reloaded: "<green>Configuration reloaded"

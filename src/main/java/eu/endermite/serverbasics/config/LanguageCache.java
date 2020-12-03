@@ -4,6 +4,7 @@ import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
+import java.util.List;
 
 public class LanguageCache {
 
@@ -12,7 +13,9 @@ public class LanguageCache {
             FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
             TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP, NO_PERMISSION,
             STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED, no_player_selected, hat_set, hat_curse, fixed_hand,
-            fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_default, kick_reason;
+            fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason ;
+
+    public List<String> kick_message, ban_message, tempban_message;
 
     public LanguageCache(String lang) {
 
@@ -77,8 +80,12 @@ public class LanguageCache {
 
             this.GAMEMODE_SET_MANY = fileConfiguration.getString("commands.gamemode.set_many", defaultMessage);
 
-            this.kick_default = fileConfiguration.getString("commands.kick.default-message", defaultMessage);
-            this.kick_reason = fileConfiguration.getString("commands.kick.reason", defaultMessage);
+            this.kick_message = fileConfiguration.getStringList("commands.kick.kick-message");
+            this.kick_reason = fileConfiguration.getString("commands.kick.default-reason", defaultMessage);
+
+            this.ban_message = fileConfiguration.getStringList("commands.ban.ban-message");
+            this.tempban_message = fileConfiguration.getStringList("commands.ban.tempban-message");
+            this.ban_reason = fileConfiguration.getString("commands.ban.default-reason", defaultMessage);
 
             this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
             this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);

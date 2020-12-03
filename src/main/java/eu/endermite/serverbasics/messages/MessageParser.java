@@ -116,6 +116,17 @@ public class MessageParser {
         return string;
     }
 
+    public static void sendHaventPlayedError(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
+            sendMessage(player, msg);
+        } else {
+            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).HAVENT_PLAYED;
+            sendMessage(sender, msg);
+        }
+    }
+
 }
 
 

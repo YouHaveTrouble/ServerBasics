@@ -66,7 +66,7 @@ public class GamemodeCommand {
             try {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(players.getSelector());
                 if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
-                    sendHaventPlayedError(sender);
+                    MessageParser.sendHaventPlayedError(sender);
                     return;
                 }
                 PlayerDatabase.saveSingleOption(offlinePlayer.getUniqueId(), "gamemode", gamemode.toString());
@@ -82,7 +82,7 @@ public class GamemodeCommand {
                 return;
 
             } catch (Exception e) {
-                sendHaventPlayedError(sender);
+                MessageParser.sendHaventPlayedError(sender);
             }
             return;
         }
@@ -153,17 +153,6 @@ public class GamemodeCommand {
                 );
                 ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
             }
-        }
-    }
-
-    private void sendHaventPlayedError(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
-            MessageParser.sendMessage(player, msg);
-        } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).HAVENT_PLAYED;
-            MessageParser.sendMessage(sender, msg);
         }
     }
 }

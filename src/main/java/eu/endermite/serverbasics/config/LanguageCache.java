@@ -11,8 +11,8 @@ public class LanguageCache {
             HEALED, HEALED_BY_OTHER, HEALED_OTHER, HEALED_MANY, HEALED_NOONE, FED, FED_BY_OTHER, FED_OTHER,
             FED_MANY, FED_NOONE, ITEM_NAME_CHANGED, ITEM_LORE_CHANGED, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
             TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, COULD_NOT_TP, NO_PERMISSION,
-            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED, hat_set, hat_curse, fixed_hand,
-            fixed_hand_other, fixed_inventory, fixed_inventory_other;
+            STARTED_FLYING, STOPPED_FLYING, GAMEMODE_SET_MANY, HAVENT_PLAYED, no_player_selected, hat_set, hat_curse, fixed_hand,
+            fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_default, kick_reason;
 
     public LanguageCache(String lang) {
 
@@ -37,6 +37,7 @@ public class LanguageCache {
             this.LANG_RELOADED = fileConfiguration.getString("commands.misc.lang-reloaded", defaultMessage);
             this.LOCATIONS_RELOADED = fileConfiguration.getString("commands.misc.locations-reloaded", defaultMessage);
             this.COULD_NOT_TP = fileConfiguration.getString("commands.misc.could-not-teleport", defaultMessage);
+            this.no_player_selected = fileConfiguration.getString("command.misc.no-player-selected", defaultMessage);
 
             this.HAVE_TO_HOLD_ITEM = fileConfiguration.getString("commands.misc.have-to-hold-item", defaultMessage);
             this.NO_PERMISSION = fileConfiguration.getString("commands.misc.no-permission", defaultMessage);
@@ -75,6 +76,9 @@ public class LanguageCache {
             this.fixed_inventory_other = fileConfiguration.getString("commands.fix.all-fixed-other", defaultMessage);
 
             this.GAMEMODE_SET_MANY = fileConfiguration.getString("commands.gamemode.set_many", defaultMessage);
+
+            this.kick_default = fileConfiguration.getString("commands.kick.default-message", defaultMessage);
+            this.kick_reason = fileConfiguration.getString("commands.kick.reason", defaultMessage);
 
             this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
             this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);

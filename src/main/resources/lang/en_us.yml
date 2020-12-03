@@ -35,6 +35,9 @@ commands:
   gamemode:
     no-perms-for-gm: "<red>You don't have permission to use this gamemode"
     set_many: "Set %s players gamemode to %s"
+  kick:
+    default-message: "<red>You have been kicked from the server"
+    reason: "<red>Reason:"
   misc:
     all-reloaded: "<green>All configurations reloaded"
     config-reloaded: "<green>Configuration reloaded"
@@ -44,6 +47,7 @@ commands:
     could-not-teleport: "<red>Could not teleport"
     no-permission: "<red>You do not have permission to do this"
     havent-played: "<red>Player with that name hasn't played here"
+    no-player-selected: "<red>No player selected"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:

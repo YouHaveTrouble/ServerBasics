@@ -87,6 +87,35 @@ public class MessageParser {
         return string;
     }
 
+    public String makeColorsWorkButReverse(String string) {
+
+        string = string.replaceAll("<black>", "&0");
+        string = string.replaceAll("<dark_blue>", "&1");
+        string = string.replaceAll("<dark_green>", "&2");
+        string = string.replaceAll("<dark_aqua>", "&3");
+        string = string.replaceAll("<dark_red>", "&4");
+        string = string.replaceAll("<dark_purple>", "&5");
+        string = string.replaceAll("<gold>", "&6");
+        string = string.replaceAll("<gray>", "&7");
+        string = string.replaceAll("<dark_gray>", "&8");
+        string = string.replaceAll("<blue>", "&9");
+        string = string.replaceAll("<green>", "&a");
+        string = string.replaceAll("<aqua>", "&b");
+        string = string.replaceAll("<red>", "&c");
+        string = string.replaceAll("<light_purple>", "&d");
+        string = string.replaceAll("<yellow>", "&e");
+        string = string.replaceAll("<white>", "&f");
+
+        string = string.replaceAll("<obfuscated>", "&k");
+        string = string.replaceAll("<bold>", "&l");
+        string = string.replaceAll("<strikethrough>", "&m");
+        string = string.replaceAll("<underlined>", "&n");
+        string = string.replaceAll("<italic>", "&o");
+        string = string.replaceAll("<reset>", "&r");
+
+        return string;
+    }
+
 }
 
 

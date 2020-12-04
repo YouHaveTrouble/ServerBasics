@@ -148,7 +148,7 @@ public class ServerBasicsCommand {
         });
     }
 
-    @CommandMethod("eu/endermite/serverbasics")
+    @CommandMethod("serverbasics")
     @CommandDescription("Main ServerBasics command")
     @CommandPermission("serverbasics.command.serverbasics")
     private void commandServerBasics(

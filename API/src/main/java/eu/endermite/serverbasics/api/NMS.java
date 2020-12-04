@@ -4,5 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
 public interface NMS {
-    public Location getPlayerPostition(OfflinePlayer player);
+    public Location getOfflinePlayerPostition(OfflinePlayer player);
+    public void setOfflinePlayerPostion(OfflinePlayer offlinePlayer, Location location);
 }

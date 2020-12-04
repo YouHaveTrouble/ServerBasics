@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 public final class ServerBasics extends JavaPlugin {
 
-    private NMS nmsHandler;
+    @Getter private static NMS nmsHandler;
 
     @Getter private static ServerBasics instance;
     @Getter private static ConfigCache configCache;
@@ -40,6 +40,24 @@ public final class ServerBasics extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        String packageName = this.getServer().getClass().getPackage().getName();
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+
+        try {
+            System.out.println(version);
+            System.out.println("eu.endermite.serverbasics.nms." + version + ".NMSHandler");
+            final Class<?> clazz = Class.forName("eu.endermite.serverbasics.nms." + version + ".NMSHandler");
+
+            if (NMS.class.isAssignableFrom(clazz)) {
+                nmsHandler = (NMS) clazz.getConstructor().newInstance();
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+            this.getLogger().severe("Could not find support for this server version.");
+            this.setEnabled(false);
+            return;
+        }
 
         instance = this;
         hooks = new Hooks();

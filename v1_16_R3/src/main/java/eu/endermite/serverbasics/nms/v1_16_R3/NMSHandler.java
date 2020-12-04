@@ -24,9 +24,8 @@ public class NMSHandler implements NMS {
             long worldUuidMost = nbt.getLong("WorldUUIDMost");
             long worldUuidLeast = nbt.getLong("WorldUUIDLeast");
             NBTTagList rotation = nbt.getList("Rotation",CraftMagicNumbers.NBT.TAG_FLOAT);
-            float pitch = (float) rotation.h(0);
-            float yaw = (float) rotation.h(1);
-            System.out.println("pitch:"+pitch+" yaw: "+yaw);
+            float yaw = rotation.i(0);
+            float pitch = rotation.i(1);
             UUID worldUuid = new UUID(worldUuidMost, worldUuidLeast);
             World world = Bukkit.getWorld(worldUuid);
             double x = coords.h(0);

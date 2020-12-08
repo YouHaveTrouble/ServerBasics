@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
 import java.util.UUID;
 
 /**
@@ -13,12 +15,10 @@ import java.util.UUID;
 @Builder
 public class BasicPlayer {
 
-    private final OfflinePlayer player;
+    private final Player player;
     private UUID uuid;
     private String displayName;
     private boolean fly;
-    private GameMode gameMode;
-    private Location location;
 
     public UUID getUuid() {
         return uuid;
@@ -40,17 +40,10 @@ public class BasicPlayer {
     }
 
     public GameMode getGameMode() {
-        return gameMode;
+        return player.getGameMode();
     }
     public void setGameMode(GameMode newGamemode) {
-        this.gameMode = newGamemode;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-    public void setLocation(Location location) {
-        this.location = location;
+        player.setGameMode(newGamemode);
     }
 
 }

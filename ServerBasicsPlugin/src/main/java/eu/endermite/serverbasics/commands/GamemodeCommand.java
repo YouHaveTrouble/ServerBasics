@@ -35,8 +35,6 @@ public class GamemodeCommand {
             ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
         }
 
-        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).setGameMode(gamemode);
-        PlayerDatabase.saveSingleOption(player.getUniqueId(), "gamemode", gamemode.toString());
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.setGameMode(gamemode));
         final Component message = Component.translatable(
                 "commands.gamemode.success.self",
@@ -63,33 +61,24 @@ public class GamemodeCommand {
         }
 
         if (!players.hasAny()) {
-            try {
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(players.getSelector());
-                if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
-                    MessageParser.sendHaventPlayedError(sender);
-                    return;
-                }
-                PlayerDatabase.saveSingleOption(offlinePlayer.getUniqueId(), "gamemode", gamemode.toString());
-                String offlineName = (String) PlayerDatabase.getSingleOption(offlinePlayer.getUniqueId(), "displayname");
-
-                Component message = Component.translatable(
-                        "commands.gamemode.success.other",
-                        NamedTextColor.WHITE,
-                        Component.text(ChatColor.translateAlternateColorCodes('&', offlineName)),
-                        Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-                );
-                ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
-                return;
-
-            } catch (Exception e) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(players.getSelector());
+            if (offlinePlayer == null) {
                 MessageParser.sendHaventPlayedError(sender);
+                return;
             }
+            String offlineName = (String) PlayerDatabase.getSingleOption(offlinePlayer.getUniqueId(), "displayname");
+            ServerBasics.getNmsHandler().setOfflinePlayerGamemode(offlinePlayer, gamemode);
+            Component message = Component.translatable(
+                    "commands.gamemode.success.other",
+                    NamedTextColor.WHITE,
+                    Component.text(ChatColor.translateAlternateColorCodes('&', offlineName)),
+                    Component.translatable("gameMode." + gamemode.toString().toLowerCase())
+            );
+            ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
             return;
         }
 
         for (Player player : players.getPlayers()) {
-            ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).setGameMode(gamemode);
-            PlayerDatabase.saveSingleOption(player.getUniqueId(), "gamemode", gamemode.toString());
             Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.setGameMode(gamemode));
 
             if (player == sender) {
@@ -108,7 +97,6 @@ public class GamemodeCommand {
                     Component.translatable("gameMode." + gamemode.toString().toLowerCase(), NamedTextColor.WHITE)
             );
             ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
-
         }
 
         if (players.getPlayers().size() == 1) {

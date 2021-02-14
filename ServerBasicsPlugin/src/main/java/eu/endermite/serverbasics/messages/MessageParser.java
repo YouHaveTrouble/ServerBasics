@@ -2,6 +2,7 @@ package eu.endermite.serverbasics.messages;
 
 import eu.endermite.serverbasics.ServerBasics;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
@@ -29,6 +30,8 @@ public class MessageParser {
             messageType = MessageType.SUBTITLE;
         }
 
+        BukkitAudiences bukkitAudiences = ServerBasics.getCommandManager().bukkitAudiences;
+
 
         message = makeColorsWork('&', message);
         MiniMessage minimsg = MiniMessage.builder().markdown().build();
@@ -36,7 +39,7 @@ public class MessageParser {
 
 
         if (!(recipent instanceof Player)) {
-            ServerBasics.getCommandManager().bukkitAudiences.sender(recipent).sendMessage(component);
+            bukkitAudiences.sender(recipent).sendMessage(component);
             return;
         }
 
@@ -44,14 +47,14 @@ public class MessageParser {
 
         switch (messageType) {
             case ACTIONBAR:
-                ServerBasics.getCommandManager().bukkitAudiences.player(player).sendActionBar(component);
+                bukkitAudiences.player(player).sendActionBar(component);
                 break;
             case SUBTITLE:
                 Title title = Title.title(Component.empty(), component);
-                ServerBasics.getCommandManager().bukkitAudiences.player(player).showTitle(title);
+                bukkitAudiences.player(player).showTitle(title);
             case TEXT:
             default:
-                ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(component);
+                bukkitAudiences.player(player).sendMessage(component);
                 break;
         }
     }
@@ -117,12 +120,13 @@ public class MessageParser {
     }
 
     public static void sendHaventPlayedError(CommandSender sender) {
+
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
+            String msg = ServerBasics.getLang(player.getLocale()).havent_played;
             sendMessage(player, msg);
         } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).HAVENT_PLAYED;
+            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).havent_played;
             sendMessage(sender, msg);
         }
     }

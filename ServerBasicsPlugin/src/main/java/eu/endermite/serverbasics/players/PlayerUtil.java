@@ -61,7 +61,7 @@ public class PlayerUtil {
                     if (result) {
                         MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).TPD_SPAWN);
                     } else {
-                        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).COULD_NOT_TP);
+                        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).could_not_tp);
                     }
                 });
             }

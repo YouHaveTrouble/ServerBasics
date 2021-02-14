@@ -5,7 +5,6 @@ import cloud.commandframework.annotations.AnnotationParser;
 import cloud.commandframework.arguments.parser.ParserParameters;
 import cloud.commandframework.arguments.parser.StandardParameters;
 import cloud.commandframework.bukkit.BukkitCommandManager;
-import cloud.commandframework.bukkit.BukkitCommandMetaBuilder;
 import cloud.commandframework.bukkit.CloudBukkitCapabilities;
 import cloud.commandframework.exceptions.NoPermissionException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
@@ -21,7 +20,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.reflections.Reflections;
 import eu.endermite.serverbasics.commands.CommandRegistration;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -71,8 +69,8 @@ public class CommandManager {
                 ChatColor.RED + "You don't have any pending commands.")
         );
         final Function<ParserParameters, CommandMeta> commandMetaFunction = p ->
-                BukkitCommandMetaBuilder.builder()
-                        .withDescription(p.get(StandardParameters.DESCRIPTION, "No description"))
+                CommandMeta.simple()
+                        .with(CommandMeta.DESCRIPTION, p.get(StandardParameters.DESCRIPTION, "No description"))
                         .build();
         annotationParser = new AnnotationParser<>(
                 manager,
@@ -85,9 +83,9 @@ public class CommandManager {
         manager.registerExceptionHandler(NoPermissionException.class, (sender, exception) -> {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).NO_PERMISSION);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).no_permission);
             } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).NO_PERMISSION);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_permission);
             }
         });
 
@@ -95,7 +93,7 @@ public class CommandManager {
     }
 
     private void constructCommands() {
-        Reflections reflections = new Reflections(new String[]{"eu.endermite.serverbasics.commands"});
+        Reflections reflections = new Reflections((Object) new String[]{"eu.endermite.serverbasics.commands"});
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(CommandRegistration.class);
         listenerClasses.forEach((command)-> {
             try {

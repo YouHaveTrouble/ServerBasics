@@ -18,15 +18,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-@CommandRegistration
+
 public class TeleportCommand {
 
-    @CommandMethod("tp <target>")
+    @CommandMethod("tp <tptarget>")
     @CommandDescription("Teleport to entity")
     @CommandPermission("serverbasics.command.tp")
     private void commandTp(
             final Player player,
-            final @Argument(value = "target") SingleEntitySelector entitySelector
+            final @Argument(value = "tptarget") SingleEntitySelector entitySelector
     ) {
         if (!entitySelector.hasAny()) {
             OfflinePlayer target = Bukkit.getOfflinePlayerIfCached(entitySelector.getSelector());
@@ -44,12 +44,12 @@ public class TeleportCommand {
         });
     }
 
-    @CommandMethod("tp <entities> <target>")
+    @CommandMethod("tp <entitiestotp> <target>")
     @CommandDescription("Teleport entity to entity")
     @CommandPermission("serverbasics.command.tp")
     private void commandTpOthers(
             final CommandSender sender,
-            final @Argument(value = "entities") MultipleEntitySelector entitySelector,
+            final @Argument(value = "entitiestotp") MultipleEntitySelector entitySelector,
             final @Argument(value = "target") SingleEntitySelector targetSelector
     ) {
 
@@ -75,12 +75,5 @@ public class TeleportCommand {
             return;
         }
 
-        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
-
-        });
-
-
-
     }
-
 }

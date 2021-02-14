@@ -126,10 +126,10 @@ public class NicknameCommand {
     private void sendHaventPlayedError(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            String msg = ServerBasics.getLang(player.getLocale()).HAVENT_PLAYED;
+            String msg = ServerBasics.getLang(player.getLocale()).havent_played;
             MessageParser.sendMessage(player, msg);
         } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).HAVENT_PLAYED;
+            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).havent_played;
             MessageParser.sendMessage(sender, msg);
         }
     }

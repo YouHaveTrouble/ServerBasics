@@ -22,26 +22,25 @@ public class GamemodeCommand {
 
     @CommandMethod("gamemode <gm>")
     @CommandDescription("Set your gamemode")
-    @CommandPermission("serverbasics.command.gamemode")
+    @CommandPermission("serverbasics.command.gamemode.self")
     private void commandGamemode(
             final Player player,
             final @Argument(value = "gm") GameMode gamemode
     ) {
 
-        if (!player.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !player.hasPermission("serverbasics.gamemode.*")) {
-            final Component message = Component.translatable(
-                    "debug.creative_spectator.error",
-                    NamedTextColor.WHITE);
-            ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
+        if (!player.hasPermission("serverbasics.gamemode.self." + gamemode.toString().toLowerCase())
+                && !player.hasPermission("serverbasics.gamemode.*")
+                && !player.hasPermission("serverbasics.gamemode.self.*")
+        ) {
+            MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).gamemode_no_perms);
         }
 
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.setGameMode(gamemode));
-        final Component message = Component.translatable(
-                "commands.gamemode.success.self",
-                NamedTextColor.WHITE,
-                Component.translatable("gameMode." + gamemode.toString().toLowerCase(), NamedTextColor.WHITE)
-        );
-        ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
+
+        String msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_self;
+
+        msg = String.format(msg, ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
+        MessageParser.sendMessage(player, msg);
     }
 
     @CommandMethod("gamemode <gm> <target>")
@@ -53,11 +52,18 @@ public class GamemodeCommand {
             final @Argument(value = "target") MultiplePlayerSelector players
     ) {
 
-        if (!sender.hasPermission("serverbasics.gamemode." + gamemode.toString().toLowerCase()) && !sender.hasPermission("serverbasics.gamemode.*")) {
-            final Component message = Component.translatable(
-                    "debug.creative_spectator.error",
-                    NamedTextColor.WHITE);
-            ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+        if (!sender.hasPermission("serverbasics.gamemode.others." + gamemode.toString().toLowerCase())
+                && !sender.hasPermission("serverbasics.gamemode.*")
+                && !sender.hasPermission("serverbasics.gamemode.others.*")) {
+            String msg = "";
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                msg = ServerBasics.getLang(player.getLocale()).gamemode_no_perms_to_set;
+            } else {
+                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_no_perms_to_set;
+            }
+            msg = String.format(msg, gamemode);
+            MessageParser.sendMessage(sender, msg);
         }
 
         if (!players.hasAny()) {
@@ -68,13 +74,25 @@ public class GamemodeCommand {
             }
             String offlineName = (String) PlayerDatabase.getSingleOption(offlinePlayer.getUniqueId(), "displayname");
             ServerBasics.getNmsHandler().setOfflinePlayerGamemode(offlinePlayer, gamemode);
-            Component message = Component.translatable(
-                    "commands.gamemode.success.other",
-                    NamedTextColor.WHITE,
-                    Component.text(ChatColor.translateAlternateColorCodes('&', offlineName)),
-                    Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-            );
-            ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+
+            String msg = "";
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_other;
+                msg = String.format(
+                        msg,
+                        ChatColor.translateAlternateColorCodes('&', offlineName),
+                        ServerBasics.getLang(player.getLocale()).getGamemode(gamemode)
+                );
+            } else {
+                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_changed_other;
+                msg = String.format(
+                        msg,
+                        ChatColor.translateAlternateColorCodes('&', offlineName),
+                        ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).getGamemode(gamemode)
+                );
+            }
+            MessageParser.sendMessage(sender, msg);
             return;
         }
 
@@ -82,65 +100,53 @@ public class GamemodeCommand {
             Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.setGameMode(gamemode));
 
             if (player == sender) {
-                Component message = Component.translatable(
-                        "commands.gamemode.success.self",
-                        NamedTextColor.WHITE,
-                        Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-                );
-                ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+                String msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_self;
+                msg = String.format(msg, ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
+                MessageParser.sendMessage(player, msg);
                 continue;
             }
 
-            final Component message = Component.translatable(
-                    "gameMode.changed",
-                    NamedTextColor.WHITE,
-                    Component.translatable("gameMode." + gamemode.toString().toLowerCase(), NamedTextColor.WHITE)
-            );
-            ServerBasics.getCommandManager().bukkitAudiences.player(player).sendMessage(message);
+            String msg = ServerBasics.getLang(player.getLocale()).gamemode_changed;
+            msg = String.format(msg, ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
+            MessageParser.sendMessage(player, msg);
+
         }
 
         if (players.getPlayers().size() == 1) {
 
             Player player = players.getPlayers().get(0);
-            Component message;
+            String msg;
 
-            if (sender instanceof Player) {
-
-                message = Component.translatable(
-                        "commands.gamemode.success.other",
-                        NamedTextColor.WHITE,
-                        Component.text(ChatColor.translateAlternateColorCodes('&', player.getDisplayName())),
-                        Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-                );
-                ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
-                return;
+            if (player != sender) {
+                if (sender instanceof Player) {
+                    msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_other;
+                    msg = String.format(
+                            msg,
+                            ChatColor.translateAlternateColorCodes('&', player.getDisplayName()),
+                            ServerBasics.getLang(player.getLocale()).getGamemode(gamemode)
+                    );
+                    MessageParser.sendMessage(sender, msg);
+                } else {
+                    msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_other;
+                    msg = String.format(
+                            msg,
+                            ChatColor.translateAlternateColorCodes('&', player.getDisplayName()),
+                            ServerBasics.getLang(player.getLocale()).getGamemode(gamemode)
+                    );
+                }
+                MessageParser.sendMessage(sender, msg);
             }
-            message = Component.translatable(
-                    "commands.gamemode.success.other",
-                    NamedTextColor.WHITE,
-                    Component.text(player.getDisplayName()),
-                    Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-            );
-            ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
         } else {
+            String msg;
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                Component message = Component.translatable(
-                        ServerBasics.getLang(player.getLocale()).GAMEMODE_SET_MANY,
-                        NamedTextColor.WHITE,
-                        Component.text(players.getPlayers().size()),
-                        Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-                );
-                ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+                msg = ServerBasics.getLang(player.getLocale()).gamemode_set_many;
+                msg = String.format(msg, players.getPlayers().size(), ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
             } else {
-                Component message = Component.translatable(
-                        ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).GAMEMODE_SET_MANY,
-                        NamedTextColor.WHITE,
-                        Component.text(players.getPlayers().size()),
-                        Component.translatable("gameMode." + gamemode.toString().toLowerCase())
-                );
-                ServerBasics.getCommandManager().bukkitAudiences.sender(sender).sendMessage(message);
+                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_set_many;
+                msg = String.format(msg, players.getPlayers().size(), ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).getGamemode(gamemode));
             }
+            MessageParser.sendMessage(sender, msg);
         }
     }
 }

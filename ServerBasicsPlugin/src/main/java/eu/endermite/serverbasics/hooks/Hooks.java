@@ -1,24 +1,18 @@
 package eu.endermite.serverbasics.hooks;
 
+import eu.endermite.serverbasics.ServerBasics;
 import lombok.Getter;
 
 import java.util.HashMap;
 
 public class Hooks {
 
-    @Getter private HashMap<String, Hook> softwareHooks = new HashMap<>();
-    @Getter private HashMap<String, Hook> pluginHooks = new HashMap<>();
+    @Getter private final HashMap<String, Hook> softwareHooks = new HashMap<>();
+    @Getter private final HashMap<String, Hook> pluginHooks = new HashMap<>();
 
     public Hooks() {
 
         // Server software hooks
-
-        Hook spigotHook = Hook.builder()
-                .name("Spigot")
-                .checkClass("net.md_5.bungee.api.ChatColor")
-                .build();
-        spigotHook.classExists();
-        softwareHooks.put(spigotHook.getName(), spigotHook);
 
         Hook paperHook = Hook.builder()
                 .name("Paper")

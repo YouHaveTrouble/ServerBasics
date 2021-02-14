@@ -43,8 +43,8 @@ public final class ServerBasics extends JavaPlugin {
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
         try {
-            System.out.println(version);
-            System.out.println("eu.endermite.serverbasics.nms." + version + ".NMSHandler");
+            getLogger().info(version);
+            getLogger().info("eu.endermite.serverbasics.nms." + version + ".NMSHandler");
             final Class<?> clazz = Class.forName("eu.endermite.serverbasics.nms." + version + ".NMSHandler");
 
             if (NMS.class.isAssignableFrom(clazz)) {
@@ -58,9 +58,9 @@ public final class ServerBasics extends JavaPlugin {
         }
 
         instance = this;
-        hooks = new Hooks();
         reloadConfigs();
         reloadLang();
+        hooks = new Hooks();
         commandManager = new CommandManager();
         commandManager.initCommands();
 
@@ -69,7 +69,6 @@ public final class ServerBasics extends JavaPlugin {
 
         basicPlayers = new BasicPlayerCache();
         reloadLocations();
-
 
         getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);

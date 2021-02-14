@@ -18,7 +18,8 @@ public class LanguageCache {
             STARTED_FLYING, STOPPED_FLYING, gamemode_set_many, gamemode_changed, gamemode_changed_self, gamemode_changed_other, gamemode_no_perms,
             gamemode_no_perms_to_set, havent_played, no_player_selected, hat_set, hat_curse, fixed_hand,
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
-            gamemode_creative, gamemode_adventure, gamemode_spectator;
+            gamemode_creative, gamemode_adventure, gamemode_spectator, hooks, hook_inactive, hooks_paper, hook_fix,
+            hooks_placeholderapi;
 
     public List<String> kick_message, ban_message, tempban_message;
 
@@ -105,6 +106,12 @@ public class LanguageCache {
             this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
             this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);
 
+            this.hooks = fileConfiguration.getString("debug.hooks.hooks", defaultMessage);
+            this.hook_inactive = fileConfiguration.getString("debug.hooks.inactive", defaultMessage);
+            this.hook_fix = fileConfiguration.getString("debug.hooks.fix", defaultMessage);
+            this.hooks_paper = fileConfiguration.getString("debug.hooks.paper", defaultMessage);
+            this.hooks_placeholderapi = fileConfiguration.getString("debug.hooks.placeholderapi", defaultMessage);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,6 +129,17 @@ public class LanguageCache {
                 return gamemode_spectator;
             default:
                 return "";
+        }
+    }
+
+    public String getHookDesc(String string) {
+        switch (string) {
+            default:
+                return "";
+            case "Paper":
+                return hooks_paper;
+            case "PlaceholderAPI":
+                return hooks_placeholderapi;
         }
     }
 

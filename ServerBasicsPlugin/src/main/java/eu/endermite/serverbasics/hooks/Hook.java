@@ -6,8 +6,7 @@ import org.bukkit.Bukkit;
 @Builder
 public class Hook {
 
-    private String name;
-    private String checkClass;
+    private final String name, checkClass;
 
     public String getName() {
         return name;
@@ -29,5 +28,7 @@ public class Hook {
             return false;
         }
     }
+
+
 
 }

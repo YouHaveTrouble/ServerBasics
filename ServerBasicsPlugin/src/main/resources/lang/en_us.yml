@@ -70,8 +70,18 @@ commands:
     no-permission: "You do not have permission to do this"
     havent-played: "Player with that name hasn't played here"
     no-player-selected: "No player selected"
+    only-player: "Only player can execute this command"
+    no-such-command: "Unknown command. Type \"/help\" for help."
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:
   join: "<yellow>%nickname% <yellow>joined the game"
   leave: "<yellow>%nickname% <yellow>left the game"
+
+debug:
+  hooks:
+    hooks: "Hooks"
+    inactive: "Inactive"
+    fix: "Install %s to benefit from this"
+    paper: "Async teleportation and async tab completions"
+    placeholderapi: "Parsing placeholders in messages"

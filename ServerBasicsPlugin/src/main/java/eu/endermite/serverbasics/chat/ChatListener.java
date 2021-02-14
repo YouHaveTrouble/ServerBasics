@@ -20,7 +20,7 @@ public class ChatListener implements Listener {
         }
 
         // Staffchat
-        if (ServerBasics.getConfigCache().staffchat_enabled && player.hasPermission("serverbasics.staffchat") && event.getMessage().startsWith("!")) {
+        if (event.getMessage().startsWith("!") && ServerBasics.getConfigCache().staffchat_enabled && player.hasPermission("serverbasics.staffchat")) {
             // Make sure only players with staffchat perms get the message
             event.getRecipients().removeIf(recipent -> !recipent.hasPermission("serverbasics.chat.staffchat"));
 

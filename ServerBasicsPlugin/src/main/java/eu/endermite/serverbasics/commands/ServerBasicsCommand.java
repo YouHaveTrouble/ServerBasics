@@ -6,8 +6,12 @@ import cloud.commandframework.annotations.CommandPermission;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.hooks.Hook;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,44 +37,76 @@ public class ServerBasicsCommand {
     private void commandServerBasicsDebug(
             final CommandSender sender
     ) {
+        BukkitAudiences audiences = ServerBasics.getCommandManager().bukkitAudiences;
 
-        MessageParser.sendMessage(sender, "Version: " + Bukkit.getVersion());
-        MessageParser.sendMessage(sender, "NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", ""));
+        audiences.sender(sender).sendMessage(Component.text("Version: " + Bukkit.getVersion()));
+        audiences.sender(sender).sendMessage(Component.text("NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", "")));
 
-        StringBuilder base = new StringBuilder();
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            audiences.sender(sender).sendMessage(getHooksComponent(player.getLocale()));
+        } else {
+            audiences.sender(sender).sendMessage(getHooksComponent(ServerBasics.getConfigCache().default_lang));
+        }
 
-        base.append("Hooks (%s): ");
+    }
+
+    private Component getHooksComponent(String locale) {
+        Component hooksComponent = Component.text("Hooks (hookamount): ");
 
         int hooks = 0;
         for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getSoftwareHooks().entrySet()) {
             if (hooks > 0 && e.getValue().classExists()) {
-                base.append(ChatColor.WHITE).append(", ");
+                hooksComponent = hooksComponent.append(Component.text(", "));
             }
 
             if (e.getValue().classExists()) {
-                base.append(ChatColor.GREEN).append(e.getKey());
+                Component hoverText = Component.text(ServerBasics.getLang(locale).getHookDesc(e.getKey()));
+                HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
+                hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.GREEN).hoverEvent(hoverEvent));
             } else {
-                base.append(ChatColor.RED).append(e.getKey());
+                String fix = String.format(ServerBasics.getLang(locale).hook_inactive, e.getKey());
+                Component hoverText = Component.text(ServerBasics.getLang(locale).getHookDesc(e.getKey()))
+                        .append(Component.newline())
+                        .append(Component.text()
+                        .append(Component.newline())
+                        .append(Component.text(fix)));
+                HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
+                hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.RED).hoverEvent(hoverEvent));
             }
             hooks++;
 
         }
         for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getPluginHooks().entrySet()) {
             if (hooks > 0) {
-                base.append(ChatColor.WHITE).append(", ");
+                hooksComponent = hooksComponent.append(Component.text(", "));
             }
 
             if (e.getValue().pluginEnabled()) {
-                base.append(ChatColor.GREEN).append(e.getKey());
+                Component hoverText = Component.text(ServerBasics.getLang(locale).getHookDesc(e.getKey()));
+                HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
+                hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.GREEN).hoverEvent(hoverEvent));
             } else {
-                base.append(ChatColor.RED).append(e.getKey());
+                String fix = String.format(ServerBasics.getLang(locale).hook_inactive, e.getKey());
+                Component hoverText = Component.text(ServerBasics.getLang(locale).getHookDesc(e.getKey()))
+                        .append(Component.newline())
+                        .append(Component.text()
+                                .append(Component.newline())
+                                .append(Component.text(fix)));
+                HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
+                hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.RED).hoverEvent(hoverEvent));
             }
             hooks++;
 
         }
-        String msg = base.toString();
-        msg = String.format(msg, hooks);
-        MessageParser.sendMessage(sender, msg);
+        TextReplacementConfig replacer = TextReplacementConfig.builder()
+                .times(1)
+                .match("hookamount")
+                .replacement(String.valueOf(hooks))
+                .build();
+        hooksComponent = hooksComponent.replaceText(replacer);
+
+        return hooksComponent;
     }
 
     @CommandMethod("serverbasics reload")

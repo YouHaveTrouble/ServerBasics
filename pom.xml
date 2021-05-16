@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.endermite</groupId>
-    <artifactId>ServerBasicsPlugin</artifactId>
+    <artifactId>ServerBasics</artifactId>
     <version>0.2</version>
     <packaging>jar</packaging>
 
@@ -46,10 +46,6 @@
                                     <pattern>io.leangen.geantyref</pattern>
                                     <shadedPattern>eu.endermite.shaded.typetoken</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>io.papermc.lib</pattern>
-                                    <shadedPattern>eu.endermite.shaded.paperlib</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -65,10 +61,6 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>papermc-repo</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>

@@ -38,7 +38,7 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
 
-        sender.sendMessage(Component.text("Version: " + Bukkit.getVersion()));
+        sender.sendMessage(Component.text("Server version: " + Bukkit.getVersion()));
         sender.sendMessage(Component.text("NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", "")));
 
         if (sender instanceof Player) {

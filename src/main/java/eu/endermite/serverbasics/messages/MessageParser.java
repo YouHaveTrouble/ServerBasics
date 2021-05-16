@@ -18,9 +18,7 @@ public class MessageParser {
      * @param message  String to parse into message
      */
     public void sendMessage(CommandSender recipent, String message) {
-
         MessageType messageType = MessageType.TEXT;
-
         if (message.startsWith("!actionbar ")) {
             message = message.replaceFirst("!actionbar ", "");
             messageType = MessageType.ACTIONBAR;
@@ -28,12 +26,9 @@ public class MessageParser {
             message = message.replaceFirst("!subtitle ", "");
             messageType = MessageType.SUBTITLE;
         }
-
-
         message = makeColorsWork('&', message);
         MiniMessage minimsg = MiniMessage.builder().markdown().build();
         Component component = minimsg.parse(message);
-
 
         if (!(recipent instanceof Player)) {
             recipent.sendMessage(component);
@@ -41,7 +36,6 @@ public class MessageParser {
         }
 
         Player player = (Player) recipent;
-
         switch (messageType) {
             case ACTIONBAR:
                 player.sendActionBar(component);

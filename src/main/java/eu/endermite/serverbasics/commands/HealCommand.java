@@ -30,15 +30,14 @@ public class HealCommand {
             maxHp = maxHpAttr.getDefaultValue();
         }
         player.setHealth(maxHp);
-        String playerLang = player.getLocale();
-        MessageParser.sendMessage(player, ServerBasics.getLang(playerLang).healed);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).healed);
     }
 
     @CommandMethod("heal <target>")
     @CommandDescription("Heal yourself or other player")
     @CommandPermission("serverbasics.command.heal.others")
     private void commandHealOther(
-            final CommandSender player,
+            final CommandSender sender,
             final @Argument(value = "target", description = "Player to heal") MultiplePlayerSelector targetPlayer
     ) {
         int amountHealed = targetPlayer.getPlayers().size();
@@ -54,24 +53,24 @@ public class HealCommand {
                 maxHp = maxHpAttr.getDefaultValue();
             }
             target.setHealth(maxHp);
-            String playerLang = target.getLocale();
             String msg;
-            if (player != target) {
-                msg = String.format(ServerBasics.getLang(playerLang).healed_by_other, player.getName());
+            if (sender != target) {
+                msg = String.format(ServerBasics.getLang(target.locale()).healed_by_other, sender.getName());
             } else {
-                msg = ServerBasics.getLang(playerLang).healed;
+                msg = ServerBasics.getLang(target.locale()).healed;
             }
             MessageParser.sendMessage(target, msg);
         }
-        if (player instanceof Player) {
+        if (sender instanceof Player) {
             String msg;
-            String playerLang = ((Player) player).getLocale();
+            Player player = (Player) sender;
+
             if (amountHealed == 1)
-                msg = String.format(ServerBasics.getLang(playerLang).healed_by_other, lastPlayer.getDisplayName());
+                msg = String.format(ServerBasics.getLang(player.locale()).healed_by_other, lastPlayer.getDisplayName());
             else if (amountHealed > 1)
-                msg = String.format(ServerBasics.getLang(playerLang).healed_many, amountHealed);
+                msg = String.format(ServerBasics.getLang(player.locale()).healed_many, amountHealed);
             else
-                msg = ServerBasics.getLang(playerLang).healed_noone;
+                msg = ServerBasics.getLang(player.locale()).healed_noone;
             MessageParser.sendMessage(player, msg);
         } else {
             String msg;
@@ -81,7 +80,7 @@ public class HealCommand {
                 msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_many, amountHealed);
             else
                 msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_noone;
-            MessageParser.sendMessage(player, msg);
+            MessageParser.sendMessage(sender, msg);
         }
 
     }

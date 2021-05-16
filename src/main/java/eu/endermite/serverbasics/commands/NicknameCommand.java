@@ -43,10 +43,10 @@ public class NicknameCommand {
                         MiniMessage.markdown().parse(offlinePlayer.getName())
                 );
                 sender.sendMessage(message);
-                return;
             } catch (Exception e) {
                 sendHaventPlayedError(sender);
             }
+            return;
         }
 
         Player target = player.getPlayer();
@@ -57,7 +57,7 @@ public class NicknameCommand {
                 "commands.scoreboard.objectives.modify.displayname",
                 NamedTextColor.WHITE,
                 Component.text(target.getName()),
-                Component.text(ChatColor.translateAlternateColorCodes('&', nick))
+               MiniMessage.get().parse(nick)
         );
         sender.sendMessage(message);
 
@@ -88,7 +88,7 @@ public class NicknameCommand {
                         "commands.scoreboard.objectives.modify.displayname",
                         NamedTextColor.WHITE,
                         Component.text(offlinePlayer.getName()),
-                        Component.text(ChatColor.translateAlternateColorCodes('&', nick))
+                        MiniMessage.markdown().parse(nick)
                 );
                 sender.sendMessage(message);
                 return;
@@ -103,7 +103,7 @@ public class NicknameCommand {
                 "commands.scoreboard.objectives.modify.displayname",
                 NamedTextColor.WHITE,
                 Component.text(target.getName()),
-                Component.text(ChatColor.translateAlternateColorCodes('&', nick))
+                MiniMessage.markdown().parse(nick)
         );
         sender.sendMessage(message);
 

@@ -25,18 +25,18 @@ public class HatCommand {
         ItemStack helmet = player.getInventory().getHelmet();
 
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getLang(player.getLocale()).have_to_hold_item;
+            String msg = ServerBasics.getLang(player.locale()).have_to_hold_item;
             MessageParser.sendMessage(player, msg);
             return;
         }
         if (helmet != null && helmet.containsEnchantment(Enchantment.BINDING_CURSE)) {
-            String msg = ServerBasics.getLang(player.getLocale()).hat_curse;
+            String msg = ServerBasics.getLang(player.locale()).hat_curse;
             MessageParser.sendMessage(player, msg);
             return;
         }
 
         PlayerUtil.setHat(player, itemStack);
-        String msg = ServerBasics.getLang(player.getLocale()).hat_set;
+        String msg = ServerBasics.getLang(player.locale()).hat_set;
         MessageParser.sendMessage(player, msg);
     }
 

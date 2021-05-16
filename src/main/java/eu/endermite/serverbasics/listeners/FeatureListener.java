@@ -41,8 +41,8 @@ public class FeatureListener implements Listener {
             player.setFlying(true);
         }
 
-        String nickname = ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).getDisplayName();
-        player.setDisplayName(nickname);
+        //String nickname = ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).getDisplayName();
+        //player.setDisplayName(nickname);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

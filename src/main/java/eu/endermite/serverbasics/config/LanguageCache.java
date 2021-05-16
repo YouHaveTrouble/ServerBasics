@@ -17,7 +17,8 @@ public class LanguageCache {
             gamemode_no_perms_to_set, havent_played, no_player_selected, hat_set, hat_curse, fixed_hand,
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
             gamemode_creative, gamemode_adventure, gamemode_spectator, hooks, hook_inactive, hooks_paper, hook_fix,
-            hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other;
+            hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other,
+            invalid_syntax, failed_argument_parse;
 
     public List<String> kick_message, ban_message, tempban_message;
 
@@ -48,6 +49,8 @@ public class LanguageCache {
 
             this.have_to_hold_item = fileConfiguration.getString("commands.misc.have-to-hold-item", defaultMessage);
             this.no_permission = fileConfiguration.getString("commands.misc.no-permission", defaultMessage);
+            this.invalid_syntax = fileConfiguration.getString("commands.misc.invalid-syntax", defaultMessage);
+            this.failed_argument_parse = fileConfiguration.getString("commands.misc.failed-argument-parse", defaultMessage);
             this.havent_played = fileConfiguration.getString("commands.misc.havent-played", defaultMessage);
 
             this.gamemode_survival = fileConfiguration.getString("gamemodes.survival", "Survival");

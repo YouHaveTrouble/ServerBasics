@@ -6,7 +6,6 @@ import cloud.commandframework.arguments.parser.ParserParameters;
 import cloud.commandframework.arguments.parser.StandardParameters;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.CloudBukkitCapabilities;
-import cloud.commandframework.exceptions.NoPermissionException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
@@ -98,16 +97,32 @@ public class CommandManager {
         );
 
         // Command error messages
-        //TODO find which errors have according message in client and use that if possible
-        manager.registerExceptionHandler(NoPermissionException.class, (sender, exception) -> {
+        manager.registerExceptionHandler(cloud.commandframework.exceptions.NoPermissionException.class, (sender, exception) -> {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).no_permission);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_permission);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_permission);
             }
         });
-
+        manager.registerExceptionHandler(cloud.commandframework.exceptions.InvalidSyntaxException.class, (sender, exception) -> {
+            String msg;
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                msg = String.format(ServerBasics.getLang(player.locale()).invalid_syntax, "/"+exception.getCorrectSyntax());
+            } else {
+                msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).invalid_syntax, exception.getCorrectSyntax());
+            }
+            MessageParser.sendMessage(sender, msg);
+        });
+        manager.registerExceptionHandler(cloud.commandframework.exceptions.ArgumentParseException.class, (sender, exception) -> {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).failed_argument_parse);
+            } else {
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).failed_argument_parse);
+            }
+        });
 
         constructCommands();
         construcSyncCommands();

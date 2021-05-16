@@ -78,6 +78,8 @@ commands:
     no-player-selected: "No player selected"
     only-player: "Only player can execute this command"
     no-such-command: "Unknown command. Type \"/help\" for help."
+    invalid-syntax: "<red>Invalid command syntax. Correct syntax: <gray>%s"
+    failed-argument-parse: "<red>Failed to parse command arguments"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:
@@ -89,5 +91,4 @@ debug:
     hooks: "Hooks"
     inactive: "Inactive"
     fix: "Install %s to benefit from this"
-    paper: "Async teleportation and async tab completions"
     placeholderapi: "Parsing placeholders in messages"

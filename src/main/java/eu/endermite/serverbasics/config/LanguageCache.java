@@ -11,8 +11,8 @@ public class LanguageCache {
 
     public String all_configs_reloaded, config_reloaded, lang_reloaded, locations_reloaded, have_to_hold_item,
             healed, healed_by_other, healed_other, healed_many, healed_noone, fed, fed_by_other, fed_other,
-            fed_many, fed_noone, item_name_changed, item_lore_changed, CUSTOM_JOIN_MSG, CUSTOM_LEAVE_MSG,
-            TPD_SPAWN, TPD_SPAWN_OTHER, TPD_SPAWN_BY_OTHER, SPAWN_SET, SPAWN_NOT_SET, could_not_tp, no_permission,
+            fed_many, fed_noone, item_name_changed, item_lore_changed, custom_join_message, custom_leave_message,
+            teleported_spawn, teleported_spawn_other, teleported_spawn_by_other, spawn_set, spawn_not_set, could_not_tp, no_permission,
             started_flying, stopped_flying, gamemode_set_many, gamemode_changed, gamemode_changed_self, gamemode_changed_other, gamemode_no_perms,
             gamemode_no_perms_to_set, havent_played, no_player_selected, hat_set, hat_curse, fixed_hand,
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
@@ -55,11 +55,11 @@ public class LanguageCache {
             this.gamemode_adventure = fileConfiguration.getString("gamemodes.adventure", "Adventure");
             this.gamemode_spectator = fileConfiguration.getString("gamemodes.spectator", "Spectator");
 
-            this.TPD_SPAWN = fileConfiguration.getString("commands.spawn.teleported", defaultMessage);
-            this.TPD_SPAWN_OTHER = fileConfiguration.getString("commands.spawn.teleported-other", defaultMessage);
-            this.TPD_SPAWN_BY_OTHER = fileConfiguration.getString("commands.spawn.teleported-by-other", defaultMessage);
-            this.SPAWN_SET = fileConfiguration.getString("commands.spawn.set", defaultMessage);
-            this.SPAWN_NOT_SET = fileConfiguration.getString("commands.spawn.not-set", defaultMessage);
+            this.teleported_spawn = fileConfiguration.getString("commands.spawn.teleported", defaultMessage);
+            this.teleported_spawn_other = fileConfiguration.getString("commands.spawn.teleported-other", defaultMessage);
+            this.teleported_spawn_by_other = fileConfiguration.getString("commands.spawn.teleported-by-other", defaultMessage);
+            this.spawn_set = fileConfiguration.getString("commands.spawn.set", defaultMessage);
+            this.spawn_not_set = fileConfiguration.getString("commands.spawn.not-set", defaultMessage);
 
             this.healed = fileConfiguration.getString("commands.heal.healed", defaultMessage);
             this.healed_by_other = fileConfiguration.getString("commands.heal.healed-by-other", defaultMessage);
@@ -107,8 +107,8 @@ public class LanguageCache {
             this.tempban_message = fileConfiguration.getStringList("commands.ban.tempban-message");
             this.ban_reason = fileConfiguration.getString("commands.ban.default-reason", defaultMessage);
 
-            this.CUSTOM_JOIN_MSG = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
-            this.CUSTOM_LEAVE_MSG = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);
+            this.custom_join_message = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);
+            this.custom_leave_message = fileConfiguration.getString("custom-join-leave-messages.leave", defaultMessage);
 
             this.hooks = fileConfiguration.getString("debug.hooks.hooks", defaultMessage);
             this.hook_inactive = fileConfiguration.getString("debug.hooks.inactive", defaultMessage);
@@ -140,8 +140,6 @@ public class LanguageCache {
         switch (string) {
             default:
                 return "";
-            case "Paper":
-                return hooks_paper;
             case "PlaceholderAPI":
                 return hooks_placeholderapi;
         }

@@ -32,17 +32,17 @@ public class PlayerUtil {
                 player.setFlying(false);
                 player.setAllowFlight(false);
                 ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).setFly(false);
-                String msg = ServerBasics.getLang(player.getLocale()).stopped_flying;
+                String msg = ServerBasics.getLang(player.locale()).stopped_flying;
                 MessageParser.sendMessage(player, msg);
                 return false;
             } else {
                 player.setAllowFlight(true);
-                Bukkit.getScheduler().runTask(ServerBasics.getInstance(), task -> {
+                Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
                     player.teleport(player.getLocation().add(0, 0.1, 0));
                     player.setFlying(true);
                 });
                 ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).setFly(true);
-                String msg = ServerBasics.getLang(player.getLocale()).started_flying;
+                String msg = ServerBasics.getLang(player.locale()).started_flying;
                 MessageParser.sendMessage(player, msg);
                 return true;
             }
@@ -54,7 +54,7 @@ public class PlayerUtil {
     public void teleportPlayerToSpawn(Player player) {
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.teleportAsync(ServerBasics.getLocationsCache().spawn.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
             if (result) {
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).TPD_SPAWN);
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).teleported_spawn);
             } else {
                 MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).could_not_tp);
             }

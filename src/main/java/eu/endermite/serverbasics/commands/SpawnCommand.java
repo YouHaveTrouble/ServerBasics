@@ -30,10 +30,10 @@ public class SpawnCommand {
         if (!ServerBasics.getLocationsCache().isSpawnSet()) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).SPAWN_NOT_SET);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).spawn_not_set);
             }
             else
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).SPAWN_NOT_SET);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).spawn_not_set);
             return;
         }
 
@@ -56,7 +56,7 @@ public class SpawnCommand {
             final Player player
     ) {
         if (!ServerBasics.getLocationsCache().isSpawnSet()) {
-            MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).SPAWN_NOT_SET);
+            MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_not_set);
             return;
         }
         PlayerUtil.teleportPlayerToSpawn(player);
@@ -72,7 +72,7 @@ public class SpawnCommand {
         SBasicLocation sBasicLocation = new SBasicLocation(newSpawn, "spawn");
         ServerBasics.getLocationsCache().setSpawn(sBasicLocation);
         ServerDatabase.saveSpawn(sBasicLocation);
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).SPAWN_SET);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_set);
     }
 
 }

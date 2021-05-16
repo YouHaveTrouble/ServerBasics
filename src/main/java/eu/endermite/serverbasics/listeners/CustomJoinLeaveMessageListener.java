@@ -32,7 +32,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
         Player player = event.getPlayer();
 
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
-            String consoleMsg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).CUSTOM_JOIN_MSG;
+            String consoleMsg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).custom_join_message;
 
             consoleMsg = consoleMsg.replace("%nickname%", player.getDisplayName());
             consoleMsg = consoleMsg.replace("%player_displayname%", player.getDisplayName());
@@ -45,7 +45,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
             ServerBasics.getInstance().getServer().getConsoleSender().sendMessage(component);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                String msg = ServerBasics.getLang(p.getLocale()).CUSTOM_JOIN_MSG;
+                String msg = ServerBasics.getLang(p.locale()).custom_join_message;
                 msg = msg.replace("%nickname%", player.getDisplayName());
                 msg = msg.replace("%player_displayname%", player.getDisplayName());
                 if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
@@ -75,7 +75,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
         UUID uuid = onlineplayer.getUniqueId();
 
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
-            String consoleMsg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).CUSTOM_LEAVE_MSG;
+            String consoleMsg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).custom_leave_message;
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
@@ -89,7 +89,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
             ServerBasics.getInstance().getServer().getConsoleSender().sendMessage(component);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                String msg = ServerBasics.getLang(p.locale()).CUSTOM_LEAVE_MSG;
+                String msg = ServerBasics.getLang(p.locale()).custom_leave_message;
                 msg = msg.replace("%nickname%", onlineplayer.getDisplayName());
                 msg = msg.replace("%player_displayname%", onlineplayer.getDisplayName());
                 if (ServerBasics.getHooks().isHooked("PlaceholderAPI")) {

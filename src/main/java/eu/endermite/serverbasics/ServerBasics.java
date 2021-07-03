@@ -102,6 +102,7 @@ public final class ServerBasics extends JavaPlugin {
         }
     }
 
+    // TODO get rid of Reflections
     private Set<String> getDefaultLanguageFiles(){
         Reflections reflections = new Reflections("lang", new ResourcesScanner());
         return reflections.getResources(Pattern.compile("([a-z]{1,3}_[a-z]{1,3})(\\.yml)"));

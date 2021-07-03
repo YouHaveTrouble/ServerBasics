@@ -131,6 +131,7 @@ public class CommandManager {
         construcSyncCommands();
     }
 
+    // TODO get rid of Reflections
     private void constructCommands() {
         Reflections reflections = new Reflections((Object) new String[]{"eu.endermite.serverbasics.commands"});
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(CommandRegistration.class);
@@ -142,6 +143,7 @@ public class CommandManager {
             }
         });
     }
+    // TODO get rid of Reflections
     private void construcSyncCommands() {
         Reflections reflections = new Reflections((Object) new String[]{"eu.endermite.serverbasics.commands"});
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(SyncCommandRegistration.class);

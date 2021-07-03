@@ -13,6 +13,8 @@ import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 
+// TODO rewrite this using Database interface & merge with PlayerDatabase
+@Deprecated
 public class ServerDatabase {
 
     private static final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();

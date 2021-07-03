@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 
+// TODO rewrite this using Database interface & merge with ServerDatabase
 @Deprecated
 public class PlayerDatabase {
 

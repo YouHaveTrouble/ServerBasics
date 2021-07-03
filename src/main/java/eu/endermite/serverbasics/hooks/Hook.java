@@ -1,18 +1,23 @@
 package eu.endermite.serverbasics.hooks;
 
-import lombok.Builder;
+
 import org.bukkit.Bukkit;
 
-@Builder
 public class Hook {
 
     private final String name, checkClass;
+
+    public Hook(String name, String checkClass) {
+        this.name = name;
+        this.checkClass = checkClass;
+    }
 
     public String getName() {
         return name;
     }
 
     public boolean classExists() {
+        if (checkClass == null) return false;
         try {
             Class.forName(checkClass);
             return true;
@@ -22,11 +27,7 @@ public class Hook {
     }
 
     public boolean pluginEnabled() {
-        if (Bukkit.getPluginManager().isPluginEnabled(name)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Bukkit.getPluginManager().isPluginEnabled(name);
     }
 
 

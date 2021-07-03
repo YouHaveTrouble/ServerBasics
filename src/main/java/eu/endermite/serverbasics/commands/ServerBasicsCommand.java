@@ -54,7 +54,7 @@ public class ServerBasicsCommand {
         Component hooksComponent = Component.text("Hooks (hookamount): ");
 
         int hooks = 0;
-        for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getPluginHooks().entrySet()) {
+        for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getHooks().entrySet()) {
             if (hooks > 0) {
                 hooksComponent = hooksComponent.append(Component.text(", "));
             }

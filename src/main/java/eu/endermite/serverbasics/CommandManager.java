@@ -13,12 +13,13 @@ import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import eu.endermite.serverbasics.commands.registration.SyncCommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.reflections.Reflections;
+
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
+import org.reflections.Reflections;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,12 @@ public class CommandManager {
     public BukkitCommandManager<CommandSender> manager;
     public BukkitCommandManager<CommandSender> syncManager;
     private CommandConfirmationManager<CommandSender> confirmationManager;
-    @Getter private AnnotationParser<CommandSender> annotationParser, syncAnnotationParser;
+
+    public AnnotationParser<CommandSender> getAnnotationParser() {
+        return annotationParser;
+    }
+
+    private AnnotationParser<CommandSender> annotationParser, syncAnnotationParser;
 
     public void initCommands() {
         final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
@@ -133,7 +139,7 @@ public class CommandManager {
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(CommandRegistration.class);
         listenerClasses.forEach((command)-> {
             try {
-                ServerBasics.getCommandManager().getAnnotationParser().parse(command.getConstructor().newInstance()) ;
+                annotationParser.parse(command.getConstructor().newInstance()) ;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -144,7 +150,7 @@ public class CommandManager {
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(SyncCommandRegistration.class);
         listenerClasses.forEach((command)-> {
             try {
-                ServerBasics.getCommandManager().getSyncAnnotationParser().parse(command.getConstructor().newInstance()) ;
+                syncAnnotationParser.parse(command.getConstructor().newInstance()) ;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }

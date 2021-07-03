@@ -22,10 +22,8 @@ public class FeatureListener implements Listener {
             basicPlayer = PlayerDatabase.getPlayerfromStorage(player.getUniqueId());
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
         } else {
-            basicPlayer = BasicPlayer.builder()
-                    .uuid(player.getUniqueId())
+            basicPlayer = BasicPlayer.builder(player.getUniqueId())
                     .displayName(player.getDisplayName())
-                    .player(player)
                     .fly(player.getAllowFlight())
                     .build();
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);

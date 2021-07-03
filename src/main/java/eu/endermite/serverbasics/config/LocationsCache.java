@@ -2,14 +2,13 @@ package eu.endermite.serverbasics.config;
 
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.storage.ServerDatabase;
-import eu.endermite.serverbasics.locations.SBasicLocation;
 import org.bukkit.Location;
 
 import java.util.HashMap;
 
 public class LocationsCache {
 
-    public SBasicLocation spawn;
+    public Location spawn;
     public HashMap<String, Location> warps;
     public HashMap<String, Location> homes;
 
@@ -28,7 +27,7 @@ public class LocationsCache {
         return spawn != null;
     }
 
-    public void setSpawn(SBasicLocation sBasicLocation) {
+    public void setSpawn(Location sBasicLocation) {
         spawn = sBasicLocation;
     }
 

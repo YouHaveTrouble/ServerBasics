@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 
+@Deprecated
 public class PlayerDatabase {
 
     private static final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
@@ -52,14 +53,10 @@ public class PlayerDatabase {
 
             ResultSet result = statement.executeQuery(sql);
 
-            BasicPlayer basicPlayer = BasicPlayer.builder()
-                    .uuid(uuid)
-                    .player(Bukkit.getPlayer(uuid))
+            return BasicPlayer.builder(uuid)
                     .fly(result.getBoolean("fly"))
                     .displayName(result.getString("displayname"))
                     .build();
-
-            return basicPlayer;
 
         } catch (SQLException e) {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while loading player data from database");

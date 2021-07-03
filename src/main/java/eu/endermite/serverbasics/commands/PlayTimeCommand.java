@@ -8,6 +8,9 @@ import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 @CommandRegistration
 public class PlayTimeCommand {
@@ -20,7 +23,7 @@ public class PlayTimeCommand {
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
         int playtimeTicks = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
-        String playerLang = player.getLocale();
+        Locale playerLang = player.locale();
         MessageParser.sendMessage(player, String.valueOf(playtimeTicks));
         //TODO make this display actual time
     }

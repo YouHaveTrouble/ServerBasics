@@ -104,8 +104,7 @@ public class CommandManager {
 
         // Command error messages
         manager.registerExceptionHandler(cloud.commandframework.exceptions.NoPermissionException.class, (sender, exception) -> {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_permission);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_permission);
@@ -113,8 +112,7 @@ public class CommandManager {
         });
         manager.registerExceptionHandler(cloud.commandframework.exceptions.InvalidSyntaxException.class, (sender, exception) -> {
             String msg;
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 msg = String.format(ServerBasics.getLang(player.locale()).invalid_syntax, "/"+exception.getCorrectSyntax());
             } else {
                 msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).invalid_syntax, exception.getCorrectSyntax());
@@ -122,8 +120,7 @@ public class CommandManager {
             MessageParser.sendMessage(sender, msg);
         });
         manager.registerExceptionHandler(cloud.commandframework.exceptions.ArgumentParseException.class, (sender, exception) -> {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).failed_argument_parse);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).failed_argument_parse);

@@ -35,8 +35,8 @@ public class TeleportCommand {
                     MessageParser.sendHaventPlayedError(player);
                 } else {
                     Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
-                        Location location = NMSHandler.getOfflinePlayerPostition(target);
-                       player.teleportAsync(location).thenRun(() -> {
+                        Location location = NMSHandler.getOfflinePlayerPosition(target);
+                        player.teleportAsync(location).thenRun(() -> {
                             String msg = String.format(ServerBasics.getLang(player.getLocale()).teleported_self, target.getName());
                             MessageParser.sendMessage(player, msg);
                         });

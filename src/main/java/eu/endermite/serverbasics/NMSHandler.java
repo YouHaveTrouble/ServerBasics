@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class NMSHandler {
 
-    public static Location getOfflinePlayerPostition(OfflinePlayer offlinePlayer) {
+    public static Location getOfflinePlayerPosition(OfflinePlayer offlinePlayer) {
         try {
             final Method _getData = CraftOfflinePlayer.class.getDeclaredMethod("getData");
             _getData.setAccessible(true);

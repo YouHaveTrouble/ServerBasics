@@ -54,7 +54,9 @@ public class PlayerDatabase {
 
             ResultSet result = statement.executeQuery(sql);
 
-            return BasicPlayer.builder(uuid)
+            return BasicPlayer.builder()
+                    .uuid(uuid)
+                    .player(Bukkit.getPlayer(uuid))
                     .fly(result.getBoolean("fly"))
                     .displayName(result.getString("displayname"))
                     .build();

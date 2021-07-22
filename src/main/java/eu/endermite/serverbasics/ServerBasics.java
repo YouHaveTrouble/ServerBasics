@@ -11,10 +11,10 @@ import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.HatListener;
 import eu.endermite.serverbasics.storage.ServerDatabase;
-import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
+
 
 import java.io.File;
 import java.nio.file.Files;
@@ -26,13 +26,13 @@ import java.util.regex.Pattern;
 
 public final class ServerBasics extends JavaPlugin {
 
-    @Getter private static ServerBasics instance;
-    @Getter private static ConfigCache configCache;
-    @Getter private static LocationsCache locationsCache;
-    @Getter private static CommandManager commandManager;
+    private static ServerBasics instance;
+    private static ConfigCache configCache;
+    private static LocationsCache locationsCache;
+    private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
-    @Getter private static BasicPlayerCache basicPlayers;
-    @Getter private static Hooks hooks;
+    private static BasicPlayerCache basicPlayers;
+    private static Hooks hooks;
 
     @Override
     public void onEnable() {
@@ -41,7 +41,7 @@ public final class ServerBasics extends JavaPlugin {
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
         // nms is a bitch and I don't care enough to support multiple versions
-        if (!version.equals("v1_16_R3")) {
+        if (!version.equals("v1_17_R1")) {
             this.getLogger().severe("Could not find support for server version "+version);
             this.setEnabled(false);
             return;
@@ -87,7 +87,7 @@ public final class ServerBasics extends JavaPlugin {
             Pattern langPattern = Pattern.compile("([a-z]{1,3}_[a-z]{1,3})(\\.yml)", Pattern.CASE_INSENSITIVE);
             for (File langFile : langDirectory.listFiles()) {
                 Matcher langMatcher = langPattern.matcher(langFile.getName());
-                if (langMatcher.find()){
+                if (langMatcher.find()) {
                     String localeString = langMatcher.group(1).toLowerCase();
                     if(!languageCacheMap.containsKey(localeString)) { // make sure it wasn't a default file that we already loaded
                         getLogger().info(String.format("Found language file for %s", localeString));
@@ -121,6 +121,30 @@ public final class ServerBasics extends JavaPlugin {
 
     public static LanguageCache getLang(Locale locale) {
         return getLang(locale.toString().toLowerCase());
+    }
+
+    public static ServerBasics getInstance() {
+        return instance;
+    }
+
+    public static ConfigCache getConfigCache() {
+        return configCache;
+    }
+
+    public static LocationsCache getLocationsCache() {
+        return locationsCache;
+    }
+
+    public static CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    public static BasicPlayerCache getBasicPlayers() {
+        return basicPlayers;
+    }
+
+    public static Hooks getHooks() {
+        return hooks;
     }
 
 }

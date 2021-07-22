@@ -1,14 +1,12 @@
 package eu.endermite.serverbasics.messages;
 
 import eu.endermite.serverbasics.ServerBasics;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@UtilityClass
 public class MessageParser {
 
     /**
@@ -17,7 +15,7 @@ public class MessageParser {
      * @param recipent Recipent of the message
      * @param message  String to parse into message
      */
-    public void sendMessage(CommandSender recipent, String message) {
+    public static void sendMessage(CommandSender recipent, String message) {
         MessageType messageType = MessageType.TEXT;
         if (message.startsWith("!actionbar ")) {
             message = message.replaceFirst("!actionbar ", "");
@@ -50,7 +48,7 @@ public class MessageParser {
         }
     }
 
-    public String makeColorsWork(Character symbol, String string) {
+    public static String makeColorsWork(Character symbol, String string) {
 
         // Adventure and ChatColor do not like each other, so this is a thing.
 
@@ -81,7 +79,7 @@ public class MessageParser {
         return string;
     }
 
-    public String makeColorsWorkButReverse(String string) {
+    public static String makeColorsWorkButReverse(String string) {
 
         string = string.replaceAll("<black>", "&0");
         string = string.replaceAll("<dark_blue>", "&1");
@@ -112,9 +110,8 @@ public class MessageParser {
 
     public static void sendHaventPlayedError(CommandSender sender) {
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            String msg = ServerBasics.getLang(player.getLocale()).havent_played;
+        if (sender instanceof Player player) {
+            String msg = ServerBasics.getLang(player.locale()).havent_played;
             sendMessage(player, msg);
         } else {
             String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).havent_played;

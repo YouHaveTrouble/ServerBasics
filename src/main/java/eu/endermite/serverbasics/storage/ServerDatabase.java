@@ -1,7 +1,6 @@
 package eu.endermite.serverbasics.storage;
 
 import eu.endermite.serverbasics.ServerBasics;
-import eu.endermite.serverbasics.locations.SBasicLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,6 +13,8 @@ import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 
+// TODO rewrite this using Database interface & merge with PlayerDatabase
+@Deprecated
 public class ServerDatabase {
 
     private static final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
@@ -56,7 +57,7 @@ public class ServerDatabase {
         }
     }
 
-    public static SBasicLocation getSpawn(String serveruuid) {
+    public static Location getSpawn(String serveruuid) {
         try (Connection connection = DriverManager.getConnection(url)) {
             if (connection == null)
                 return null;
@@ -78,9 +79,7 @@ public class ServerDatabase {
             Double pitch = (Double) json.get("pitch");
             Double yaw = (Double) json.get("yaw");
             World world = Bukkit.getWorld(worldString);
-            Location location = new Location(world, x, y, z, yaw.floatValue(), pitch.floatValue());
-            SBasicLocation sBasicLocation = new SBasicLocation(location, "Spawn");
-            return sBasicLocation;
+            return new Location(world, x, y, z, yaw.floatValue(), pitch.floatValue());
         } catch (SQLException | ParseException e) {
             ServerBasics.getInstance().getLogger().severe(ChatColor.RED + "Error while getting spawn data from database");
             e.printStackTrace();
@@ -88,18 +87,18 @@ public class ServerDatabase {
         }
     }
 
-    public static void createSpawn(SBasicLocation location) {
+    public static void createSpawn(Location location) {
         try (Connection connection = DriverManager.getConnection(url)) {
             if (connection == null)
                 return;
             String serverUuid = ServerBasics.getConfigCache().getServerUuid();
             JSONObject json = new JSONObject();
-            json.put("world", location.getLocation().getWorld().getName());
-            json.put("x", location.getLocation().getX());
-            json.put("y", location.getLocation().getY());
-            json.put("z", location.getLocation().getZ());
-            json.put("pitch", location.getLocation().getPitch());
-            json.put("yaw", location.getLocation().getYaw());
+            json.put("world", location.getWorld().getName());
+            json.put("x", location.getX());
+            json.put("y", location.getY());
+            json.put("z", location.getZ());
+            json.put("pitch", location.getPitch());
+            json.put("yaw", location.getYaw());
             Statement statement = connection.createStatement();
             String sql = "INSERT INTO `sbasics_spawns` (server_uuid, location) VALUES ('" + serverUuid + "', '" + json.toJSONString() + "');";
             statement.execute(sql);
@@ -109,7 +108,7 @@ public class ServerDatabase {
         }
     }
 
-    public static void updateSpawn(SBasicLocation location) {
+    public static void updateSpawn(Location location) {
 
         try (Connection connection = DriverManager.getConnection(url)) {
             if (connection == null)
@@ -118,12 +117,12 @@ public class ServerDatabase {
             String serverUuid = ServerBasics.getConfigCache().getServerUuid();
 
             JSONObject json = new JSONObject();
-            json.put("world", location.getLocation().getWorld().getName());
-            json.put("x", location.getLocation().getX());
-            json.put("y", location.getLocation().getY());
-            json.put("z", location.getLocation().getZ());
-            json.put("pitch", location.getLocation().getPitch());
-            json.put("yaw", location.getLocation().getYaw());
+            json.put("world", location.getWorld().getName());
+            json.put("x", location.getX());
+            json.put("y", location.getY());
+            json.put("z", location.getZ());
+            json.put("pitch", location.getPitch());
+            json.put("yaw", location.getYaw());
 
             Statement statement = connection.createStatement();
             String sql = "UPDATE `sbasics_spawns` SET " +
@@ -159,7 +158,7 @@ public class ServerDatabase {
         }
     }
 
-    public static void saveSpawn(SBasicLocation location) {
+    public static void saveSpawn(Location location) {
         if (spawnExists()) {
             updateSpawn(location);
         } else {

@@ -13,12 +13,13 @@ import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import eu.endermite.serverbasics.commands.registration.SyncCommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.reflections.Reflections;
+
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
+import org.reflections.Reflections;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,12 @@ public class CommandManager {
     public BukkitCommandManager<CommandSender> manager;
     public BukkitCommandManager<CommandSender> syncManager;
     private CommandConfirmationManager<CommandSender> confirmationManager;
-    @Getter private AnnotationParser<CommandSender> annotationParser, syncAnnotationParser;
+
+    public AnnotationParser<CommandSender> getAnnotationParser() {
+        return annotationParser;
+    }
+
+    private AnnotationParser<CommandSender> annotationParser, syncAnnotationParser;
 
     public void initCommands() {
         final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
@@ -98,8 +104,7 @@ public class CommandManager {
 
         // Command error messages
         manager.registerExceptionHandler(cloud.commandframework.exceptions.NoPermissionException.class, (sender, exception) -> {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_permission);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_permission);
@@ -107,8 +112,7 @@ public class CommandManager {
         });
         manager.registerExceptionHandler(cloud.commandframework.exceptions.InvalidSyntaxException.class, (sender, exception) -> {
             String msg;
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 msg = String.format(ServerBasics.getLang(player.locale()).invalid_syntax, "/"+exception.getCorrectSyntax());
             } else {
                 msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).invalid_syntax, exception.getCorrectSyntax());
@@ -116,8 +120,7 @@ public class CommandManager {
             MessageParser.sendMessage(sender, msg);
         });
         manager.registerExceptionHandler(cloud.commandframework.exceptions.ArgumentParseException.class, (sender, exception) -> {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).failed_argument_parse);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).failed_argument_parse);
@@ -133,7 +136,7 @@ public class CommandManager {
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(CommandRegistration.class);
         listenerClasses.forEach((command)-> {
             try {
-                ServerBasics.getCommandManager().getAnnotationParser().parse(command.getConstructor().newInstance()) ;
+                annotationParser.parse(command.getConstructor().newInstance()) ;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -144,7 +147,7 @@ public class CommandManager {
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(SyncCommandRegistration.class);
         listenerClasses.forEach((command)-> {
             try {
-                ServerBasics.getCommandManager().getSyncAnnotationParser().parse(command.getConstructor().newInstance()) ;
+                syncAnnotationParser.parse(command.getConstructor().newInstance()) ;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }

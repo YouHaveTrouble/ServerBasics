@@ -10,7 +10,6 @@ import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.players.PlayerUtil;
 import eu.endermite.serverbasics.storage.ServerDatabase;
-import eu.endermite.serverbasics.locations.SBasicLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -69,9 +68,8 @@ public class SpawnCommand {
             final Player player
     ) {
         Location newSpawn = player.getLocation();
-        SBasicLocation sBasicLocation = new SBasicLocation(newSpawn, "spawn");
-        ServerBasics.getLocationsCache().setSpawn(sBasicLocation);
-        ServerDatabase.saveSpawn(sBasicLocation);
+        ServerBasics.getLocationsCache().setSpawn(newSpawn);
+        ServerDatabase.saveSpawn(newSpawn);
         MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_set);
     }
 

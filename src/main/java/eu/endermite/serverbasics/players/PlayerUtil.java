@@ -2,7 +2,6 @@ package eu.endermite.serverbasics.players;
 
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-@UtilityClass
 public class PlayerUtil {
 
     /**
@@ -20,7 +18,7 @@ public class PlayerUtil {
      * @return new flight state
      */
     // Decided to not move it to BasicPlayer for more convinient offline player support
-    public boolean toggleFlight(UUID uuid) {
+    public static boolean toggleFlight(UUID uuid) {
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
@@ -51,8 +49,8 @@ public class PlayerUtil {
         }
     }
 
-    public void teleportPlayerToSpawn(Player player) {
-        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.teleportAsync(ServerBasics.getLocationsCache().spawn.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+    public static void teleportPlayerToSpawn(Player player) {
+        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.teleportAsync(ServerBasics.getLocationsCache().spawn, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
             if (result) {
                 MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).teleported_spawn);
             } else {
@@ -61,7 +59,7 @@ public class PlayerUtil {
         }));
     }
 
-    public void setHat(Player player, ItemStack itemStack) {
+    public static void setHat(Player player, ItemStack itemStack) {
         ItemStack hatItem = itemStack.clone();
         hatItem.setAmount(1);
         itemStack.setAmount(itemStack.getAmount()-1);

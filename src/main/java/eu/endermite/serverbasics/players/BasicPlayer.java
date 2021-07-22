@@ -1,10 +1,7 @@
 package eu.endermite.serverbasics.players;
 
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -47,3 +44,5 @@ public class BasicPlayer {
     }
 
 }
+
+

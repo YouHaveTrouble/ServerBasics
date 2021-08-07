@@ -125,27 +125,20 @@ public class LanguageCache {
     }
 
     public String getGamemode(GameMode gamemode) {
-        switch (gamemode) {
-            case SURVIVAL:
-                return gamemode_survival;
-            case CREATIVE:
-                return gamemode_creative;
-            case ADVENTURE:
-                return gamemode_adventure;
-            case SPECTATOR:
-                return gamemode_spectator;
-            default:
-                return "";
-        }
+        return switch (gamemode) {
+            case SURVIVAL -> gamemode_survival;
+            case CREATIVE -> gamemode_creative;
+            case ADVENTURE -> gamemode_adventure;
+            case SPECTATOR -> gamemode_spectator;
+            default -> "";
+        };
     }
 
     public String getHookDesc(String string) {
-        switch (string) {
-            default:
-                return "";
-            case "PlaceholderAPI":
-                return hooks_placeholderapi;
+        if ("PlaceholderAPI".equals(string)) {
+            return hooks_placeholderapi;
         }
+        return "";
     }
 
 

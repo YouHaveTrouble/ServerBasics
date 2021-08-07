@@ -8,7 +8,7 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import eu.endermite.serverbasics.storage.PlayerDatabase;
+import eu.endermite.serverbasics.storage.MySQL;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -29,8 +29,8 @@ public class NicknameCommand {
     ) {
         if (!player.hasAny()) {
             try {
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(player.getSelector());
-                if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getSelector());
+                if (!offlinePlayer.hasPlayedBefore()) {
                     sendHaventPlayedError(sender);
                     return;
                 }
@@ -78,7 +78,7 @@ public class NicknameCommand {
         if (!player.hasAny()) {
             try {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getSelector());
-                if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
+                if (!offlinePlayer.hasPlayedBefore()) {
                     sendHaventPlayedError(sender);
                     return;
                 }
@@ -106,8 +106,7 @@ public class NicknameCommand {
         );
         sender.sendMessage(message);
 
-        if (!target.isOnline())
-            return;
+        if (!target.isOnline()) return;
 
         Player onlineTarget = target.getPlayer();
         ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).setDisplayName(nick);
@@ -115,8 +114,7 @@ public class NicknameCommand {
     }
 
     private void sendHaventPlayedError(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             String msg = ServerBasics.getLang(player.locale()).havent_played;
             MessageParser.sendMessage(player, msg);
         } else {

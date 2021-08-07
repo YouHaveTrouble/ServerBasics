@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+// TODO remake to use Paper's AsyncChatEvent with components
 @Deprecated
 public class ChatListener implements Listener {
 

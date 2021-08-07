@@ -33,19 +33,12 @@ public class ConfigCache {
                 String password = config.getString("storage.password");
                 String connString = "jdbc:mysql://" + host + ":" + port + "/"+database+"?user=" + user + "&password=" + password;
                 boolean ssl = config.getBoolean("storage.ssl", true);
-                if (ssl) {
-                    connString = connString + "&useSSL=true";
-                } else {
-                    connString = connString + "&useSSL=false";
-                }
+                connString = connString+"&useSSL="+ssl;
                 boolean verify = config.getBoolean("storage.players.verifycertificate", true);
-                if (verify) {
-                    connString = connString + "&verifyServerCertificate=true";
-                } else {
-                    connString = connString + "&verifyServerCertificate=false";
-                }
+                connString = connString+"&verifyServerCertificate="+verify;
                 this.sql_connection_string = connString;
                 break;
+            case "sqlite":
             default:
                 this.sql_connection_string = "jdbc:sqlite:plugins/ServerBasics/data.db";
                 break;

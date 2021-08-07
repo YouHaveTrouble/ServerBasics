@@ -3,7 +3,8 @@ package eu.endermite.serverbasics;
 import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
-import eu.endermite.serverbasics.storage.PlayerDatabase;
+import eu.endermite.serverbasics.storage.Database;
+import eu.endermite.serverbasics.storage.MySQL;
 import eu.endermite.serverbasics.chat.ChatListener;
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
@@ -33,6 +34,7 @@ public final class ServerBasics extends JavaPlugin {
     private static HashMap<String, LanguageCache> languageCacheMap;
     private static BasicPlayerCache basicPlayers;
     private static Hooks hooks;
+    private Database database;
 
     @Override
     public void onEnable() {
@@ -53,8 +55,8 @@ public final class ServerBasics extends JavaPlugin {
         hooks = new Hooks();
         commandManager = new CommandManager();
         commandManager.initCommands();
+        database = new MySQL();
 
-        PlayerDatabase.checkConnection();
         ServerDatabase.checkConnection();
 
         basicPlayers = new BasicPlayerCache();
@@ -145,6 +147,10 @@ public final class ServerBasics extends JavaPlugin {
 
     public static Hooks getHooks() {
         return hooks;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
 }

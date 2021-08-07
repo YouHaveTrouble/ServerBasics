@@ -1,6 +1,5 @@
 package eu.endermite.serverbasics.listeners;
 
-import eu.endermite.serverbasics.storage.PlayerDatabase;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.players.PlayerUtil;
@@ -16,40 +15,15 @@ public class FeatureListener implements Listener {
 
         Player player = event.getPlayer();
 
-        BasicPlayer basicPlayer;
-
-        if (PlayerDatabase.playerExists(player.getUniqueId())) {
-            basicPlayer = PlayerDatabase.getPlayerfromStorage(player.getUniqueId());
-            ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
-        } else {
-            basicPlayer = BasicPlayer.builder()
-                    .uuid(player.getUniqueId())
-                    .displayName(player.getDisplayName())
-                    .player(player)
-                    .fly(player.getAllowFlight())
-                    .build();
-            ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
-            PlayerDatabase.createPlayerStorage(basicPlayer);
-        }
-
         if (ServerBasics.getConfigCache().spawn_on_join)
             PlayerUtil.teleportPlayerToSpawn(player);
 
-        boolean flying = ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).canFly();
-        if (flying) {
-            player.setAllowFlight(true);
-            player.setFlying(true);
-        }
-
-        //String nickname = ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).getDisplayName();
-        //player.setDisplayName(nickname);
+        ServerBasics.getBasicPlayers().addBasicPlayer(BasicPlayer.fromPlayer(player));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(org.bukkit.event.player.PlayerQuitEvent event) {
-        BasicPlayer basicPlayer = ServerBasics.getBasicPlayers().getBasicPlayer(event.getPlayer().getUniqueId());
-        PlayerDatabase.savePlayertoStorage(basicPlayer);
-        ServerBasics.getBasicPlayers().removeBasicPlayer(basicPlayer);
+        ServerBasics.getBasicPlayers().removeBasicPlayer(event.getPlayer().getUniqueId());
     }
 
 }

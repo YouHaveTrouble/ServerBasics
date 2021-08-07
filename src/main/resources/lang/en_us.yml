@@ -38,12 +38,12 @@ commands:
   itemlore:
     lore-changed: "You changed the lore of the item you're holding to:"
   gamemode:
-    changed: "Your gamemode was set to %s"
-    changed-self: "You set your own gamemode to %s"
-    changed-other: "You set %s's gamemode to %s"
+    changed: "Your gamemode was set to %gamemode%"
+    changed-self: "You set your own gamemode to %gamemode%"
+    changed-other: "You set %name%'s gamemode to %gamemode%"
     no-perms: "You don't have permission to use this gamemode"
     no-perms-to-set: "You don't have permission to set someone to this gamemode"
-    set_many: "Set %s players gamemode to %s"
+    set_many: "Set %number% players gamemode to %gamemode%"
   nick:
     changed-self: "You changed your nickname to %s"
     changed-other: "You changed %s's nickname to %s"

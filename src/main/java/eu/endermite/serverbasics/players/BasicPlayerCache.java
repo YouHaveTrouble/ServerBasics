@@ -1,10 +1,10 @@
 package eu.endermite.serverbasics.players;
 
-import eu.endermite.serverbasics.storage.PlayerDatabase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class BasicPlayerCache {
 
@@ -12,22 +12,20 @@ public class BasicPlayerCache {
 
     public BasicPlayerCache() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            BasicPlayer basicPlayer = PlayerDatabase.getPlayerfromStorage(player.getUniqueId());
-            basicPlayers.put(player.getUniqueId(), basicPlayer);
+            basicPlayers.put(player.getUniqueId(), BasicPlayer.fromPlayer(player));
         }
     }
 
-    public BasicPlayer getBasicPlayer(UUID uuid) {
-        return basicPlayers.get(uuid);
+    public CompletableFuture<BasicPlayer> getBasicPlayer(UUID uuid) {
+        BasicPlayer basicPlayer = basicPlayers.get(uuid);
+        if (basicPlayer != null) return CompletableFuture.completedFuture(basicPlayer);
+        return BasicPlayer.fromDatabase(uuid);
     }
 
     public void addBasicPlayer(BasicPlayer basicPlayer) {
         basicPlayers.put(basicPlayer.getUuid(), basicPlayer);
     }
 
-    public void removeBasicPlayer(BasicPlayer basicPlayer) {
-        basicPlayers.remove(basicPlayer.getUuid());
-    }
     public void removeBasicPlayer(UUID uuid) {
         basicPlayers.remove(uuid);
     }

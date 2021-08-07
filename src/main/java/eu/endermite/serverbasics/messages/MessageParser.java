@@ -28,12 +28,11 @@ public class MessageParser {
         MiniMessage minimsg = MiniMessage.builder().markdown().build();
         Component component = minimsg.parse(message);
 
-        if (!(recipent instanceof Player)) {
+        if (!(recipent instanceof Player player)) {
             recipent.sendMessage(component);
             return;
         }
 
-        Player player = (Player) recipent;
         switch (messageType) {
             case ACTIONBAR:
                 player.sendActionBar(component);
@@ -46,6 +45,14 @@ public class MessageParser {
                 player.sendMessage(component);
                 break;
         }
+    }
+
+    public static Component parseMessage(CommandSender sender, String message) {
+        // TODO PAPI
+        message = makeColorsWork('&', message);
+        MiniMessage minimsg = MiniMessage.builder().markdown().build();
+        return minimsg.parse(message);
+
     }
 
     public static String makeColorsWork(Character symbol, String string) {

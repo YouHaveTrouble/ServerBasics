@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Database {
 
-    void createTables(String playerTableName, String warpTableName, String homesTableName);
+    void createTables();
     CompletableFuture<BasicPlayer> getPlayer(UUID uuid);
     CompletableFuture<Void> savePlayer(BasicPlayer basicPlayer);
     CompletableFuture<Void> deletePlayer(UUID uuid);

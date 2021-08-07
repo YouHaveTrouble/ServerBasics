@@ -19,10 +19,13 @@ public class MySQL implements Database {
     private Connection connection;
 
     private final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
-    private static final String PLAYER_TABLE = "sbasics_players";
+    private final String playerTable, warpTable, homesTable;
 
-    public MySQL(String playerTableName, String warpTableName, String homesTableName) {
-        createTables(playerTableName, warpTableName, homesTableName);
+    public MySQL(String prefix) {
+        this.playerTable = prefix+"players";
+        this.warpTable = prefix+"warps";
+        this.homesTable = prefix+"homes";
+        createTables();
     }
 
 
@@ -35,13 +38,17 @@ public class MySQL implements Database {
         }
     }
 
-    @Override
-    public void createTables(String playerTableName, String warpTableName, String homesTableName) {
+    public void createTables() {
         connect();
         try {
             if (connection != null) {
                 Statement statement = connection.createStatement();
-                String sql = "CREATE TABLE IF NOT EXISTS `speedruncrafting` (`player_uuid` varchar(36), `craft_id` varchar(36), `time` long, CONSTRAINT COMP_KEY PRIMARY KEY (player_uuid, craft_id));";
+                String sql;
+                sql = "CREATE TABLE IF NOT EXISTS `"+playerTable+"` (`player_uuid` varchar(36) PRIMARY KEY, `displayname` varchar(256);";
+                statement.execute(sql);
+                sql = "CREATE TABLE IF NOT EXISTS `"+warpTable+"` (`warp_id` varchar(32) PRIMARY KEY, `displayname` varchar(256), `world_uuid` varchar(36), `coords` varchar(256);";
+                statement.execute(sql);
+                sql = "CREATE TABLE IF NOT EXISTS `"+homesTable+"` (`home_id` varchar(32) , `player_uuid` varchar(36), `world_uuid` varchar(36), `coords` varchar(256), CONSTRAINT COMP_KEY PRIMARY KEY (home_id, player_uuid));";
                 statement.execute(sql);
             }
         } catch (SQLException e) {

@@ -55,7 +55,7 @@ public final class ServerBasics extends JavaPlugin {
         hooks = new Hooks();
         commandManager = new CommandManager();
         commandManager.initCommands();
-        database = new MySQL();
+        database = new MySQL("sbasics_");
 
         ServerDatabase.checkConnection();
 

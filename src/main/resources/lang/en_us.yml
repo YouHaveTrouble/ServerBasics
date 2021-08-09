@@ -45,9 +45,9 @@ commands:
     no-perms-to-set: "You don't have permission to set someone to this gamemode"
     set_many: "Set %number% players gamemode to %gamemode%"
   nick:
-    changed-self: "You changed your nickname to %s"
-    changed-other: "You changed %s's nickname to %s"
-    changed-by-other: "Your nickname was changed to %s"
+    changed-self: "You changed your nickname to %nickname%"
+    changed-other: "You changed %oldnickname%'s nickname to %newnickname%"
+    changed-by-other: "Your nickname was changed to %nickname%"
   teleport:
     noone-to-teleport: "No entities to teleport"
     teleported-self: "You teleported to %s's location"
@@ -80,6 +80,7 @@ commands:
     no-such-command: "Unknown command. Type \"/help\" for help."
     invalid-syntax: "<red>Invalid command syntax. Correct syntax: <gray>%s"
     failed-argument-parse: "<red>Failed to parse command arguments"
+    unknown-player: "Unknown Player"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:

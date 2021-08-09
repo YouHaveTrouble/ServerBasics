@@ -8,7 +8,6 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import eu.endermite.serverbasics.storage.MySQL;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -51,6 +50,8 @@ public class NicknameCommand {
         Player target = player.getPlayer();
 
         String nick = target.getName();
+
+
 
         Component message = Component.translatable(
                 "commands.scoreboard.objectives.modify.displayname",
@@ -109,7 +110,9 @@ public class NicknameCommand {
         if (!target.isOnline()) return;
 
         Player onlineTarget = target.getPlayer();
-        ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).setDisplayName(nick);
+        ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).thenAccept(basicPlayer -> {
+            basicPlayer.setDisplayName(nick);
+        });
         onlineTarget.displayName(MiniMessage.markdown().parse(nick));
     }
 

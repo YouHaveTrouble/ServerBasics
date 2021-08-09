@@ -8,8 +8,8 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import eu.endermite.serverbasics.players.PlayerUtil;
-import eu.endermite.serverbasics.storage.ServerDatabase;
+import eu.endermite.serverbasics.players.BasicPlayer;
+import eu.endermite.serverbasics.util.BasicWarp;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -27,10 +27,8 @@ public class SpawnCommand {
             final @Argument(value = "target", description = "player to target") SinglePlayerSelector targetToParse
             ) {
         if (!ServerBasics.getLocationsCache().isSpawnSet()) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player)
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).spawn_not_set);
-            }
             else
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).spawn_not_set);
             return;
@@ -45,7 +43,7 @@ public class SpawnCommand {
             sender.sendMessage(message);
             return;
         }
-        PlayerUtil.teleportPlayerToSpawn(target.getPlayer());
+        ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).thenAccept(BasicPlayer::teleportToSpawn);
     }
 
     @CommandMethod("spawn")
@@ -58,7 +56,7 @@ public class SpawnCommand {
             MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_not_set);
             return;
         }
-        PlayerUtil.teleportPlayerToSpawn(player);
+        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(BasicPlayer::teleportToSpawn);
     }
 
     @CommandMethod("setspawn")
@@ -67,9 +65,13 @@ public class SpawnCommand {
     private void commandSetSpawn(
             final Player player
     ) {
-        Location newSpawn = player.getLocation();
-        ServerBasics.getLocationsCache().setSpawn(newSpawn);
-        ServerDatabase.saveSpawn(newSpawn);
+        Location location = player.getLocation();
+        BasicWarp spawn = BasicWarp.builder()
+                .warpId("spawn")
+                .displayName(Component.text("Spawn"))
+                .location(location)
+                .build();
+        ServerBasics.getLocationsCache().setSpawn(spawn);
         MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_set);
     }
 

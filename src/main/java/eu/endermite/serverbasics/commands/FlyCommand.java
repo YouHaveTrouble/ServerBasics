@@ -5,8 +5,10 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
+import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
-import eu.endermite.serverbasics.players.PlayerUtil;
+import eu.endermite.serverbasics.messages.MessageParser;
+import eu.endermite.serverbasics.players.BasicPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +23,15 @@ public class FlyCommand {
     private void commandFly(
             final Player player
     ) {
-        PlayerUtil.toggleFlight(player.getUniqueId());
+        BasicPlayer.fromPlayer(player).thenAccept(basicPlayer -> {
+            if (basicPlayer.toggleFly()) {
+                String msg = ServerBasics.getLang(player.locale()).started_flying;
+                MessageParser.sendMessage(player, msg);
+            } else {
+                String msg = ServerBasics.getLang(player.locale()).stopped_flying;
+                MessageParser.sendMessage(player, msg);
+            }
+        });
     }
 
     @CommandMethod("fly <target>")
@@ -42,7 +52,15 @@ public class FlyCommand {
             return;
         }
 
-        PlayerUtil.toggleFlight(target.getUniqueId());
+        BasicPlayer.fromPlayer(target).thenAccept(basicPlayer -> {
+            if (basicPlayer.toggleFly()) {
+                String msg = ServerBasics.getLang(target.locale()).started_flying;
+                MessageParser.sendMessage(target, msg);
+            } else {
+                String msg = ServerBasics.getLang(target.locale()).stopped_flying;
+                MessageParser.sendMessage(target, msg);
+            }
+        });
     }
 
 }

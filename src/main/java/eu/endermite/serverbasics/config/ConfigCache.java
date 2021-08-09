@@ -3,16 +3,12 @@ package eu.endermite.serverbasics.config;
 import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.io.IOException;
-import java.util.UUID;
-
 public class ConfigCache {
 
     public String default_lang, chat_format, staffchat_format;
     public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
             chat_format_enabled, staffchat_enabled, spawn_on_join;
     private final String sql_connection_string;
-    private String server_uuid;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
@@ -58,23 +54,9 @@ public class ConfigCache {
 
         this.spawn_on_join = config.getBoolean("spawn.players-always-join-spawn", false);
 
-        this.server_uuid = config.getString("server-uuid", "<this should generate automatically>");
-        if (server_uuid.equals("<this should generate automatically>")) {
-            try {
-                server_uuid = UUID.randomUUID().toString();
-                config.set("server-uuid", server_uuid);
-                config.save(ServerBasics.getInstance().getDataFolder()+ "/config.yml");
-            } catch (IOException e) {
-                ServerBasics.getInstance().getLogger().severe("Could not save generated server UUID");
-            }
-        }
-
     }
 
     public String getSqlPlayersConnectionString() {
         return sql_connection_string;
-    }
-    public String getServerUuid() {
-        return server_uuid;
     }
 }

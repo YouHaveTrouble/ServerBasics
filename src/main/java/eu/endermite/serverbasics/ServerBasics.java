@@ -11,7 +11,6 @@ import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.HatListener;
-import eu.endermite.serverbasics.storage.ServerDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -56,8 +55,6 @@ public final class ServerBasics extends JavaPlugin {
         commandManager = new CommandManager();
         commandManager.initCommands();
         database = new MySQL("sbasics_");
-
-        ServerDatabase.checkConnection();
 
         basicPlayers = new BasicPlayerCache();
         reloadLocations();
@@ -135,10 +132,6 @@ public final class ServerBasics extends JavaPlugin {
 
     public static LocationsCache getLocationsCache() {
         return locationsCache;
-    }
-
-    public static CommandManager getCommandManager() {
-        return commandManager;
     }
 
     public static BasicPlayerCache getBasicPlayers() {

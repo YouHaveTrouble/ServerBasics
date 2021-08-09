@@ -6,7 +6,6 @@ import cloud.commandframework.annotations.CommandPermission;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import eu.endermite.serverbasics.players.PlayerUtil;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -34,10 +33,11 @@ public class HatCommand {
             MessageParser.sendMessage(player, msg);
             return;
         }
+        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+            basicPlayer.setHat(itemStack);
+            MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).hat_set);
+        });
 
-        PlayerUtil.setHat(player, itemStack);
-        String msg = ServerBasics.getLang(player.locale()).hat_set;
-        MessageParser.sendMessage(player, msg);
     }
 
 }

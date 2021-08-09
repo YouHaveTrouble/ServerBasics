@@ -24,9 +24,7 @@ public class CustomJoinLeaveMessageListener implements Listener {
             return;
         }
 
-        if (!ServerBasics.getConfigCache().custom_join_msg)
-            return;
-
+        if (!ServerBasics.getConfigCache().custom_join_msg) return;
         event.joinMessage(null);
 
         Player player = event.getPlayer();

@@ -31,7 +31,3 @@ storage:
   password: password
   ssl: true
   verifycertificate: true
-
-
-# DO NOT TOUCH THIS LINE! It's used for server identification in bungeecord setup
-server-uuid: <this should generate automatically>

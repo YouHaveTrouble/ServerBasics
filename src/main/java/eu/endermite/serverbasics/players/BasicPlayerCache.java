@@ -12,7 +12,7 @@ public class BasicPlayerCache {
 
     public BasicPlayerCache() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            basicPlayers.put(player.getUniqueId(), BasicPlayer.fromPlayer(player));
+            BasicPlayer.fromPlayer(player).thenAccept(basicPlayer -> basicPlayers.put(player.getUniqueId(), basicPlayer));
         }
     }
 

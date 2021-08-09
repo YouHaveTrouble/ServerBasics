@@ -1,24 +1,19 @@
 package eu.endermite.serverbasics.config;
 
 import eu.endermite.serverbasics.ServerBasics;
-import eu.endermite.serverbasics.storage.ServerDatabase;
+import eu.endermite.serverbasics.util.BasicWarp;
 import org.bukkit.Location;
 
 import java.util.HashMap;
 
 public class LocationsCache {
 
-    public Location spawn;
+    public BasicWarp spawn;
     public HashMap<String, Location> warps;
     public HashMap<String, Location> homes;
 
     public LocationsCache() {
-
-        ServerBasics plugin = ServerBasics.getInstance();
-
-        this.spawn = ServerDatabase.getSpawn(ServerBasics.getConfigCache().getServerUuid());
-
-
+        ServerBasics.getInstance().getDatabase().getSpawn().thenAccept(spawn -> this.spawn = spawn);
     }
 
 
@@ -27,7 +22,7 @@ public class LocationsCache {
         return spawn != null;
     }
 
-    public void setSpawn(Location sBasicLocation) {
+    public void setSpawn(BasicWarp sBasicLocation) {
         spawn = sBasicLocation;
     }
 

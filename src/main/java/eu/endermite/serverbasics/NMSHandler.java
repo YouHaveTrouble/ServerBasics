@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftOfflinePlayer;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,7 +42,7 @@ public class NMSHandler {
             double y = coords.h(1);
             double z = coords.h(2);
             return new Location(world, x, y, z, yaw, pitch);
-        } catch (Exception e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
@@ -62,7 +63,7 @@ public class NMSHandler {
             rotation.add(NBTTagFloat.a(location.getPitch()));
             nbt.set("Rotation", rotation);
             savePlayerData(nbt, offlinePlayer);
-        } catch (Exception e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -77,7 +78,7 @@ public class NMSHandler {
                 case SPECTATOR -> nbt.setInt("playerGameType", 3);
             }
             savePlayerData(nbt, offlinePlayer);
-        } catch (Exception e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -93,7 +94,43 @@ public class NMSHandler {
                 default -> null;
             };
         } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
             return null;
+        }
+    }
+
+    public static boolean getOfflinePlayerCanFly(OfflinePlayer offlinePlayer) {
+        try {
+            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
+            NBTTagCompound abilities = nbt.getCompound("abilities");
+            return abilities.getByte("mayfly") == 1;
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            return false;
+        }
+    }
+
+    public static void setOfflinePlayerCanFly(OfflinePlayer offlinePlayer, boolean canFly) {
+        try {
+            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
+            NBTTagCompound abilities = nbt.getCompound("abilities");
+            if (canFly)
+                abilities.setByte("mayfly", (byte) 1);
+            else
+                abilities.setByte("mayfly", (byte) 0);
+            nbt.set("abilities", abilities);
+            savePlayerData(nbt, offlinePlayer);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setOfflinePlayerFallDistance(OfflinePlayer offlinePlayer, float distance) {
+        try {
+            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
+            nbt.setFloat("FallDistance", distance);
+            savePlayerData(nbt, offlinePlayer);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
@@ -109,8 +146,8 @@ public class NMSHandler {
             File file1 = new File(playerDir, offlinePlayer.getUniqueId() + ".dat");
             File file2 = new File(playerDir, offlinePlayer.getUniqueId() + ".dat_old");
             SystemUtils.a(file1, file, file2);
-        } catch (Exception e) {
-            Bukkit.getServer().getLogger().severe("Failed to save player data for " + offlinePlayer.getUniqueId().toString());
+        } catch (IOException | NoSuchFieldException | IllegalAccessException e) {
+            Bukkit.getServer().getLogger().severe("Failed to save player data for " + offlinePlayer.getUniqueId());
         }
     }
 

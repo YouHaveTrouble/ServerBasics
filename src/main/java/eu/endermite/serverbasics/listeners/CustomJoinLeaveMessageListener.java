@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 
 import java.util.UUID;
 
+@Deprecated
 public class CustomJoinLeaveMessageListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

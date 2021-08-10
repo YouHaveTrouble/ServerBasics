@@ -10,15 +10,19 @@ import org.bukkit.Location;
 public class BasicWarp {
 
     private final String warpId;
-    private Component displayName;
+    private String displayName;
     private Location location;
 
     public Component getDisplayName() {
+        return MiniMessage.markdown().parse(displayName);
+    }
+
+    public String getRawDisplayName() {
         return displayName;
     }
 
     public void setDisplayName(String minimessage) {
-        displayName = MiniMessage.markdown().parse(minimessage);
+        displayName = minimessage;
         ServerBasics.getInstance().getDatabase().saveWarp(this);
     }
 
@@ -29,5 +33,9 @@ public class BasicWarp {
     public void setLocation(Location location) {
         this.location = location;
         ServerBasics.getInstance().getDatabase().saveWarp(this);
+    }
+
+    public String getWarpId() {
+        return warpId;
     }
 }

@@ -7,6 +7,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.time.Instant;
+import java.util.UUID;
+
 public class FeatureListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -21,6 +24,8 @@ public class FeatureListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(org.bukkit.event.player.PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        ServerBasics.getInstance().getDatabase().savePlayerLastSeen(uuid, Instant.now().getEpochSecond());
         ServerBasics.getBasicPlayers().removeBasicPlayer(event.getPlayer().getUniqueId());
     }
 

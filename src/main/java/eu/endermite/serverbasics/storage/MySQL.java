@@ -17,7 +17,7 @@ public class MySQL implements Database {
 
     private final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
     private final String playerTable, warpTable, homesTable;
-    private final String loadPlayer, savePlayerDisplayName, savePlayerGodMode, savePlayerLastSeen, getSpawn;
+    private final String loadPlayer, savePlayerDisplayName, savePlayerGodMode, savePlayerLastSeen, getSpawn, saveWarp;
 
     public MySQL(String prefix) {
         this.playerTable = prefix+"players";
@@ -30,6 +30,7 @@ public class MySQL implements Database {
         savePlayerGodMode = "INSERT INTO `"+playerTable+"` (player_uuid, godmode) VALUES (?, ?) ON DUPLICATE KEY UPDATE godmode = ?;";
         savePlayerLastSeen = "INSERT INTO `"+playerTable+"` (player_uuid, lastseen) VALUES (?, ?) ON DUPLICATE KEY UPDATE lastseen = ?;";
         getSpawn = "SELECT * FROM `"+warpTable+"` WHERE `warp_id` = ?;";
+        saveWarp = "INSERT INTO `"+warpTable+"` (warp_id, displayname, world_uuid, coords) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?;";
     }
 
 
@@ -150,7 +151,7 @@ public class MySQL implements Database {
                     String[] coords = result.getString("coords").split(";");
                     return BasicWarp.builder()
                             .location(new Location(Bukkit.getWorld(UUID.fromString(worldUuid)), Double.parseDouble(coords[0]) , Double.parseDouble(coords[1]), Double.parseDouble(coords[2])))
-                            .displayName(MiniMessage.markdown().parse(displayName))
+                            .displayName(displayName)
                             .warpId("spawn")
                             .build();
                 } else
@@ -163,8 +164,8 @@ public class MySQL implements Database {
     }
 
     @Override
-    public CompletableFuture<Void> saveSpawn(Location location) {
-        return null;
+    public CompletableFuture<Void> saveSpawn(BasicWarp basicWarp) {
+        return saveWarp(basicWarp);
     }
 
     @Override
@@ -179,7 +180,23 @@ public class MySQL implements Database {
 
     @Override
     public CompletableFuture<Void> saveWarp(BasicWarp basicWarp) {
-        return null;
+        return CompletableFuture.runAsync(() -> {
+            connect();
+            Location location = basicWarp.getLocation();
+            String locationString = location.getX()+";"+location.getY()+";"+ location.getZ();
+            try (PreparedStatement statement = connection.prepareStatement(saveWarp)) {
+                statement.setString(1, basicWarp.getWarpId());
+                statement.setString(2, basicWarp.getRawDisplayName());
+                statement.setString(3, basicWarp.getLocation().getWorld().getUID().toString());
+                statement.setString(4, locationString);
+                statement.setString(5, basicWarp.getRawDisplayName());
+                statement.setString(6, basicWarp.getLocation().getWorld().getUID().toString());
+                statement.setString(7, locationString);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -193,7 +210,7 @@ public class MySQL implements Database {
     }
 
     @Override
-    public CompletableFuture<Void> savePlayerHomes(HashMap<String, Location> homes) {
+    public CompletableFuture<Void> savePlayerHome(BasicWarp basicWarp, UUID uuid) {
         return null;
     }
 

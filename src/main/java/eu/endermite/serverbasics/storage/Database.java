@@ -27,7 +27,7 @@ public interface Database {
     CompletableFuture<Void> deletePlayer(UUID uuid);
 
     CompletableFuture<BasicWarp> getSpawn();
-    CompletableFuture<Void> saveSpawn(Location location);
+    CompletableFuture<Void> saveSpawn(BasicWarp basicWarp);
     CompletableFuture<Void> deleteSpawn();
 
     // Warp data
@@ -37,7 +37,7 @@ public interface Database {
 
     // Home data
     CompletableFuture<HashMap<String, Location>> getPlayerHomes(UUID uuid);
-    CompletableFuture<Void> savePlayerHomes(HashMap<String, Location> homes);
+    CompletableFuture<Void> savePlayerHome(BasicWarp home, UUID uuid);
     CompletableFuture<Void> deletePlayerHome(UUID uuid, String name);
 
 

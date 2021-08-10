@@ -42,9 +42,7 @@ public class BasicPlayer {
         if (offlinePlayer.isOnline())
             return offlinePlayer.getPlayer().getAllowFlight();
         else
-            return false;
-        // TODO offline player fly state
-
+            return NMSHandler.getOfflinePlayerCanFly(offlinePlayer);
     }
 
     /**
@@ -67,7 +65,10 @@ public class BasicPlayer {
             }
             return true;
         }
-        // TODO offline player fly state
+
+        NMSHandler.setOfflinePlayerCanFly(offlinePlayer, state);
+        if (state)
+            NMSHandler.setOfflinePlayerFallDistance(offlinePlayer, Float.MIN_VALUE);
         return true;
     }
 

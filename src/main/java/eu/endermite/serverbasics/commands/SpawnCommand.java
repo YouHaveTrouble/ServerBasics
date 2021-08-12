@@ -68,7 +68,7 @@ public class SpawnCommand {
         Location location = player.getLocation();
         BasicWarp spawn = BasicWarp.builder()
                 .warpId("spawn")
-                .displayName(Component.text("Spawn"))
+                .displayName("Spawn")
                 .location(location)
                 .build();
         ServerBasics.getLocationsCache().setSpawn(spawn);

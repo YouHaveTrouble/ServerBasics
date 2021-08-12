@@ -31,12 +31,12 @@ public interface Database {
     CompletableFuture<Void> deleteSpawn();
 
     // Warp data
-    HashMap<String, BasicWarp> getWarps();
+    CompletableFuture<HashMap<String, BasicWarp>> getWarps();
     CompletableFuture<Void> saveWarp(BasicWarp basicWarp);
     CompletableFuture<Void> deleteWarp(String name);
 
     // Home data
-    CompletableFuture<HashMap<String, Location>> getPlayerHomes(UUID uuid);
+    CompletableFuture<HashMap<String, BasicWarp>> getPlayerHomes(UUID uuid);
     CompletableFuture<Void> savePlayerHome(BasicWarp home, UUID uuid);
     CompletableFuture<Void> deletePlayerHome(UUID uuid, String name);
 

@@ -24,7 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public class BasicPlayer {
 
     private final UUID uuid;
-    private boolean godMode = false;
     private Component displayName;
     private long lastSeen;
 
@@ -196,7 +195,6 @@ public class BasicPlayer {
     public static BasicPlayer empty(UUID uuid) {
         return builder()
                 .uuid(uuid)
-                .godMode(false)
                 .lastSeen(0L)
                 .displayName(MiniMessage.markdown().parse(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).unknown_player))
                 .build();

@@ -1,6 +1,7 @@
 package eu.endermite.serverbasics.messages;
 
 import eu.endermite.serverbasics.ServerBasics;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
@@ -48,7 +49,9 @@ public class MessageParser {
     }
 
     public static Component parseMessage(CommandSender sender, String message) {
-        // TODO PAPI
+        if (sender instanceof Player player && ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        }
         message = makeColorsWork('&', message);
         MiniMessage minimsg = MiniMessage.builder().markdown().build();
         return minimsg.parse(message);
@@ -56,9 +59,7 @@ public class MessageParser {
     }
 
     public static String makeColorsWork(Character symbol, String string) {
-
         // Adventure and ChatColor do not like each other, so this is a thing.
-
         string = string.replaceAll(symbol+"0", "<black>");
         string = string.replaceAll(symbol+"1", "<dark_blue>");
         string = string.replaceAll(symbol+"2", "<dark_green>");
@@ -75,19 +76,16 @@ public class MessageParser {
         string = string.replaceAll(symbol+"d", "<light_purple>");
         string = string.replaceAll(symbol+"e", "<yellow>");
         string = string.replaceAll(symbol+"f", "<white>");
-
         string = string.replaceAll(symbol+"k", "<obfuscated>");
         string = string.replaceAll(symbol+"l", "<bold>");
         string = string.replaceAll(symbol+"m", "<strikethrough>");
         string = string.replaceAll(symbol+"n", "<underlined>");
         string = string.replaceAll(symbol+"o", "<italic>");
         string = string.replaceAll(symbol+"r", "<reset>");
-
         return string;
     }
 
     public static String makeColorsWorkButReverse(String string) {
-
         string = string.replaceAll("<black>", "&0");
         string = string.replaceAll("<dark_blue>", "&1");
         string = string.replaceAll("<dark_green>", "&2");
@@ -104,19 +102,16 @@ public class MessageParser {
         string = string.replaceAll("<light_purple>", "&d");
         string = string.replaceAll("<yellow>", "&e");
         string = string.replaceAll("<white>", "&f");
-
         string = string.replaceAll("<obfuscated>", "&k");
         string = string.replaceAll("<bold>", "&l");
         string = string.replaceAll("<strikethrough>", "&m");
         string = string.replaceAll("<underlined>", "&n");
         string = string.replaceAll("<italic>", "&o");
         string = string.replaceAll("<reset>", "&r");
-
         return string;
     }
 
     public static void sendHaventPlayedError(CommandSender sender) {
-
         if (sender instanceof Player player) {
             String msg = ServerBasics.getLang(player.locale()).havent_played;
             sendMessage(player, msg);

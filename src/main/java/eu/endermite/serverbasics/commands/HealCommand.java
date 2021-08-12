@@ -61,9 +61,8 @@ public class HealCommand {
             }
             MessageParser.sendMessage(target, msg);
         }
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             String msg;
-            Player player = (Player) sender;
 
             if (amountHealed == 1)
                 msg = String.format(ServerBasics.getLang(player.locale()).healed_by_other, lastPlayer.getDisplayName());

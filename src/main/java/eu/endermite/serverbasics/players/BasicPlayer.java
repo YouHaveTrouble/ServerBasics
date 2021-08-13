@@ -163,6 +163,12 @@ public class BasicPlayer {
         }));
     }
 
+    public boolean isOnline() {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return false;
+        return player.isOnline();
+    }
+
     /**
      * Get player data from cache if the player is online or from database when they're not.
      */

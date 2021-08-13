@@ -18,7 +18,7 @@ public class LanguageCache {
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
             gamemode_creative, gamemode_adventure, gamemode_spectator, hooks, hook_inactive, hooks_paper, hook_fix,
             hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other,
-            invalid_syntax, failed_argument_parse, unknown_player;
+            invalid_syntax, failed_argument_parse, unknown_player, started_flying_other, stopped_flying_other, console_name;
 
     public List<String> kick_message, ban_message, tempban_message;
 
@@ -47,6 +47,7 @@ public class LanguageCache {
             this.could_not_tp = fileConfiguration.getString("commands.misc.could-not-teleport", defaultMessage);
             this.no_player_selected = fileConfiguration.getString("command.misc.no-player-selected", defaultMessage);
             this.unknown_player = fileConfiguration.getString("command.misc.unknown-player", defaultMessage);
+            this.console_name = fileConfiguration.getString("command.misc.console-name", "Console");
 
             this.have_to_hold_item = fileConfiguration.getString("commands.misc.have-to-hold-item", defaultMessage);
             this.no_permission = fileConfiguration.getString("commands.misc.no-permission", defaultMessage);
@@ -82,6 +83,8 @@ public class LanguageCache {
 
             this.started_flying = fileConfiguration.getString("commands.fly.flight-on", defaultMessage);
             this.stopped_flying = fileConfiguration.getString("commands.fly.flight-off", defaultMessage);
+            this.started_flying_other = fileConfiguration.getString("commands.fly.flight-on-other", defaultMessage);
+            this.stopped_flying_other = fileConfiguration.getString("commands.fly.flight-off-other", defaultMessage);
 
             this.hat_set = fileConfiguration.getString("commands.hat.hat-set", defaultMessage);
             this.hat_curse = fileConfiguration.getString("commands.hat.binding-curse", defaultMessage);

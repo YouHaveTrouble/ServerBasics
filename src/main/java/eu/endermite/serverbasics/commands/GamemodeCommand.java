@@ -11,13 +11,14 @@ import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.players.BasicPlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 
 @CommandRegistration
 public class GamemodeCommand {
@@ -103,11 +104,8 @@ public class GamemodeCommand {
         // If there was only 1 target
         if (players.getPlayers().size() == 1) {
             Player player = players.getPlayers().get(0);
-            if (player != sender) {
-                ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
-                    gamemodeChangedOtherSender(sender, basicPlayer, gamemode);
-                });
-            }
+            if (player != sender)
+                ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> gamemodeChangedOtherSender(sender, basicPlayer, gamemode));
         // If there were many targets
         } else {
             gamemodeChangedManyTargets(sender, players.getPlayers().size(), gamemode);
@@ -121,26 +119,27 @@ public class GamemodeCommand {
         else
             lang = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang);
         String msg = lang.gamemode_set_many;
-        Component component = MessageParser.parseMessage(sender, msg);
-        TextReplacementConfig amountReplacementConfig = TextReplacementConfig.builder().match("%amount%").replacement(Component.text(amount)).build();
-        component = component.replaceText(amountReplacementConfig);
-        TextReplacementConfig gamemodeReplacementConfig = TextReplacementConfig.builder().match("%gamemode%").replacement(lang.getGamemode(gameMode)).build();
-        component = component.replaceText(gamemodeReplacementConfig);
-        sender.sendMessage(component);
+
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%amount%", Component.text(amount));
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
     }
 
     private void gamemodeChanged(Player player, GameMode gameMode) {
         LanguageCache lang = ServerBasics.getLang(player.locale());
         String msg = lang.gamemode_changed;
-        TextReplacementConfig replacementConfig = TextReplacementConfig.builder().match("%gamemode%").replacement(lang.getGamemode(gameMode)).build();
-        player.sendMessage(MessageParser.parseMessage(player, msg).replaceText(replacementConfig));
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
     }
 
     private void gamemodeChangedSelf(Player player, GameMode gameMode) {
         LanguageCache lang = ServerBasics.getLang(player.locale());
         String msg = lang.gamemode_changed_self;
-        TextReplacementConfig replacementConfig = TextReplacementConfig.builder().match("%gamemode%").replacement(lang.getGamemode(gameMode)).build();
-        player.sendMessage(MessageParser.parseMessage(player, msg).replaceText(replacementConfig));
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
     }
 
     private void gamemodeChangedOtherSender(CommandSender sender, BasicPlayer basicPlayer, GameMode gameMode) {
@@ -150,11 +149,9 @@ public class GamemodeCommand {
         else
             lang = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang);
         String msg = lang.gamemode_changed_other;
-        Component component = MessageParser.parseMessage(sender, msg);
-        TextReplacementConfig nameReplacementConfig = TextReplacementConfig.builder().match("%name%").replacement(basicPlayer.getDisplayName()).build();
-        component = component.replaceText(nameReplacementConfig);
-        TextReplacementConfig gamemodeReplacementConfig = TextReplacementConfig.builder().match("%gamemode%").replacement(lang.getGamemode(gameMode)).build();
-        component = component.replaceText(gamemodeReplacementConfig);
-        sender.sendMessage(component);
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%name", basicPlayer.getDisplayName());
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
     }
 }

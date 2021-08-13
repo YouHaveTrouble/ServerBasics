@@ -30,7 +30,7 @@ public class NicknameCommand {
             try {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getSelector());
                 if (!offlinePlayer.hasPlayedBefore()) {
-                    sendHaventPlayedError(sender);
+                    MessageParser.sendHaventPlayedError(sender);
                     return;
                 }
 
@@ -42,7 +42,7 @@ public class NicknameCommand {
                 );
                 sender.sendMessage(message);
             } catch (Exception e) {
-                sendHaventPlayedError(sender);
+                MessageParser.sendHaventPlayedError(sender);
             }
             return;
         }
@@ -80,7 +80,7 @@ public class NicknameCommand {
             try {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getSelector());
                 if (!offlinePlayer.hasPlayedBefore()) {
-                    sendHaventPlayedError(sender);
+                    MessageParser.sendHaventPlayedError(sender);
                     return;
                 }
 
@@ -93,7 +93,7 @@ public class NicknameCommand {
                 sender.sendMessage(message);
                 return;
             } catch (Exception e) {
-                sendHaventPlayedError(sender);
+                MessageParser.sendHaventPlayedError(sender);
             }
         }
 
@@ -114,16 +114,6 @@ public class NicknameCommand {
             basicPlayer.setDisplayName(nick);
         });
         onlineTarget.displayName(MiniMessage.markdown().parse(nick));
-    }
-
-    private void sendHaventPlayedError(CommandSender sender) {
-        if (sender instanceof Player player) {
-            String msg = ServerBasics.getLang(player.locale()).havent_played;
-            MessageParser.sendMessage(player, msg);
-        } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).havent_played;
-            MessageParser.sendMessage(sender, msg);
-        }
     }
 
 }

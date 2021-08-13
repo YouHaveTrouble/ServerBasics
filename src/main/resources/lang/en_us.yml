@@ -25,6 +25,8 @@ commands:
   fly:
     flight-on: "You toggled fly on"
     flight-off: "You toggled fly off"
+    flight-on-other: "You toggled fly on for %player%"
+    flight-off-other: "You toggled fly off for %player%"
   fix:
     item-fixed: "Held item has been fixed"
     all-fixed: "All items have been fixed"
@@ -81,6 +83,7 @@ commands:
     invalid-syntax: "<red>Invalid command syntax. Correct syntax: <gray>%s"
     failed-argument-parse: "<red>Failed to parse command arguments"
     unknown-player: "Unknown Player"
+    console-name: "Console"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:

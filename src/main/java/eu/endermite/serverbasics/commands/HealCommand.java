@@ -61,7 +61,7 @@ public class HealCommand {
         if (sender instanceof Player player)
             locale = player.locale();
         else
-            locale = Locale.forLanguageTag(ServerBasics.getConfigCache().default_lang);
+            locale = ServerBasics.getConfigCache().default_lang;
 
         String msg;
         if (amountHealed == 1) {

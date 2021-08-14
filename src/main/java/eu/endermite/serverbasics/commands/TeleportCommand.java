@@ -12,11 +12,9 @@ import eu.endermite.serverbasics.messages.MessageParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 
 @SyncCommandRegistration
 public class TeleportCommand {
@@ -31,11 +29,13 @@ public class TeleportCommand {
         if (!entitySelector.hasAny()) {
             Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
                 OfflinePlayer target = Bukkit.getOfflinePlayer(entitySelector.getSelector());
+                System.out.println("Attemting to get player");
                 if (!target.hasPlayedBefore()) {
                     MessageParser.sendHaventPlayedError(player);
                     return;
                 }
                 ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+                    System.out.println("Getting location");
                     Location location = NMSHandler.getOfflinePlayerPosition(target);
                     basicPlayer.teleportPlayer(location);
                 });

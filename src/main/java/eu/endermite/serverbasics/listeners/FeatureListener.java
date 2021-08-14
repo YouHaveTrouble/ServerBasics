@@ -16,6 +16,7 @@ public class FeatureListener implements Listener {
     public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
         Player player = event.getPlayer();
         BasicPlayer.fromDatabase(player.getUniqueId()).thenAccept(basicPlayer -> {
+            System.out.println("Adding player to cache");
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
             if (ServerBasics.getConfigCache().spawn_on_join)
                 basicPlayer.teleportPlayer(ServerBasics.getLocationsCache().spawn.getLocation());

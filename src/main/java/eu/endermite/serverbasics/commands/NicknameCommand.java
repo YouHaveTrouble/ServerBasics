@@ -4,7 +4,6 @@ import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
-import cloud.commandframework.annotations.specifier.Greedy;
 import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
@@ -68,7 +67,7 @@ public class NicknameCommand {
             if (sender instanceof Player playerSender)
                 locale = playerSender.locale();
             else
-                locale = Locale.forLanguageTag(ServerBasics.getConfigCache().default_lang);
+                locale = ServerBasics.getConfigCache().default_lang;
             Component nickComponent = MiniMessage.markdown().parse(nick);
             HashMap<String, Component> placeholders = new HashMap<>();
             placeholders.put("%oldnickname%", basicPlayer.getDisplayName());

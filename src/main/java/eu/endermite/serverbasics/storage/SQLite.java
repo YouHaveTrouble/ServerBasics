@@ -1,17 +1,18 @@
 package eu.endermite.serverbasics.storage;
 
-import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.util.BasicWarp;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.sql.*;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class MySQL implements Database {
+public class SQLite implements Database {
 
     private Connection connection;
 
@@ -20,21 +21,21 @@ public class MySQL implements Database {
     private final String loadPlayer, savePlayerDisplayName, savePlayerGodMode, savePlayerLastSeen, getSpawn, saveWarp,
     getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer;
 
-    public MySQL(String prefix) {
+    public SQLite(String prefix) {
         this.playerTable = prefix+"players";
         this.warpTable = prefix+"warps";
         this.homesTable = prefix+"homes";
         createTables();
 
         loadPlayer = "SELECT * FROM `"+playerTable+"` WHERE `player_uuid` = ?;";
-        savePlayerDisplayName = "INSERT INTO `"+playerTable+"` (player_uuid, displayname) VALUES (?, ?) ON DUPLICATE KEY UPDATE displayname = ?;";
-        savePlayerGodMode = "INSERT INTO `"+playerTable+"` (player_uuid, godmode) VALUES (?, ?) ON DUPLICATE KEY UPDATE godmode = ?;";
-        savePlayerLastSeen = "INSERT INTO `"+playerTable+"` (player_uuid, lastseen) VALUES (?, ?) ON DUPLICATE KEY UPDATE lastseen = ?;";
+        savePlayerDisplayName = "INSERT INTO `"+playerTable+"` (player_uuid, displayname) VALUES (?, ?) ON CONFLICT(player_uuid) DO UPDATE SET displayname = ?;";
+        savePlayerGodMode = "INSERT INTO `"+playerTable+"` (player_uuid, godmode) VALUES (?, ?) ON CONFLICT(player_uuid) DO UPDATE SET godmode = ?;";
+        savePlayerLastSeen = "INSERT INTO `"+playerTable+"` (player_uuid, lastseen) VALUES (?, ?) ON CONFLICT(player_uuid) DO UPDATE SET lastseen = ?;";
         getSpawn = "SELECT * FROM `"+warpTable+"` WHERE `warp_id` = ?;";
-        saveWarp = "INSERT INTO `"+warpTable+"` (warp_id, displayname, world_uuid, coords) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?;";
+        saveWarp = "INSERT INTO `"+warpTable+"` (warp_id, displayname, world_uuid, coords) VALUES (?, ?, ?, ?) ON CONFLICT(warp_id) DO UPDATE SET displayname = ?, world_uuid = ?, coords = ?;";
         getWarps = "SELECT * FROM `"+warpTable+"`;";
         getHomes = "SELECT * FROM `"+homesTable+"` WHERE `player_uuid` = ?;";
-        saveHome = "INSERT INTO `"+warpTable+"` (home_id, player_uuid, displayname, world_uuid, coords) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?;";
+        saveHome = "INSERT INTO `"+homesTable+"` (home_id, player_uuid, displayname, world_uuid, coords) VALUES (?, ?, ?, ?, ?) ON CONFLICT(player_uuid) DO UPDATE SET displayname = ?, world_uuid = ?, coords = ?;";
         deleteWarp = "DELETE FROM `"+warpTable+"` WHERE warp_id = ?;";
         deleteHome = "DELETE FROM "+homesTable+"` WHERE player_uuid = ?, WHERE home_id = ?;";
         deletePlayer = "DELETE FROM `"+playerTable+"` WHERE player_uuid = ?;";
@@ -79,6 +80,7 @@ public class MySQL implements Database {
                 if (result.next()) {
                     String displayName = result.getString("displayname");
                     long lastSeen = result.getLong("lastseen");
+
                     return BasicPlayer.builder()
                             .uuid(uuid)
                             .displayName(MiniMessage.markdown().parse(displayName))

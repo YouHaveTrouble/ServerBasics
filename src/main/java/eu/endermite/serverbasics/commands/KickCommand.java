@@ -59,7 +59,7 @@ public class KickCommand {
         if (!playerSelector.hasAny()) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                MessageParser.sendMessage(sender, ServerBasics.getLang(player.getLocale()).no_player_selected);
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_player_selected);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_player_selected);
             }
@@ -71,7 +71,7 @@ public class KickCommand {
             for (Player player : playerSelector.getPlayers()) {
                 StringBuilder kickReasonBuilder = new StringBuilder();
 
-                for (String line : ServerBasics.getLang(player.getLocale()).kick_message) {
+                for (String line : ServerBasics.getLang(player.locale()).kick_message) {
                     line = line.replaceAll("%reason%", kickReason);
                     kickReasonBuilder.append(line).append("\n");
                 }

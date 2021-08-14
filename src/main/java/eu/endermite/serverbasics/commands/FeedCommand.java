@@ -26,7 +26,7 @@ public class FeedCommand {
     ) {
         player.setFoodLevel(20);
         player.setSaturation(0);
-        String msg = ServerBasics.getLang(player.getLocale()).fed;
+        String msg = ServerBasics.getLang(player.locale()).fed;
         MessageParser.sendMessage(player, msg);
     }
 
@@ -46,7 +46,7 @@ public class FeedCommand {
             target.setFoodLevel(20);
             target.setSaturation(0);
 
-            String playerLang = target.getLocale();
+            Locale playerLang = target.locale();
             String msg;
             if (player != target) {
                 msg = ServerBasics.getLang(playerLang).fed_by_other;

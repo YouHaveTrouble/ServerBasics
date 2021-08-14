@@ -56,7 +56,10 @@ public class SpawnCommand {
             MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_not_set);
             return;
         }
-        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(BasicPlayer::teleportToSpawn);
+        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+            basicPlayer.teleportToSpawn();
+            basicPlayer.sendMessage("a");
+        });
     }
 
     @CommandMethod("setspawn")

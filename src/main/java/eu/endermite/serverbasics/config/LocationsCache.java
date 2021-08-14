@@ -2,7 +2,6 @@ package eu.endermite.serverbasics.config;
 
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.util.BasicWarp;
-import org.bukkit.Location;
 
 import java.util.HashMap;
 

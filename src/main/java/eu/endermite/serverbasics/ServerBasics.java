@@ -11,6 +11,7 @@ import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.HatListener;
+import eu.endermite.serverbasics.storage.SQLite;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -54,12 +55,21 @@ public final class ServerBasics extends JavaPlugin {
         hooks = new Hooks();
         commandManager = new CommandManager();
         commandManager.initCommands();
-        database = new MySQL("sbasics_");
+
+        String tablePrefix = configCache.getDatabaseTablePrefix();
+        switch (configCache.databaseType) {
+            case MYSQL:
+                database = new MySQL(tablePrefix);
+                break;
+            case SQLITE:
+                database = new SQLite(tablePrefix);
+                break;
+        }
 
         basicPlayers = new BasicPlayerCache();
         reloadLocations();
 
-        getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
+        //getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new HatListener(), this);
@@ -110,7 +120,7 @@ public final class ServerBasics extends JavaPlugin {
         locationsCache = new LocationsCache();
     }
 
-    public static LanguageCache getLang(String lang) {
+    private static LanguageCache getLang(String lang) {
         LanguageCache cache;
          cache = languageCacheMap.get(lang);
         if (cache == null)

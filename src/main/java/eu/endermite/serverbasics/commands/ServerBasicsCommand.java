@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
 import java.util.Map;
 
 @CommandRegistration
@@ -42,14 +43,14 @@ public class ServerBasicsCommand {
         sender.sendMessage(Component.text("NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", "")));
 
         if (sender instanceof Player player) {
-            sender.sendMessage(getHooksComponent(player.getLocale()));
+            sender.sendMessage(getHooksComponent(player.locale()));
         } else {
             sender.sendMessage(getHooksComponent(ServerBasics.getConfigCache().default_lang));
         }
 
     }
 
-    private Component getHooksComponent(String locale) {
+    private Component getHooksComponent(Locale locale) {
         Component hooksComponent = Component.text("Hooks (hookamount): ");
 
         int hooks = 0;

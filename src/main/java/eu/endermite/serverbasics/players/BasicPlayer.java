@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
@@ -102,7 +103,7 @@ public class BasicPlayer {
     }
 
     public Locale getLocale() {
-        Locale def = Locale.forLanguageTag(ServerBasics.getConfigCache().default_lang);
+        Locale def = ServerBasics.getConfigCache().default_lang;
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return def;
         if (!player.isOnline()) return def;
@@ -164,11 +165,15 @@ public class BasicPlayer {
 
     public CompletableFuture<Boolean> teleportPlayer(Location location) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        System.out.println("Attempting to get player");
         if (!offlinePlayer.hasPlayedBefore()) return CompletableFuture.completedFuture(false);
-        if (offlinePlayer.isOnline())
+        System.out.println("Player played before");
+        if (offlinePlayer.isOnline()){
+            System.out.println("Player online, teleporting");
             return offlinePlayer.getPlayer().teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        else {
+        } else {
             return CompletableFuture.supplyAsync(() -> {
+                System.out.println("Player offline, teleporting");
                 NMSHandler.setOfflinePlayerPosition(offlinePlayer, location);
                 return true;
             });
@@ -176,7 +181,8 @@ public class BasicPlayer {
     }
 
     public void teleportToSpawn() {
-        OfflinePlayer offlinePlayer = Bukkit.getPlayer(uuid);
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        System.out.println("Teleporting to spawn");
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> teleportPlayer(ServerBasics.getLocationsCache().spawn.getLocation()).thenAccept(result -> {
             if (!offlinePlayer.isOnline()) return;
             Player player = offlinePlayer.getPlayer();
@@ -223,11 +229,13 @@ public class BasicPlayer {
         return ServerBasics.getInstance().getDatabase().getPlayer(uuid);
     }
 
-    public static BasicPlayer empty(UUID uuid) {
+    public static BasicPlayer empty(UUID uuid, @Nullable Locale locale) {
+        if (locale == null)
+            locale = ServerBasics.getConfigCache().default_lang;
         return builder()
                 .uuid(uuid)
                 .lastSeen(0L)
-                .displayName(MiniMessage.markdown().parse(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).unknown_player))
+                .displayName(MiniMessage.markdown().parse(ServerBasics.getLang(locale).unknown_player))
                 .build();
     }
 

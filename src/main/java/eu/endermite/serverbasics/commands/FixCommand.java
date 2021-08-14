@@ -23,13 +23,12 @@ public class FixCommand {
     ) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getLang(player.getLocale()).have_to_hold_item;
+            String msg = ServerBasics.getLang(player.locale()).have_to_hold_item;
             MessageParser.sendMessage(player, msg);
             return;
         }
         fixItem(itemStack);
-
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).fixed_hand);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).fixed_hand);
     }
 
     @CommandMethod("fix hand")
@@ -40,13 +39,12 @@ public class FixCommand {
     ) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getLang(player.getLocale()).have_to_hold_item;
+            String msg = ServerBasics.getLang(player.locale()).have_to_hold_item;
             MessageParser.sendMessage(player, msg);
             return;
         }
         fixItem(itemStack);
-
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).fixed_hand);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).fixed_hand);
     }
 
     @CommandMethod("fix all")
@@ -56,13 +54,11 @@ public class FixCommand {
             final Player player
     ) {
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null || item.getItemMeta() == null)
-                continue;
+            if (item == null || item.getItemMeta() == null) continue;
             if (item.getItemMeta() instanceof Damageable)
                 fixItem(item);
         }
-
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).fixed_inventory);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).fixed_inventory);
     }
 
     private void fixItem(ItemStack itemStack) {

@@ -36,3 +36,5 @@ permissions:
   serverbasics.command.hat.equip:
     description: Allows equipping hat in the survival inventory
     default: op
+  serverbasics.command.nick.change:
+    description: Allows player to change their own nickname and not only change colors

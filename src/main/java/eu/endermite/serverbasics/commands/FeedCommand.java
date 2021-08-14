@@ -8,8 +8,12 @@ import cloud.commandframework.bukkit.arguments.selector.MultiplePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.Locale;
 
 @CommandRegistration
 public class FeedCommand {
@@ -44,32 +48,45 @@ public class FeedCommand {
 
             String playerLang = target.getLocale();
             String msg;
-            if (player != target)
-                msg = String.format(ServerBasics.getLang(playerLang).fed_by_other, player.getName());
-            else
+            if (player != target) {
+                msg = ServerBasics.getLang(playerLang).fed_by_other;
+                HashMap<String, Component> placeholders = new HashMap<>();
+                placeholders.put("%player%", lastPlayer.displayName());
+                player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
+            }
+            else {
                 msg = ServerBasics.getLang(playerLang).fed;
-
-            MessageParser.sendMessage(target, msg);
+                MessageParser.sendMessage(target, msg);
+            }
         }
         if (player instanceof Player) {
             String msg;
-            String playerLang = ((Player) player).getLocale();
-            if (amountFed == 1)
-                msg = String.format(ServerBasics.getLang(playerLang).fed_by_other, lastPlayer.getDisplayName());
-            else if (amountFed > 1)
-                msg = String.format(ServerBasics.getLang(playerLang).healed_many, amountFed);
-            else
-                msg = ServerBasics.getLang(playerLang).healed_noone;
-            MessageParser.sendMessage(player, msg);
+            Locale playerLang = ((Player) player).locale();
+            HashMap<String, Component> placeholders = new HashMap<>();
+            if (amountFed == 1) {
+                msg = ServerBasics.getLang(playerLang).fed_by_other;
+                placeholders.put("%player%", lastPlayer.displayName());
+            } else if (amountFed > 1) {
+                msg = String.format(ServerBasics.getLang(playerLang).fed_many, amountFed);
+                placeholders.put("%amount%", Component.text(amountFed));
+            } else {
+                msg = ServerBasics.getLang(playerLang).fed_noone;
+            }
+            player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
         } else {
             String msg;
-            if (amountFed == 1)
-                msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_by_other, lastPlayer.getDisplayName());
-            else if (amountFed > 1)
-                msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_many, amountFed);
-            else
+            HashMap<String, Component> placeholders = new HashMap<>();
+            if (amountFed == 1) {
+                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).fed_by_other;
+                placeholders.put("%player%", lastPlayer.displayName());
+            }
+            else if (amountFed > 1) {
+                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_many;
+                placeholders.put("%amount%", Component.text(amountFed));
+            } else {
                 msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_noone;
-            MessageParser.sendMessage(player, msg);
+            }
+            player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
         }
     }
 

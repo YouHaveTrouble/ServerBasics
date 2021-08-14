@@ -9,6 +9,8 @@ import cloud.commandframework.bukkit.arguments.selector.MultiplePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,8 +28,7 @@ public class KickCommand {
             @Argument(value = "player", description = "Player to kick") MultiplePlayerSelector playerSelector
     ) {
         if (!playerSelector.hasAny()) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+            if (sender instanceof Player player) {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_player_selected);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_player_selected);
@@ -37,18 +38,12 @@ public class KickCommand {
 
         Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
             for (Player player : playerSelector.getPlayers()) {
-
-                StringBuilder kickReasonBuilder = new StringBuilder();
-
-                for (String line : ServerBasics.getLang(player.getLocale()).kick_message) {
-                    line = line.replaceAll("%reason%", ServerBasics.getLang(player.getLocale()).kick_reason);
-                    kickReasonBuilder.append(line).append("\n");
+                Component kickReason = Component.empty();
+                for (String line : ServerBasics.getLang(player.locale()).kick_message) {
+                    line = line.replaceAll("%reason%", ServerBasics.getLang(player.locale()).kick_reason);
+                    kickReason = kickReason.append(MiniMessage.markdown().parse(line)).append(Component.newline());
                 }
-
-                String kickReason = kickReasonBuilder.toString();
-                kickReason = MessageParser.makeColorsWorkButReverse(kickReason);
-                String finalKickReason = ChatColor.translateAlternateColorCodes('&', kickReason);
-                player.kickPlayer(finalKickReason);
+                player.kick(kickReason);
             }
         });
     }

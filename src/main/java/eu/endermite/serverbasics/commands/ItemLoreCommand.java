@@ -8,6 +8,8 @@ import cloud.commandframework.annotations.specifier.Greedy;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @CommandRegistration
@@ -31,7 +32,7 @@ public class ItemLoreCommand {
     ) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getLang(player.getLocale()).have_to_hold_item;
+            String msg = ServerBasics.getLang(player.locale()).have_to_hold_item;
             MessageParser.sendMessage(player, msg);
             return;
         }
@@ -39,15 +40,16 @@ public class ItemLoreCommand {
         raw = ChatColor.translateAlternateColorCodes('&', raw);
 
         String[] lines = raw.split("\\\\n");
-        List<String> lore = new ArrayList<>(Arrays.asList(lines));
-
+        List<Component> lore = new ArrayList<>();
+        for (String line : lines) {
+            lore.add(MiniMessage.markdown().parse(line));
+        }
         ItemMeta meta = itemStack.getItemMeta();
-        meta.setLore(lore);
+        meta.lore(lore);
         itemStack.setItemMeta(meta);
         player.getInventory().setItemInMainHand(itemStack);
-        String msg = ServerBasics.getLang(player.getLocale()).item_lore_changed;
+        String msg = ServerBasics.getLang(player.locale()).item_lore_changed;
         MessageParser.sendMessage(player, msg);
-        player.sendMessage(lines);
     }
 
 }

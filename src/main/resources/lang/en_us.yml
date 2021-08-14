@@ -12,15 +12,15 @@ commands:
     not-set: "Spawn not set! Ask server administrators to do that!"
   heal:
     healed: "You have been healed"
-    healed-by-other: "You have been healed by %s"
-    healed-other: "You healed %s"
-    healed-many: "You healed %s players"
+    healed-by-other: "You have been healed by %player%"
+    healed-other: "You healed %player%"
+    healed-many: "You healed %amount% players"
     healed-noone: "You healed noone"
   feed:
     fed: "You have been fed"
-    fed-by-other: "You have been fed by %s"
-    fed-other: "You fed %s"
-    fed-many: "You fed %s players"
+    fed-by-other: "You have been fed by %player%"
+    fed-other: "You fed %player%"
+    fed-many: "You fed %amount% players"
     fed-noone: "You fed noone"
   fly:
     flight-on: "You toggled fly on"
@@ -36,9 +36,9 @@ commands:
     hat-set: "You changed your hat!"
     binding-curse: "Your current hat has curse of binding!"
   itemname:
-    name-changed: "You changed the name of the the item you're holding to &r%s"
+    name-changed: "You changed the name of the the item you're holding"
   itemlore:
-    lore-changed: "You changed the lore of the item you're holding to:"
+    lore-changed: "You changed the lore of the item you're holding"
   gamemode:
     changed: "Your gamemode was set to %gamemode%"
     changed-self: "You set your own gamemode to %gamemode%"
@@ -50,6 +50,7 @@ commands:
     changed-self: "You changed your nickname to %nickname%"
     changed-other: "You changed %oldnickname%'s nickname to %newnickname%"
     changed-by-other: "Your nickname was changed to %nickname%"
+    only-colors: "You are only allowed to add colors to your name"
   teleport:
     noone-to-teleport: "No entities to teleport"
     teleported-self: "You teleported to %s's location"

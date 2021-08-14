@@ -8,8 +8,8 @@ import cloud.commandframework.annotations.specifier.Greedy;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,18 +27,16 @@ public class ItemNameCommand {
     ) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            String msg = ServerBasics.getLang(player.getLocale()).have_to_hold_item;
+            String msg = ServerBasics.getLang(player.locale()).have_to_hold_item;
             MessageParser.sendMessage(player, msg);
             return;
         }
         String name = StringUtils.join(newName, " ");
         ItemMeta meta = itemStack.getItemMeta();
-        String parsedName = ChatColor.translateAlternateColorCodes('&', name);
-        meta.setDisplayName(parsedName);
+        meta.displayName(MiniMessage.markdown().parse(name));
         itemStack.setItemMeta(meta);
         player.getInventory().setItemInMainHand(itemStack);
-        String msg = ServerBasics.getLang(player.getLocale()).item_name_changed;
-        msg = String.format(msg, name);
+        String msg = ServerBasics.getLang(player.locale()).item_name_changed;
         MessageParser.sendMessage(player, msg);
     }
 }

@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -84,6 +86,29 @@ public class BasicPlayer {
             return true;
         }
     }
+
+    public void sendMessage(String message) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return;
+        if (!player.isOnline()) return;
+        MessageParser.parseMessage(player, message);
+    }
+
+    public void sendMessage(String message, HashMap<String, Component> placeholders) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return;
+        if (!player.isOnline()) return;
+        MessageParser.parseMessage(player, message, placeholders);
+    }
+
+    public Locale getLocale() {
+        Locale def = Locale.forLanguageTag(ServerBasics.getConfigCache().default_lang);
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return def;
+        if (!player.isOnline()) return def;
+        return player.locale();
+    }
+
 
     public Component getDisplayName() {
         if (displayName != null) return displayName;

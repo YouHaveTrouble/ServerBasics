@@ -18,7 +18,8 @@ public class LanguageCache {
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
             gamemode_creative, gamemode_adventure, gamemode_spectator, hooks, hook_inactive, hooks_paper, hook_fix,
             hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other,
-            invalid_syntax, failed_argument_parse, unknown_player, started_flying_other, stopped_flying_other, console_name;
+            invalid_syntax, failed_argument_parse, unknown_player, started_flying_other, stopped_flying_other, console_name,
+            nick_self, nick_other, nick_changed_by_other, nick_only_same_as_name;
 
     public List<String> kick_message, ban_message, tempban_message;
 
@@ -37,7 +38,6 @@ public class LanguageCache {
         }
         try {
             fileConfiguration.load(langFile);
-
             String defaultMessage = "Message missing";
 
             this.all_configs_reloaded = fileConfiguration.getString("commands.misc.all-reloaded", defaultMessage);
@@ -80,6 +80,11 @@ public class LanguageCache {
 
             this.item_name_changed = fileConfiguration.getString("commands.itemname.name-changed", defaultMessage);
             this.item_lore_changed = fileConfiguration.getString("commands.itemlore.lore-changed", defaultMessage);
+
+            this.nick_self = fileConfiguration.getString("commands.nick.changed-self", defaultMessage);
+            this.nick_other = fileConfiguration.getString("commands.nick.changed-other", defaultMessage);
+            this.nick_changed_by_other = fileConfiguration.getString("commands.nick.changed-by-other", defaultMessage);
+            this.nick_only_same_as_name = fileConfiguration.getString("commands.nick.only-colors", defaultMessage);
 
             this.started_flying = fileConfiguration.getString("commands.fly.flight-on", defaultMessage);
             this.stopped_flying = fileConfiguration.getString("commands.fly.flight-off", defaultMessage);

@@ -28,7 +28,7 @@ public class BasicPlayer {
 
     private final UUID uuid;
     private Component displayName;
-    private long lastSeen;
+    private final long lastSeen;
 
     public UUID getUuid() {
         return uuid;
@@ -36,6 +36,7 @@ public class BasicPlayer {
 
     /**
      * Check if player is allowed to fly
+     *
      * @return
      */
     public boolean canFly() {
@@ -49,6 +50,7 @@ public class BasicPlayer {
 
     /**
      * Set player's fly state.
+     *
      * @param state State to set.
      * @return true if set successfully, false if not
      */
@@ -76,6 +78,7 @@ public class BasicPlayer {
 
     /**
      * Toggle player's fly mode.
+     *
      * @return New fly state.
      */
     public boolean toggleFly() {
@@ -92,14 +95,14 @@ public class BasicPlayer {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         if (!player.isOnline()) return;
-        MessageParser.parseMessage(player, message);
+        MessageParser.sendMessage(player, message);
     }
 
     public void sendMessage(String message, HashMap<String, Component> placeholders) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         if (!player.isOnline()) return;
-        MessageParser.parseMessage(player, message, placeholders);
+        MessageParser.sendMessage(player, message, placeholders);
     }
 
     public Locale getLocale() {
@@ -120,6 +123,7 @@ public class BasicPlayer {
         else
             return Component.text(offlinePlayer.getName());
     }
+
     public boolean setDisplayName(String name) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (!offlinePlayer.hasPlayedBefore()) return false;
@@ -144,7 +148,7 @@ public class BasicPlayer {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (!offlinePlayer.hasPlayedBefore()) return false;
         if (offlinePlayer.isOnline())
-            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> offlinePlayer.getPlayer().setGameMode(gamemode)) ;
+            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> offlinePlayer.getPlayer().setGameMode(gamemode));
         else
             NMSHandler.setOfflinePlayerGamemode(offlinePlayer, gamemode);
         return true;
@@ -155,7 +159,7 @@ public class BasicPlayer {
         if (player == null || !player.isOnline()) return;
         ItemStack hatItem = itemStack.clone();
         hatItem.setAmount(1);
-        itemStack.setAmount(itemStack.getAmount()-1);
+        itemStack.setAmount(itemStack.getAmount() - 1);
         if (player.getInventory().getHelmet() != null) {
             player.getInventory().addItem(player.getInventory().getHelmet());
             player.getInventory().setHelmet(null);
@@ -163,41 +167,35 @@ public class BasicPlayer {
         player.getInventory().setHelmet(hatItem);
     }
 
-    public CompletableFuture<Boolean> teleportPlayer(Location location) {
+    public boolean teleportPlayer(Location location) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        System.out.println("Attempting to get player");
-        if (!offlinePlayer.hasPlayedBefore()) return CompletableFuture.completedFuture(false);
-        System.out.println("Player played before");
-        if (offlinePlayer.isOnline()){
-            System.out.println("Player online, teleporting");
-            return offlinePlayer.getPlayer().teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        } else {
-            return CompletableFuture.supplyAsync(() -> {
-                System.out.println("Player offline, teleporting");
-                NMSHandler.setOfflinePlayerPosition(offlinePlayer, location);
-                return true;
-            });
-        }
+        if (!offlinePlayer.hasPlayedBefore()) return false;
+        if (offlinePlayer.isOnline()) {
+            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> offlinePlayer.getPlayer().teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN));
+        } else
+            CompletableFuture.runAsync(() -> NMSHandler.setOfflinePlayerPosition(offlinePlayer, location));
+        return true;
     }
 
     public void teleportToSpawn() {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        System.out.println("Teleporting to spawn");
-        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> teleportPlayer(ServerBasics.getLocationsCache().spawn.getLocation()).thenAccept(result -> {
-            if (!offlinePlayer.isOnline()) return;
-            Player player = offlinePlayer.getPlayer();
-            if (result) {
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).teleported_spawn);
-            } else {
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).could_not_tp);
-            }
-        }));
+        teleportPlayer(ServerBasics.getLocationsCache().spawn.getLocation());
+        if (!offlinePlayer.isOnline()) return;
+        Player player = offlinePlayer.getPlayer();
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).teleported_spawn);
     }
 
     public boolean isOnline() {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return false;
         return player.isOnline();
+    }
+
+    /**
+     * @return Epoch second timestamp of last logout
+     */
+    public long getLastSeen() {
+        return lastSeen;
     }
 
     /**
@@ -223,19 +221,17 @@ public class BasicPlayer {
 
     /**
      * Get player data directly from the database. This method will NOT check for online player cache first.
+     *
      * @return CompletableFuture of BasicPlayer instance. Can be null if player does not exist in the database.
      */
     public static CompletableFuture<BasicPlayer> fromDatabase(UUID uuid) {
         return ServerBasics.getInstance().getDatabase().getPlayer(uuid);
     }
 
-    public static BasicPlayer empty(UUID uuid, @Nullable Locale locale) {
-        if (locale == null)
-            locale = ServerBasics.getConfigCache().default_lang;
+    public static BasicPlayer empty(UUID uuid) {
         return builder()
                 .uuid(uuid)
                 .lastSeen(0L)
-                .displayName(MiniMessage.markdown().parse(ServerBasics.getLang(locale).unknown_player))
                 .build();
     }
 

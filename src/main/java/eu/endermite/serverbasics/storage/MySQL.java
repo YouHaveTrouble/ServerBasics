@@ -31,7 +31,7 @@ public class MySQL implements Database {
         savePlayerGodMode = "INSERT INTO `"+playerTable+"` (player_uuid, godmode) VALUES (?, ?) ON DUPLICATE KEY UPDATE godmode = ?;";
         savePlayerLastSeen = "INSERT INTO `"+playerTable+"` (player_uuid, lastseen) VALUES (?, ?) ON DUPLICATE KEY UPDATE lastseen = ?;";
         getSpawn = "SELECT * FROM `"+warpTable+"` WHERE `warp_id` = ?;";
-        saveWarp = "INSERT INTO `"+warpTable+"` (warp_id, displayname, world_uuid, coords) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?;";
+        saveWarp = "INSERT INTO `"+warpTable+"` (warp_id, displayname, world_uuid, coords, requires_permission) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?, requires_permission = ?;";
         getWarps = "SELECT * FROM `"+warpTable+"`;";
         getHomes = "SELECT * FROM `"+homesTable+"` WHERE `player_uuid` = ?;";
         saveHome = "INSERT INTO `"+warpTable+"` (home_id, player_uuid, displayname, world_uuid, coords) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?;";
@@ -58,7 +58,7 @@ public class MySQL implements Database {
                 String sql;
                 sql = "CREATE TABLE IF NOT EXISTS `"+playerTable+"` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long);";
                 statement.execute(sql);
-                sql = "CREATE TABLE IF NOT EXISTS `"+warpTable+"` (`warp_id` varchar(32) UNIQUE PRIMARY KEY, `displayname` varchar(256), `world_uuid` varchar(36), `coords` varchar(256));";
+                sql = "CREATE TABLE IF NOT EXISTS `"+warpTable+"` (`warp_id` varchar(32) UNIQUE PRIMARY KEY, `displayname` varchar(256), `world_uuid` varchar(36), `coords` varchar(256), `requires_permission` boolean DEFAULT FALSE);";
                 statement.execute(sql);
                 sql = "CREATE TABLE IF NOT EXISTS `"+homesTable+"` (`home_id` varchar(32), `player_uuid` varchar(36), `world_uuid` varchar(36), `coords` varchar(256), CONSTRAINT COMP_KEY PRIMARY KEY (home_id, player_uuid));";
                 statement.execute(sql);
@@ -79,13 +79,20 @@ public class MySQL implements Database {
                 if (result.next()) {
                     String displayName = result.getString("displayname");
                     long lastSeen = result.getLong("lastseen");
+                    if (displayName == null) {
+                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+                        if (offlinePlayer.hasPlayedBefore())
+                            displayName = offlinePlayer.getName();
+                        else
+                            displayName = "Unknown Player";
+                    }
                     return BasicPlayer.builder()
                             .uuid(uuid)
                             .displayName(MiniMessage.markdown().parse(displayName))
                             .lastSeen(lastSeen)
                             .build();
                 } else
-                    return BasicPlayer.empty(uuid, null);
+                    return BasicPlayer.empty(uuid);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
                 return null;
@@ -195,15 +202,16 @@ public class MySQL implements Database {
                 ResultSet result = loadPlayerStatement.executeQuery();
                 while (result.next()) {
                     String id = result.getString("warp_id");
-                    if (id.equals("spawn")) continue;
                     String displayName = result.getString("displayname");
                     String worldUuid = result.getString("world_uuid");
                     String[] coords = result.getString("coords").split(";");
+                    boolean requiresPermission = result.getBoolean("requires_permission");
                     BasicWarp basicWarp = BasicWarp.builder()
                             .warpId(id)
                             .location(new Location(Bukkit.getWorld(UUID.fromString(worldUuid)), Double.parseDouble(coords[0]) , Double.parseDouble(coords[1]), Double.parseDouble(coords[2])))
                             .displayName(displayName)
-                            .warpId("spawn")
+                            .warpId(id)
+                            .requiresPermission(requiresPermission)
                             .build();
                     warps.put(id, basicWarp);
                 }
@@ -226,9 +234,11 @@ public class MySQL implements Database {
                 statement.setString(2, basicWarp.getRawDisplayName());
                 statement.setString(3, basicWarp.getLocation().getWorld().getUID().toString());
                 statement.setString(4, locationString);
-                statement.setString(5, basicWarp.getRawDisplayName());
-                statement.setString(6, basicWarp.getLocation().getWorld().getUID().toString());
-                statement.setString(7, locationString);
+                statement.setBoolean(5, basicWarp.requiresPermission());
+                statement.setString(6, basicWarp.getRawDisplayName());
+                statement.setString(7, basicWarp.getLocation().getWorld().getUID().toString());
+                statement.setString(8, locationString);
+                statement.setBoolean(9, basicWarp.requiresPermission());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

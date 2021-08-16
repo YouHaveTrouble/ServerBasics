@@ -12,8 +12,10 @@ public class BasicWarp {
     private final String warpId;
     private String displayName;
     private Location location;
+    private boolean requiresPermission;
 
     public Component getDisplayName() {
+        if (displayName == null) return Component.text(warpId);
         return MiniMessage.markdown().parse(displayName);
     }
 
@@ -37,5 +39,13 @@ public class BasicWarp {
 
     public String getWarpId() {
         return warpId;
+    }
+
+    public boolean requiresPermission() {
+        return requiresPermission;
+    }
+
+    public void requiresPermission(boolean requiresPermission) {
+        this.requiresPermission = requiresPermission;
     }
 }

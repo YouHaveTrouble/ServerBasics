@@ -131,6 +131,7 @@ public class CommandManager {
         construcSyncCommands();
     }
 
+
     private void constructCommands() {
         Reflections reflections = new Reflections((Object) new String[]{"eu.endermite.serverbasics.commands"});
         Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(CommandRegistration.class);

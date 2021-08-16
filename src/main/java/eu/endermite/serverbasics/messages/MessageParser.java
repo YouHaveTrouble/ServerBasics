@@ -23,7 +23,11 @@ public class MessageParser {
     public static void sendMessage(CommandSender recipent, String message) {
         Component component = parseMessage(recipent, message);
         recipent.sendMessage(component);
+    }
 
+    public static void sendMessage(CommandSender recipent, String message, HashMap<String, Component> placeholders) {
+        Component component = parseMessage(recipent, message, placeholders);
+        recipent.sendMessage(component);
     }
 
     public static Component parseMessage(CommandSender sender, String message, HashMap<String, Component> placeholders) {

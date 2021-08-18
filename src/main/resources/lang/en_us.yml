@@ -53,16 +53,20 @@ commands:
     only-colors: "You are only allowed to add colors to your name"
   teleport:
     noone-to-teleport: "No entities to teleport"
-    teleported-self: "You teleported to %s's location"
+    teleported-self: "You teleported to %entity%'s location"
     teleported-to-self: "You teleported %name% to your location"
     teleported-coords: "You teleported to %s"
     teleported-by-other: "You have been teleported"
   warp:
     warped: "You warped to %warp%"
-    warp-doesnt-exist: "Warp %warp% doesn't exist"
-    warp-set: "Warp %warp% created at your location"
-    warp-already-exists: "Warp with id \"%warp%\" already exists. Use /editwarp to edit or remove it"
+    doesnt-exist: "Warp %warp% doesn't exist"
+    set: "Warp %warp% created at your location"
+    already-exists: "Warp with id \"%warp%\" already exists. Use /editwarp to edit or remove it"
     cannot-use-name: "\"Spawn\" is a reserved name and you cannot use it as warp name. Use /setspawn instead"
+    displayname-set: "Set %warp%'s displayname to %displayname%"
+    removed: "Warp %warp% removed"
+    requires-permission-true: "Warp %warp% now requires permission to access"
+    requires-permission-false: "Warp %warp% doesn't require permission to access now"
   kick:
     kick-message:
     - "You have been kicked from the server"

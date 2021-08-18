@@ -2,11 +2,14 @@ package eu.endermite.serverbasics.storage;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.players.BasicPlayer;
+import eu.endermite.serverbasics.util.BasicUtil;
 import eu.endermite.serverbasics.util.BasicWarp;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -19,8 +22,8 @@ public class MySQL implements Database {
     DataSource dataSource;
 
     private final String playerTable, warpTable, homesTable;
-    private final String loadPlayer, savePlayerDisplayName, savePlayerGodMode, savePlayerLastSeen, getSpawn, saveWarp,
-    getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer;
+    private final String loadPlayer, savePlayerDisplayName, savePlayerLastSeen, getSpawn, saveWarp,
+            getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer;
 
     public MySQL(String playerPrefix, String locationsPrefix) {
         HikariConfig config = new HikariConfig();
@@ -29,35 +32,34 @@ public class MySQL implements Database {
         config.setMaximumPoolSize(10);
 
         dataSource = new HikariDataSource(config);
-        this.playerTable = playerPrefix+"players";
-        this.warpTable = locationsPrefix+"warps";
-        this.homesTable = locationsPrefix+"homes";
+        this.playerTable = playerPrefix + "players";
+        this.warpTable = locationsPrefix + "warps";
+        this.homesTable = locationsPrefix + "homes";
         createTables();
 
-        loadPlayer = "SELECT * FROM `"+playerTable+"` WHERE `player_uuid` = ?;";
-        savePlayerDisplayName = "INSERT INTO `"+playerTable+"` (player_uuid, displayname) VALUES (?, ?) ON DUPLICATE KEY UPDATE displayname = ?;";
-        savePlayerGodMode = "INSERT INTO `"+playerTable+"` (player_uuid, godmode) VALUES (?, ?) ON DUPLICATE KEY UPDATE godmode = ?;";
-        savePlayerLastSeen = "INSERT INTO `"+playerTable+"` (player_uuid, lastseen) VALUES (?, ?) ON DUPLICATE KEY UPDATE lastseen = ?;";
-        getSpawn = "SELECT * FROM `"+warpTable+"` WHERE `warp_id` = ?;";
-        saveWarp = "INSERT INTO `"+warpTable+"` (warp_id, displayname, world_uuid, coords, requires_permission) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?, requires_permission = ?;";
-        getWarps = "SELECT * FROM `"+warpTable+"`;";
-        getHomes = "SELECT * FROM `"+homesTable+"` WHERE `player_uuid` = ?;";
-        saveHome = "INSERT INTO `"+warpTable+"` (home_id, player_uuid, displayname, world_uuid, coords) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, world_uuid = ?, coords = ?;";
-        deleteWarp = "DELETE FROM `"+warpTable+"` WHERE warp_id = ?;";
-        deleteHome = "DELETE FROM "+homesTable+"` WHERE player_uuid = ?, WHERE home_id = ?;";
-        deletePlayer = "DELETE FROM `"+playerTable+"` WHERE player_uuid = ?;";
+        loadPlayer = "SELECT * FROM `" + playerTable + "` WHERE `player_uuid` = ?;";
+        savePlayerDisplayName = "INSERT INTO `" + playerTable + "` (player_uuid, displayname) VALUES (?, ?) ON DUPLICATE KEY UPDATE displayname = ?;";
+        savePlayerLastSeen = "INSERT INTO `" + playerTable + "` (player_uuid, lastseen) VALUES (?, ?) ON DUPLICATE KEY UPDATE lastseen = ?;";
+        getSpawn = "SELECT * FROM `" + warpTable + "` WHERE `warp_id` = ?;";
+        saveWarp = "INSERT INTO `" + warpTable + "` (warp_id, displayname, location, requires_permission) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, location = ?, requires_permission = ?;";
+        getWarps = "SELECT * FROM `" + warpTable + "`;";
+        getHomes = "SELECT * FROM `" + homesTable + "` WHERE `player_uuid` = ?;";
+        saveHome = "INSERT INTO `" + warpTable + "` (home_id, player_uuid, displayname, location) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, location = ?;";
+        deleteWarp = "DELETE FROM `" + warpTable + "` WHERE warp_id = ?;";
+        deleteHome = "DELETE FROM " + homesTable + "` WHERE player_uuid = ?, WHERE home_id = ?;";
+        deletePlayer = "DELETE FROM `" + playerTable + "` WHERE player_uuid = ?;";
     }
 
     public void createTables() {
         try {
-                Statement statement = dataSource.getConnection().createStatement();
-                String sql;
-                sql = "CREATE TABLE IF NOT EXISTS `"+playerTable+"` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long);";
-                statement.execute(sql);
-                sql = "CREATE TABLE IF NOT EXISTS `"+warpTable+"` (`warp_id` varchar(32) UNIQUE PRIMARY KEY, `displayname` varchar(256), `world_uuid` varchar(36), `coords` varchar(256), `requires_permission` boolean DEFAULT FALSE);";
-                statement.execute(sql);
-                sql = "CREATE TABLE IF NOT EXISTS `"+homesTable+"` (`home_id` varchar(32), `player_uuid` varchar(36), `world_uuid` varchar(36), `coords` varchar(256), CONSTRAINT COMP_KEY PRIMARY KEY (home_id, player_uuid));";
-                statement.execute(sql);
+            Statement statement = dataSource.getConnection().createStatement();
+            String sql;
+            sql = "CREATE TABLE IF NOT EXISTS `" + playerTable + "` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long);";
+            statement.execute(sql);
+            sql = "CREATE TABLE IF NOT EXISTS `" + warpTable + "` (`warp_id` varchar(32) UNIQUE PRIMARY KEY, `displayname` varchar(256), `location` json, `requires_permission` boolean DEFAULT FALSE);";
+            statement.execute(sql);
+            sql = "CREATE TABLE IF NOT EXISTS `" + homesTable + "` (`home_id` varchar(32), `player_uuid` varchar(36), `location` json, CONSTRAINT COMP_KEY PRIMARY KEY (home_id, player_uuid));";
+            statement.execute(sql);
         } catch (SQLException e) {
             e.printStackTrace();
             ServerBasics.getInstance().getServer().getPluginManager().disablePlugin(ServerBasics.getInstance());
@@ -109,23 +111,9 @@ public class MySQL implements Database {
     }
 
     @Override
-    public CompletableFuture<Void> savePlayerGodMode(UUID uuid, boolean godmode) {
-        return CompletableFuture.runAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerGodMode)) {
-                statement.setString(1, uuid.toString());
-                statement.setBoolean(2, godmode);
-                statement.setBoolean(3, godmode);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
     public CompletableFuture<Void> savePlayerLastSeen(UUID uuid, long lastSeen) {
         return CompletableFuture.runAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerLastSeen)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerLastSeen)) {
                 statement.setString(1, uuid.toString());
                 statement.setLong(2, lastSeen);
                 statement.setLong(3, lastSeen);
@@ -139,10 +127,10 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> deletePlayer(UUID uuid) {
         return CompletableFuture.runAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deletePlayer)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deletePlayer)) {
                 statement.setString(1, uuid.toString());
                 statement.executeUpdate();
-            }catch (SQLException throwables) {
+            } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
@@ -151,15 +139,14 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<BasicWarp> getSpawn() {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getSpawn)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getSpawn)) {
                 statement.setString(1, "spawn");
                 ResultSet result = statement.executeQuery();
                 if (result.next()) {
                     String displayName = result.getString("displayname");
-                    String worldUuid = result.getString("world_uuid");
-                    String[] coords = result.getString("coords").split(";");
+                    Location location = BasicUtil.locationFromJson(result.getString("location"));
                     return BasicWarp.builder()
-                            .location(new Location(Bukkit.getWorld(UUID.fromString(worldUuid)), Double.parseDouble(coords[0]) , Double.parseDouble(coords[1]), Double.parseDouble(coords[2])))
+                            .location(location)
                             .displayName(displayName)
                             .warpId("spawn")
                             .build();
@@ -185,19 +172,17 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<HashMap<String, BasicWarp>> getWarps() {
         return CompletableFuture.supplyAsync(() -> {
-
-            try (Connection connection= dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getWarps)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getWarps)) {
                 HashMap<String, BasicWarp> warps = new HashMap<>();
                 ResultSet result = loadPlayerStatement.executeQuery();
                 while (result.next()) {
                     String id = result.getString("warp_id");
                     String displayName = result.getString("displayname");
-                    String worldUuid = result.getString("world_uuid");
-                    String[] coords = result.getString("coords").split(";");
+                    Location location = BasicUtil.locationFromJson(result.getString("location"));
                     boolean requiresPermission = result.getBoolean("requires_permission");
                     BasicWarp basicWarp = BasicWarp.builder()
                             .warpId(id)
-                            .location(new Location(Bukkit.getWorld(UUID.fromString(worldUuid)), Double.parseDouble(coords[0]) , Double.parseDouble(coords[1]), Double.parseDouble(coords[2])))
+                            .location(location)
                             .displayName(displayName)
                             .warpId(id)
                             .requiresPermission(requiresPermission)
@@ -216,17 +201,15 @@ public class MySQL implements Database {
     public CompletableFuture<Void> saveWarp(BasicWarp basicWarp) {
         return CompletableFuture.runAsync(() -> {
             Location location = basicWarp.getLocation();
-            String locationString = location.getX()+";"+location.getY()+";"+ location.getZ();
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveWarp)) {
+            String locationString = BasicUtil.jsonFromLocation(location).toJSONString();
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveWarp)) {
                 statement.setString(1, basicWarp.getWarpId());
                 statement.setString(2, basicWarp.getRawDisplayName());
-                statement.setString(3, basicWarp.getLocation().getWorld().getUID().toString());
-                statement.setString(4, locationString);
-                statement.setBoolean(5, basicWarp.requiresPermission());
-                statement.setString(6, basicWarp.getRawDisplayName());
-                statement.setString(7, basicWarp.getLocation().getWorld().getUID().toString());
-                statement.setString(8, locationString);
-                statement.setBoolean(9, basicWarp.requiresPermission());
+                statement.setString(3, locationString);
+                statement.setBoolean(4, basicWarp.requiresPermission());
+                statement.setString(5, basicWarp.getRawDisplayName());
+                statement.setString(6, locationString);
+                statement.setBoolean(7, basicWarp.requiresPermission());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -237,10 +220,10 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> deleteWarp(String warpId) {
         return CompletableFuture.runAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteWarp)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteWarp)) {
                 statement.setString(1, warpId);
                 statement.executeUpdate();
-            }catch (SQLException throwables) {
+            } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
@@ -249,17 +232,16 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<HashMap<String, BasicWarp>> getPlayerHomes(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getHomes)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getHomes)) {
                 HashMap<String, BasicWarp> warps = new HashMap<>();
                 ResultSet result = loadPlayerStatement.executeQuery();
                 while (result.next()) {
                     String id = result.getString("home_id");
                     String displayName = result.getString("displayname");
-                    String worldUuid = result.getString("world_uuid");
-                    String[] coords = result.getString("coords").split(";");
+                    Location location = BasicUtil.locationFromJson(result.getString("location"));
                     BasicWarp basicWarp = BasicWarp.builder()
                             .warpId(id)
-                            .location(new Location(Bukkit.getWorld(UUID.fromString(worldUuid)), Double.parseDouble(coords[0]) , Double.parseDouble(coords[1]), Double.parseDouble(coords[2])))
+                            .location(location)
                             .displayName(displayName)
                             .warpId("spawn")
                             .build();
@@ -277,15 +259,13 @@ public class MySQL implements Database {
     public CompletableFuture<Void> savePlayerHome(BasicWarp basicWarp, UUID uuid) {
         return CompletableFuture.runAsync(() -> {
             Location location = basicWarp.getLocation();
-            String locationString = location.getX()+";"+location.getY()+";"+ location.getZ();
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveHome)) {
+            String locationString = BasicUtil.jsonFromLocation(location).toJSONString();
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveHome)) {
                 statement.setString(1, basicWarp.getWarpId());
                 statement.setString(2, basicWarp.getRawDisplayName());
-                statement.setString(3, basicWarp.getLocation().getWorld().getUID().toString());
-                statement.setString(4, locationString);
-                statement.setString(5, basicWarp.getRawDisplayName());
-                statement.setString(6, basicWarp.getLocation().getWorld().getUID().toString());
-                statement.setString(7, locationString);
+                statement.setString(3, locationString);
+                statement.setString(4, basicWarp.getRawDisplayName());
+                statement.setString(5, locationString);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -296,11 +276,11 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> deletePlayerHome(UUID uuid, String homeId) {
         return CompletableFuture.runAsync(() -> {
-            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteHome)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteHome)) {
                 statement.setString(1, uuid.toString());
                 statement.setString(2, homeId);
                 statement.executeUpdate();
-            }catch (SQLException throwables) {
+            } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });

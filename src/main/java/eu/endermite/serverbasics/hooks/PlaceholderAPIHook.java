@@ -30,8 +30,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
-
+    public String onRequest(OfflinePlayer player, @NotNull String params) {
         params = params.toLowerCase();
 
         // %serverbasics_nickname%
@@ -41,7 +40,6 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             else
                 return player.getName();
         }
-
         return null;
     }
 }

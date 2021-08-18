@@ -9,14 +9,15 @@ import eu.endermite.serverbasics.NMSHandler;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
+import eu.endermite.serverbasics.util.BasicUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import java.util.HashMap;
 
+import java.util.HashMap;
 
 @CommandRegistration
 public class TeleportCommand {
@@ -43,15 +44,16 @@ public class TeleportCommand {
             return;
         }
 
+        Entity entity = entitySelector.getEntity();
+        Component name = BasicUtil.entityName(entity);
         ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
             Location location = entitySelector.getEntity().getLocation();
             basicPlayer.teleportPlayer(location);
+            String msg = ServerBasics.getLang(player.locale()).teleported_self;
+            HashMap<String, Component> placeholders = new HashMap<>();
+            placeholders.put("%entity%", name);
+            player.teleportAsync(entitySelector.getEntity().getLocation()).thenRunAsync(() -> player.sendMessage(MessageParser.parseMessage(player, msg, placeholders)));
         });
-
-
-        Entity entity = entitySelector.getEntity();
-        String msg = String.format(ServerBasics.getLang(player.locale()).teleported_self, entity.getName());
-        player.teleportAsync(entitySelector.getEntity().getLocation()).thenRunAsync(() -> MessageParser.sendMessage(player, msg));
     }
 
     @CommandMethod("tpohere <target>")
@@ -62,31 +64,23 @@ public class TeleportCommand {
             final @Argument(value = "target") SingleEntitySelector singleEntitySelector
     ) {
         if (!singleEntitySelector.hasAny()) {
-            Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
-                OfflinePlayer target = Bukkit.getOfflinePlayer(singleEntitySelector.getSelector());
-                if (!target.hasPlayedBefore()) {
-                    MessageParser.sendHaventPlayedError(player);
-                    return;
-                }
-                ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).thenAccept(basicPlayer -> {
-                    basicPlayer.teleportPlayer(player.getLocation());
-                    HashMap<String, Component> placeholders = new HashMap<>();
-                    placeholders.put("%name%", basicPlayer.getDisplayName());
-                    MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).teleported_to_self, placeholders);
-                });
+            OfflinePlayer target = Bukkit.getOfflinePlayer(singleEntitySelector.getSelector());
+            if (!target.hasPlayedBefore()) {
+                MessageParser.sendHaventPlayedError(player);
+                return;
+            }
+            ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).thenAccept(basicPlayer -> {
+                basicPlayer.teleportPlayer(player.getLocation());
+                HashMap<String, Component> placeholders = new HashMap<>();
+                placeholders.put("%name%", basicPlayer.getDisplayName());
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).teleported_to_self, placeholders);
             });
             return;
         }
 
         Entity entity = singleEntitySelector.getEntity();
-        Component name;
-        if (entity instanceof Player playerEntity)
-            name = playerEntity.displayName();
-        else
-            name = entity.customName();
-
         HashMap<String, Component> placeholders = new HashMap<>();
-        placeholders.put("%name%", name);
+        placeholders.put("%name%", BasicUtil.entityName(entity));
         entity.teleportAsync(player.getLocation()).thenRun(() -> player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).teleported_to_self, placeholders)));
     }
 

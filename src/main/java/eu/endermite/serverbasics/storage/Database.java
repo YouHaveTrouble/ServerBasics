@@ -22,7 +22,6 @@ public interface Database {
     CompletableFuture<BasicPlayer> getPlayer(UUID uuid);
 
     CompletableFuture<Void> savePlayerDisplayName(UUID uuid, String displayName);
-    CompletableFuture<Void> savePlayerGodMode(UUID uuid, boolean godmode);
     CompletableFuture<Void> savePlayerLastSeen(UUID uuid, long lastSeen);
     CompletableFuture<Void> deletePlayer(UUID uuid);
 

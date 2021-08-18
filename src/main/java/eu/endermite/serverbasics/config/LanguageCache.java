@@ -20,7 +20,7 @@ public class LanguageCache {
             hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other,
             invalid_syntax, failed_argument_parse, unknown_player, started_flying_other, stopped_flying_other, console_name,
             nick_self, nick_other, nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set,
-            warp_exists, warp_doesnt_exist;
+            warp_exists, warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off;
 
     public List<String> kick_message, ban_message, tempban_message;
 
@@ -69,9 +69,13 @@ public class LanguageCache {
 
             this.warped = fileConfiguration.getString("commands.warp.warped");
             this.warp_cant_use_name = fileConfiguration.getString("commands.warp.cannot-use-name", defaultMessage);
-            this.warp_set = fileConfiguration.getString("commands.warp.warp-set", defaultMessage);
-            this.warp_exists = fileConfiguration.getString("commands.warp.warp-already-exists", defaultMessage);
-            this.warp_doesnt_exist = fileConfiguration.getString("commands.warp.warp-doesnt-exist", defaultMessage);
+            this.warp_set = fileConfiguration.getString("commands.warp.set", defaultMessage);
+            this.warp_exists = fileConfiguration.getString("commands.warp.already-exists", defaultMessage);
+            this.warp_doesnt_exist = fileConfiguration.getString("commands.warp.doesnt-exist", defaultMessage);
+            this.warp_displayname_set = fileConfiguration.getString("commands.warp.displayname-set", defaultMessage);
+            this.warp_removed = fileConfiguration.getString("comands.warp.removed", defaultMessage);
+            this.warp_perm_on = fileConfiguration.getString("commands.warp.requires-permission-true", defaultMessage);
+            this.warp_perm_off = fileConfiguration.getString("commands.warp.requires-permission-false", defaultMessage);
 
             this.healed = fileConfiguration.getString("commands.heal.healed", defaultMessage);
             this.healed_by_other = fileConfiguration.getString("commands.heal.healed-by-other", defaultMessage);

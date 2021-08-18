@@ -24,7 +24,8 @@ chat:
 storage:
   type: sqlite
   host: localhost
-  table_prefix: sbasics_
+  player_table_prefix: "sbasics_"
+  locations_table_prefix: "sbasics_"
   database: database
   port: 3306
   username: root

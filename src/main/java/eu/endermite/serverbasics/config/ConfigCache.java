@@ -11,7 +11,7 @@ public class ConfigCache {
     public Locale default_lang;
     public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
             chat_format_enabled, staffchat_enabled, spawn_on_join;
-    private final String sql_connection_string, database_table_prefix;
+    private final String sql_connection_string, database_player_table_prefix, database_locations_table_prefix;
     public final DatabaseType databaseType;
 
     public ConfigCache() {
@@ -32,26 +32,24 @@ public class ConfigCache {
         this.databaseType = databaseType;
 
         switch (databaseType) {
-            case MYSQL:
+            case MYSQL -> {
                 String host = config.getString("storage.host", "localhost");
                 int port = config.getInt("storage.port", 3306);
                 String database = config.getString("storage.database");
                 String user = config.getString("storage.username");
                 String password = config.getString("storage.password");
-                String connString = "jdbc:mysql://" + host + ":" + port + "/"+database+"?user=" + user + "&password=" + password;
+                String connString = "jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + user + "&password=" + password;
                 boolean ssl = config.getBoolean("storage.ssl", true);
-                connString = connString+"&useSSL="+ssl;
+                connString = connString + "&useSSL=" + ssl;
                 boolean verify = config.getBoolean("storage.players.verifycertificate", true);
-                connString = connString+"&verifyServerCertificate="+verify;
+                connString = connString + "&verifyServerCertificate=" + verify;
                 this.sql_connection_string = connString;
-                break;
-            case SQLITE:
-            default:
-                this.sql_connection_string = "jdbc:sqlite:plugins/ServerBasics/data.db";
-                break;
+            }
+            default -> this.sql_connection_string = "jdbc:sqlite:plugins/ServerBasics/data.db";
         }
 
-        this.database_table_prefix = config.getString("storage.table_prefix", "sbasics_");
+        this.database_player_table_prefix = config.getString("storage.player_table_prefix", "sbasics_");
+        this.database_locations_table_prefix = config.getString("storage.locations_table_prefix", "sbasics_");
 
         this.disable_join_msg = config.getBoolean("join-leave-messages.disable-join", false);
         this.disable_leave_msg = config.getBoolean("join-leave-messages.disable-leave", false);
@@ -73,8 +71,12 @@ public class ConfigCache {
         return sql_connection_string;
     }
 
-    public String getDatabaseTablePrefix() {
-        return database_table_prefix;
+    public String getDatabasePlayerTablePrefix() {
+        return database_player_table_prefix;
+    }
+
+    public String getDatabaseLocationsTablePrefix() {
+        return database_player_table_prefix;
     }
 
     public enum DatabaseType {

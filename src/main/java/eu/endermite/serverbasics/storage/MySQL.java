@@ -1,11 +1,14 @@
 package eu.endermite.serverbasics.storage;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.util.BasicWarp;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.UUID;
@@ -13,17 +16,22 @@ import java.util.concurrent.CompletableFuture;
 
 public class MySQL implements Database {
 
-    private Connection connection;
+    DataSource dataSource;
 
-    private final String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
     private final String playerTable, warpTable, homesTable;
     private final String loadPlayer, savePlayerDisplayName, savePlayerGodMode, savePlayerLastSeen, getSpawn, saveWarp,
     getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer;
 
-    public MySQL(String prefix) {
-        this.playerTable = prefix+"players";
-        this.warpTable = prefix+"warps";
-        this.homesTable = prefix+"homes";
+    public MySQL(String playerPrefix, String locationsPrefix) {
+        HikariConfig config = new HikariConfig();
+        String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
+        config.setJdbcUrl(url);
+        config.setMaximumPoolSize(10);
+
+        dataSource = new HikariDataSource(config);
+        this.playerTable = playerPrefix+"players";
+        this.warpTable = locationsPrefix+"warps";
+        this.homesTable = locationsPrefix+"homes";
         createTables();
 
         loadPlayer = "SELECT * FROM `"+playerTable+"` WHERE `player_uuid` = ?;";
@@ -40,21 +48,9 @@ public class MySQL implements Database {
         deletePlayer = "DELETE FROM `"+playerTable+"` WHERE player_uuid = ?;";
     }
 
-
-    private void connect() {
-        try {
-            if (connection == null || connection.isClosed())
-                connection = DriverManager.getConnection(url);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
     public void createTables() {
-        connect();
         try {
-            if (connection != null) {
-                Statement statement = connection.createStatement();
+                Statement statement = dataSource.getConnection().createStatement();
                 String sql;
                 sql = "CREATE TABLE IF NOT EXISTS `"+playerTable+"` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long);";
                 statement.execute(sql);
@@ -62,7 +58,6 @@ public class MySQL implements Database {
                 statement.execute(sql);
                 sql = "CREATE TABLE IF NOT EXISTS `"+homesTable+"` (`home_id` varchar(32), `player_uuid` varchar(36), `world_uuid` varchar(36), `coords` varchar(256), CONSTRAINT COMP_KEY PRIMARY KEY (home_id, player_uuid));";
                 statement.execute(sql);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
             ServerBasics.getInstance().getServer().getPluginManager().disablePlugin(ServerBasics.getInstance());
@@ -72,8 +67,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<BasicPlayer> getPlayer(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(loadPlayer)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(loadPlayer)) {
                 statement.setString(1, uuid.toString());
                 ResultSet result = statement.executeQuery();
                 if (result.next()) {
@@ -81,7 +75,7 @@ public class MySQL implements Database {
                     long lastSeen = result.getLong("lastseen");
                     if (displayName == null) {
                         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-                        if (offlinePlayer.hasPlayedBefore())
+                        if (offlinePlayer.hasPlayedBefore() && offlinePlayer.getName() != null)
                             displayName = offlinePlayer.getName();
                         else
                             displayName = "Unknown Player";
@@ -103,8 +97,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> savePlayerDisplayName(UUID uuid, String displayName) {
         return CompletableFuture.runAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(savePlayerDisplayName)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerDisplayName)) {
                 statement.setString(1, uuid.toString());
                 statement.setString(2, displayName);
                 statement.setString(3, displayName);
@@ -118,8 +111,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> savePlayerGodMode(UUID uuid, boolean godmode) {
         return CompletableFuture.runAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(savePlayerGodMode)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerGodMode)) {
                 statement.setString(1, uuid.toString());
                 statement.setBoolean(2, godmode);
                 statement.setBoolean(3, godmode);
@@ -133,8 +125,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> savePlayerLastSeen(UUID uuid, long lastSeen) {
         return CompletableFuture.runAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(savePlayerLastSeen)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerLastSeen)) {
                 statement.setString(1, uuid.toString());
                 statement.setLong(2, lastSeen);
                 statement.setLong(3, lastSeen);
@@ -148,8 +139,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> deletePlayer(UUID uuid) {
         return CompletableFuture.runAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(deletePlayer)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deletePlayer)) {
                 statement.setString(1, uuid.toString());
                 statement.executeUpdate();
             }catch (SQLException throwables) {
@@ -161,8 +151,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<BasicWarp> getSpawn() {
         return CompletableFuture.supplyAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(getSpawn)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getSpawn)) {
                 statement.setString(1, "spawn");
                 ResultSet result = statement.executeQuery();
                 if (result.next()) {
@@ -196,8 +185,8 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<HashMap<String, BasicWarp>> getWarps() {
         return CompletableFuture.supplyAsync(() -> {
-            connect();
-            try (PreparedStatement loadPlayerStatement = connection.prepareStatement(getWarps)) {
+
+            try (Connection connection= dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getWarps)) {
                 HashMap<String, BasicWarp> warps = new HashMap<>();
                 ResultSet result = loadPlayerStatement.executeQuery();
                 while (result.next()) {
@@ -226,10 +215,9 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> saveWarp(BasicWarp basicWarp) {
         return CompletableFuture.runAsync(() -> {
-            connect();
             Location location = basicWarp.getLocation();
             String locationString = location.getX()+";"+location.getY()+";"+ location.getZ();
-            try (PreparedStatement statement = connection.prepareStatement(saveWarp)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveWarp)) {
                 statement.setString(1, basicWarp.getWarpId());
                 statement.setString(2, basicWarp.getRawDisplayName());
                 statement.setString(3, basicWarp.getLocation().getWorld().getUID().toString());
@@ -249,8 +237,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> deleteWarp(String warpId) {
         return CompletableFuture.runAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(deleteWarp)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteWarp)) {
                 statement.setString(1, warpId);
                 statement.executeUpdate();
             }catch (SQLException throwables) {
@@ -262,8 +249,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<HashMap<String, BasicWarp>> getPlayerHomes(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            connect();
-            try (PreparedStatement loadPlayerStatement = connection.prepareStatement(getHomes)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getHomes)) {
                 HashMap<String, BasicWarp> warps = new HashMap<>();
                 ResultSet result = loadPlayerStatement.executeQuery();
                 while (result.next()) {
@@ -290,10 +276,9 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> savePlayerHome(BasicWarp basicWarp, UUID uuid) {
         return CompletableFuture.runAsync(() -> {
-            connect();
             Location location = basicWarp.getLocation();
             String locationString = location.getX()+";"+location.getY()+";"+ location.getZ();
-            try (PreparedStatement statement = connection.prepareStatement(saveHome)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveHome)) {
                 statement.setString(1, basicWarp.getWarpId());
                 statement.setString(2, basicWarp.getRawDisplayName());
                 statement.setString(3, basicWarp.getLocation().getWorld().getUID().toString());
@@ -311,8 +296,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Void> deletePlayerHome(UUID uuid, String homeId) {
         return CompletableFuture.runAsync(() -> {
-            connect();
-            try (PreparedStatement statement = connection.prepareStatement(deleteHome)) {
+            try (Connection connection= dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteHome)) {
                 statement.setString(1, uuid.toString());
                 statement.setString(2, homeId);
                 statement.executeUpdate();

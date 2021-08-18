@@ -1,6 +1,6 @@
 package eu.endermite.serverbasics;
 
-import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
+import eu.endermite.serverbasics.hooks.PlaceholderAPIHook;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.Database;
@@ -56,14 +56,12 @@ public final class ServerBasics extends JavaPlugin {
         commandManager = new CommandManager();
         commandManager.initCommands();
 
-        String tablePrefix = configCache.getDatabaseTablePrefix();
+        String playerPrefix = configCache.getDatabasePlayerTablePrefix();
+        String locationsPrefix = configCache.getDatabaseLocationsTablePrefix();
+
         switch (configCache.databaseType) {
-            case MYSQL:
-                database = new MySQL(tablePrefix);
-                break;
-            case SQLITE:
-                database = new SQLite(tablePrefix);
-                break;
+            case MYSQL -> database = new MySQL(playerPrefix, locationsPrefix);
+            case SQLITE -> database = new SQLite(playerPrefix, locationsPrefix);
         }
 
         basicPlayers = new BasicPlayerCache();
@@ -73,6 +71,10 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new HatListener(), this);
+
+        if (hooks.isHooked("PlaceholderAPI")) {
+            new PlaceholderAPIHook(this).register();
+        }
 
     }
 

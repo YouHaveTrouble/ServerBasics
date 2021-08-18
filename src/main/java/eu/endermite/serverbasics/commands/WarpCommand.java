@@ -13,15 +13,12 @@ import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.util.BasicWarp;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ExecutionException;
 
 @CommandRegistration
 public class WarpCommand {
@@ -77,7 +74,7 @@ public class WarpCommand {
     }
 
     @Suggestions("warps")
-    public List<String> methodName(CommandContext<Player> sender, String input) {
+    public List<String> warpSuggestions(CommandContext<Player> sender, String input) {
         List<String> warps = new ArrayList<>();
         ServerBasics.getLocationsCache().warpList().forEach(basicWarp -> {
             if (basicWarp.requiresPermission() && !sender.getSender().hasPermission("serverbasics.warp."+basicWarp.getWarpId()))

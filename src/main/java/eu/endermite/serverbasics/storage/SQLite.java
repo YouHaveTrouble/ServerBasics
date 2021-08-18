@@ -22,10 +22,10 @@ public class SQLite implements Database {
     private final String loadPlayer, savePlayerDisplayName, savePlayerGodMode, savePlayerLastSeen, getSpawn, saveWarp,
     getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer;
 
-    public SQLite(String prefix) {
-        this.playerTable = prefix+"players";
-        this.warpTable = prefix+"warps";
-        this.homesTable = prefix+"homes";
+    public SQLite(String playerPrefix, String locationsPrefix) {
+        this.playerTable = playerPrefix+"players";
+        this.warpTable = locationsPrefix+"warps";
+        this.homesTable = locationsPrefix+"homes";
         createTables();
 
         loadPlayer = "SELECT * FROM `"+playerTable+"` WHERE `player_uuid` = ?;";
@@ -58,7 +58,7 @@ public class SQLite implements Database {
             if (connection != null) {
                 Statement statement = connection.createStatement();
                 String sql;
-                sql = "CREATE TABLE IF NOT EXISTS `"+playerTable+"` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long);";
+                sql = "CREATE TABLE IF NOT EXISTS `"+playerTable+"` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long, `balance` DOUBLE);";
                 statement.execute(sql);
                 sql = "CREATE TABLE IF NOT EXISTS `"+warpTable+"` (`warp_id` varchar(32) UNIQUE PRIMARY KEY, `displayname` varchar(256), `world_uuid` varchar(36), `coords` varchar(256), `requires_permission` boolean DEFALUT FALSE);";
                 statement.execute(sql);

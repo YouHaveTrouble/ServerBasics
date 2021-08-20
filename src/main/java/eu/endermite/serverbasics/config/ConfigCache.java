@@ -76,7 +76,7 @@ public class ConfigCache {
     }
 
     public String getDatabaseLocationsTablePrefix() {
-        return database_player_table_prefix;
+        return database_locations_table_prefix;
     }
 
     public enum DatabaseType {

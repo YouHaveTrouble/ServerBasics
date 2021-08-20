@@ -15,12 +15,13 @@ join-leave-messages:
 
 chat:
   format-enabled: true
-  format: "&f<%nickname%&f> "
+  format: "<white><%nickname%<white>> %message%"
   staffchat-enabled: true
-  staffchat-format: "&f[&9STAFF&f] &f<%nickname%&f> "
+  staffchat-format: "<white>[<cyan>STAFF<white>] <%nickname%<white>> %message%"
+
 
 # Storage options: sqlite, mysql
-# If you're not sure what to do here, leave "type" field at sqlite, plugin will take care of the rest
+# If you're not sure what to do here, leave "type" field at sqlite
 storage:
   type: sqlite
   host: localhost

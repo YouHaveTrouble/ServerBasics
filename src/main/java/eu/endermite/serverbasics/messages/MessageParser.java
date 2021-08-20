@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,6 +14,15 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MessageParser {
+
+    public static final MiniMessage miniMessage = MiniMessage.builder().markdown().build();
+
+    public static final MiniMessage basicMiniMessage = MiniMessage.withTransformations(TransformationType.COLOR,
+            TransformationType.DECORATION,
+            TransformationType.GRADIENT,
+            TransformationType.RAINBOW,
+            TransformationType.RESET
+    );
 
     /**
      * Parses message string into message
@@ -35,7 +45,7 @@ public class MessageParser {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
         message = makeColorsWork('&', message);
-        Component minimsg = MiniMessage.markdown().parse(message);
+        Component minimsg = miniMessage.parse(message);
 
         if (placeholders != null && !placeholders.isEmpty()) {
             for (Map.Entry<String, Component> placeholder : placeholders.entrySet()) {
@@ -111,7 +121,7 @@ public class MessageParser {
         if (sender instanceof Player player) {
             return player.displayName();
         }
-        return MiniMessage.markdown().parse(ServerBasics.getLang(locale).console_name);
+        return miniMessage.parse(ServerBasics.getLang(locale).console_name);
     }
 
     public static void sendHaventPlayedError(CommandSender sender) {
@@ -123,7 +133,6 @@ public class MessageParser {
             sendMessage(sender, msg);
         }
     }
-
 }
 
 

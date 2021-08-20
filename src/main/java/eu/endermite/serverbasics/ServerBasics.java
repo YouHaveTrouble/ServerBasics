@@ -1,16 +1,17 @@
 package eu.endermite.serverbasics;
 
-import eu.endermite.serverbasics.listeners.CustomJoinLeaveMessageListener;
+import eu.endermite.serverbasics.hooks.PlaceholderAPIHook;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
-import eu.endermite.serverbasics.storage.PlayerDatabase;
-import eu.endermite.serverbasics.chat.ChatListener;
+import eu.endermite.serverbasics.storage.Database;
+import eu.endermite.serverbasics.storage.MySQL;
+import eu.endermite.serverbasics.features.ChatListener;
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.HatListener;
-import eu.endermite.serverbasics.storage.ServerDatabase;
+import eu.endermite.serverbasics.storage.SQLite;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -33,6 +34,7 @@ public final class ServerBasics extends JavaPlugin {
     private static HashMap<String, LanguageCache> languageCacheMap;
     private static BasicPlayerCache basicPlayers;
     private static Hooks hooks;
+    private Database database;
 
     @Override
     public void onEnable() {
@@ -54,16 +56,25 @@ public final class ServerBasics extends JavaPlugin {
         commandManager = new CommandManager();
         commandManager.initCommands();
 
-        PlayerDatabase.checkConnection();
-        ServerDatabase.checkConnection();
+        String playerPrefix = configCache.getDatabasePlayerTablePrefix();
+        String locationsPrefix = configCache.getDatabaseLocationsTablePrefix();
+
+        switch (configCache.databaseType) {
+            case MYSQL -> database = new MySQL(playerPrefix, locationsPrefix);
+            case SQLITE -> database = new SQLite(playerPrefix, locationsPrefix);
+        }
 
         basicPlayers = new BasicPlayerCache();
         reloadLocations();
 
-        getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
+        //getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new HatListener(), this);
+
+        if (hooks.isHooked("PlaceholderAPI")) {
+            new PlaceholderAPIHook(this).register();
+        }
 
     }
 
@@ -111,7 +122,7 @@ public final class ServerBasics extends JavaPlugin {
         locationsCache = new LocationsCache();
     }
 
-    public static LanguageCache getLang(String lang) {
+    private static LanguageCache getLang(String lang) {
         LanguageCache cache;
          cache = languageCacheMap.get(lang);
         if (cache == null)
@@ -135,16 +146,16 @@ public final class ServerBasics extends JavaPlugin {
         return locationsCache;
     }
 
-    public static CommandManager getCommandManager() {
-        return commandManager;
-    }
-
     public static BasicPlayerCache getBasicPlayers() {
         return basicPlayers;
     }
 
     public static Hooks getHooks() {
         return hooks;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
 }

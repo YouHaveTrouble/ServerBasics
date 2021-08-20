@@ -5,17 +5,20 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.bukkit.arguments.selector.MultiplePlayerSelector;
-import eu.endermite.serverbasics.NMSHandler;
-import eu.endermite.serverbasics.commands.registration.CommandRegistration;
-import eu.endermite.serverbasics.storage.PlayerDatabase;
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.commands.registration.CommandRegistration;
+import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.messages.MessageParser;
+import eu.endermite.serverbasics.players.BasicPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 
 @CommandRegistration
 public class GamemodeCommand {
@@ -28,19 +31,18 @@ public class GamemodeCommand {
             final @Argument(value = "gm") GameMode gamemode
     ) {
 
-        if (!player.hasPermission("serverbasics.gamemode.self." + gamemode.toString().toLowerCase())
-                && !player.hasPermission("serverbasics.gamemode.*")
-                && !player.hasPermission("serverbasics.gamemode.self.*")
+        if (!player.hasPermission("serverbasics.command.gamemode.self." + gamemode.toString().toLowerCase())
+                && !player.hasPermission("serverbasics.command.gamemode.*")
+                && !player.hasPermission("serverbasics.command.gamemode.self.*")
         ) {
-            MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).gamemode_no_perms);
+            MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).gamemode_no_perms);
+            return;
         }
 
-        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.setGameMode(gamemode));
-
-        String msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_self;
-
-        msg = String.format(msg, ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
-        MessageParser.sendMessage(player, msg);
+        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+            basicPlayer.setGameMode(gamemode);
+            gamemodeChangedSelf(player, gamemode);
+        });
     }
 
     @CommandMethod("gamemode <gm> <target>")
@@ -52,13 +54,13 @@ public class GamemodeCommand {
             final @Argument(value = "target") MultiplePlayerSelector players
     ) {
 
-        if (!sender.hasPermission("serverbasics.gamemode.others." + gamemode.toString().toLowerCase())
-                && !sender.hasPermission("serverbasics.gamemode.*")
-                && !sender.hasPermission("serverbasics.gamemode.others.*")) {
-            String msg = "";
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                msg = ServerBasics.getLang(player.getLocale()).gamemode_no_perms_to_set;
+        // Permission check
+        if (!sender.hasPermission("serverbasics.command.gamemode.others." + gamemode.toString().toLowerCase())
+                && !sender.hasPermission("serverbasics.command.gamemode.*")
+                && !sender.hasPermission("serverbasics.command.gamemode.others.*")) {
+            String msg;
+            if (sender instanceof Player player) {
+                msg = ServerBasics.getLang(player.locale()).gamemode_no_perms_to_set;
             } else {
                 msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_no_perms_to_set;
             }
@@ -66,87 +68,90 @@ public class GamemodeCommand {
             MessageParser.sendMessage(sender, msg);
         }
 
+        // When no players selected, check for name
         if (!players.hasAny()) {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(players.getSelector());
-            if (offlinePlayer == null) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(players.getSelector());
+            if (!offlinePlayer.hasPlayedBefore()) {
                 MessageParser.sendHaventPlayedError(sender);
                 return;
             }
-            String offlineName = (String) PlayerDatabase.getSingleOption(offlinePlayer.getUniqueId(), "displayname");
-            NMSHandler.setOfflinePlayerGamemode(offlinePlayer, gamemode);
-
-            String msg;
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_other;
-                msg = String.format(
-                        msg,
-                        ChatColor.translateAlternateColorCodes('&', offlineName),
-                        ServerBasics.getLang(player.getLocale()).getGamemode(gamemode)
-                );
-            } else {
-                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_changed_other;
-                msg = String.format(
-                        msg,
-                        ChatColor.translateAlternateColorCodes('&', offlineName),
-                        ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).getGamemode(gamemode)
-                );
-            }
-            MessageParser.sendMessage(sender, msg);
+            BasicPlayer.fromDatabase(offlinePlayer.getUniqueId()).thenAccept(basicPlayer -> {
+                basicPlayer.setGameMode(gamemode);
+                gamemodeChangedOtherSender(sender, basicPlayer, gamemode);
+            });
             return;
         }
 
+        // When players selected, loop throught them
         for (Player player : players.getPlayers()) {
-            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.setGameMode(gamemode));
 
+            // If sender is the target
             if (player == sender) {
-                String msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_self;
-                msg = String.format(msg, ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
-                MessageParser.sendMessage(player, msg);
+                ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+                    basicPlayer.setGameMode(gamemode);
+                    gamemodeChangedSelf(player, gamemode);
+                });
                 continue;
             }
 
-            String msg = ServerBasics.getLang(player.getLocale()).gamemode_changed;
-            msg = String.format(msg, ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
-            MessageParser.sendMessage(player, msg);
-
+            ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+                basicPlayer.setGameMode(gamemode);
+                gamemodeChanged(player, gamemode);
+            });
         }
 
+        // Sender feedback
+        // If there was only 1 target
         if (players.getPlayers().size() == 1) {
-
             Player player = players.getPlayers().get(0);
-            String msg;
-
-            if (player != sender) {
-                if (sender instanceof Player) {
-                    msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_other;
-                    msg = String.format(
-                            msg,
-                            ChatColor.translateAlternateColorCodes('&', player.getDisplayName()),
-                            ServerBasics.getLang(player.getLocale()).getGamemode(gamemode)
-                    );
-                    MessageParser.sendMessage(sender, msg);
-                } else {
-                    msg = ServerBasics.getLang(player.getLocale()).gamemode_changed_other;
-                    msg = String.format(
-                            msg,
-                            ChatColor.translateAlternateColorCodes('&', player.getDisplayName()),
-                            ServerBasics.getLang(player.getLocale()).getGamemode(gamemode)
-                    );
-                }
-                MessageParser.sendMessage(sender, msg);
-            }
+            if (player != sender)
+                ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> gamemodeChangedOtherSender(sender, basicPlayer, gamemode));
+        // If there were many targets
         } else {
-            String msg;
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                msg = ServerBasics.getLang(player.getLocale()).gamemode_set_many;
-                msg = String.format(msg, players.getPlayers().size(), ServerBasics.getLang(player.getLocale()).getGamemode(gamemode));
-            } else {
-                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_set_many;
-                msg = String.format(msg, players.getPlayers().size(), ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).getGamemode(gamemode));
-            }
-            MessageParser.sendMessage(sender, msg);
+            gamemodeChangedManyTargets(sender, players.getPlayers().size(), gamemode);
         }
+    }
+
+    private void gamemodeChangedManyTargets(CommandSender sender, int amount, GameMode gameMode) {
+        LanguageCache lang;
+        if (sender instanceof Player player)
+            lang = ServerBasics.getLang(player.locale());
+        else
+            lang = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang);
+        String msg = lang.gamemode_set_many;
+
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%amount%", Component.text(amount));
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
+    }
+
+    private void gamemodeChanged(Player player, GameMode gameMode) {
+        LanguageCache lang = ServerBasics.getLang(player.locale());
+        String msg = lang.gamemode_changed;
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
+    }
+
+    private void gamemodeChangedSelf(Player player, GameMode gameMode) {
+        LanguageCache lang = ServerBasics.getLang(player.locale());
+        String msg = lang.gamemode_changed_self;
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
+    }
+
+    private void gamemodeChangedOtherSender(CommandSender sender, BasicPlayer basicPlayer, GameMode gameMode) {
+        LanguageCache lang;
+        if (sender instanceof Player player)
+            lang = ServerBasics.getLang(player.locale());
+        else
+            lang = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang);
+        String msg = lang.gamemode_changed_other;
+        HashMap<String, Component> placeholders = new HashMap<>();
+        placeholders.put("%name", basicPlayer.getDisplayName());
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
     }
 }

@@ -6,33 +6,30 @@ authors: [ YouHaveTrouble, CorvetteCole, Dashiell ]
 softdepend:
   - PlaceholderAPI
 permissions:
-  serverbasics.gamemode.self.survival:
-    description: Allows switching to survival mode
+  serverbasics.command.gamemode.*:
     default: op
-  serverbasics.gamemode.self.creative:
-    description: Allows switching to creative mode
-    default: op
-  serverbasics.gamemode.self.adventure:
-    description: Allows switching to adventure mode
-    default: op
-  serverbasics.gamemode.self.spectator:
-    description: Allows switching to spectator mode
-    default: op
-  serverbasics.gamemode.others.survival:
-    description: Allows switching other players to survival mode
-    default: op
-  serverbasics.gamemode.others.creative:
-      description: Allows switching other players to creative mode
-      default: op
-  serverbasics.gamemode.others.adventure:
-      description: Allows switching other players to adventure mode
-      default: op
-  serverbasics.gamemode.others.spectator:
-      description: Allows switching other players to spectator mode
-      default: op
+    children:
+      serverbasics.command.gamemode.self.*:
+        serverbasics.command.gamemode.self.survival: true
+        serverbasics.command.gamemode.self.creative: true
+        serverbasics.command.gamemode.self.adventure: true
+        serverbasics.command.gamemode.self.spectator: true
+      serverbasics.command.gamemode.others.*:
+        children:
+          serverbasics.command.gamemode.others.survival: true
+          serverbasics.command.gamemode.others.creative: true
+          serverbasics.command.gamemode.others.adventure: true
+          serverbasics.command.gamemode.others.spectator: true
   serverbasics.chat.color:
     description: Allows usage of colors in chat
     default: op
+  serverbasics.chat.staffchat.*:
+    default: op
+    children:
+      serverbasics.chat.staffchat.send: true
+      serverbasics.chat.staffchat.recieve: true
   serverbasics.command.hat.equip:
     description: Allows equipping hat in the survival inventory
     default: op
+  serverbasics.command.nick.change:
+    description: Allows player to change their own nickname and not only change colors

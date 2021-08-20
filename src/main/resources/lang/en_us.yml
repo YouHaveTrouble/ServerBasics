@@ -12,19 +12,21 @@ commands:
     not-set: "Spawn not set! Ask server administrators to do that!"
   heal:
     healed: "You have been healed"
-    healed-by-other: "You have been healed by %s"
-    healed-other: "You healed %s"
-    healed-many: "You healed %s players"
+    healed-by-other: "You have been healed by %player%"
+    healed-other: "You healed %player%"
+    healed-many: "You healed %amount% players"
     healed-noone: "You healed noone"
   feed:
     fed: "You have been fed"
-    fed-by-other: "You have been fed by %s"
-    fed-other: "You fed %s"
-    fed-many: "You fed %s players"
+    fed-by-other: "You have been fed by %player%"
+    fed-other: "You fed %player%"
+    fed-many: "You fed %amount% players"
     fed-noone: "You fed noone"
   fly:
     flight-on: "You toggled fly on"
     flight-off: "You toggled fly off"
+    flight-on-other: "You toggled fly on for %player%"
+    flight-off-other: "You toggled fly off for %player%"
   fix:
     item-fixed: "Held item has been fixed"
     all-fixed: "All items have been fixed"
@@ -34,26 +36,37 @@ commands:
     hat-set: "You changed your hat!"
     binding-curse: "Your current hat has curse of binding!"
   itemname:
-    name-changed: "You changed the name of the the item you're holding to &r%s"
+    name-changed: "You changed the name of the the item you're holding"
   itemlore:
-    lore-changed: "You changed the lore of the item you're holding to:"
+    lore-changed: "You changed the lore of the item you're holding"
   gamemode:
-    changed: "Your gamemode was set to %s"
-    changed-self: "You set your own gamemode to %s"
-    changed-other: "You set %s's gamemode to %s"
+    changed: "Your gamemode was set to %gamemode%"
+    changed-self: "You set your own gamemode to %gamemode%"
+    changed-other: "You set %name%'s gamemode to %gamemode%"
     no-perms: "You don't have permission to use this gamemode"
     no-perms-to-set: "You don't have permission to set someone to this gamemode"
-    set_many: "Set %s players gamemode to %s"
+    set_many: "Set %number% players gamemode to %gamemode%"
   nick:
-    changed-self: "You changed your nickname to %s"
-    changed-other: "You changed %s's nickname to %s"
-    changed-by-other: "Your nickname was changed to %s"
+    changed-self: "You changed your nickname to %nickname%"
+    changed-other: "You changed %oldnickname%'s nickname to %newnickname%"
+    changed-by-other: "Your nickname was changed to %nickname%"
+    only-colors: "You are only allowed to add colors to your name"
   teleport:
     noone-to-teleport: "No entities to teleport"
-    teleported-self: "You teleported to %s's location"
-    teleported-to-self: "You teleported %s to your location"
+    teleported-self: "You teleported to %entity%'s location"
+    teleported-to-self: "You teleported %name% to your location"
     teleported-coords: "You teleported to %s"
     teleported-by-other: "You have been teleported"
+  warp:
+    warped: "You warped to %warp%"
+    doesnt-exist: "Warp %warp% doesn't exist"
+    set: "Warp %warp% created at your location"
+    already-exists: "Warp with id \"%warp%\" already exists. Use /editwarp to edit or remove it"
+    cannot-use-name: "\"Spawn\" is a reserved name and you cannot use it as warp name. Use /setspawn instead"
+    displayname-set: "Set %warp%'s displayname to %displayname%"
+    removed: "Warp %warp% removed"
+    requires-permission-true: "Warp %warp% now requires permission to access"
+    requires-permission-false: "Warp %warp% doesn't require permission to access now"
   kick:
     kick-message:
     - "You have been kicked from the server"
@@ -80,6 +93,8 @@ commands:
     no-such-command: "Unknown command. Type \"/help\" for help."
     invalid-syntax: "<red>Invalid command syntax. Correct syntax: <gray>%s"
     failed-argument-parse: "<red>Failed to parse command arguments"
+    unknown-player: "Unknown Player"
+    console-name: "Console"
 
 # Set join/leave to "" to disable
 custom-join-leave-messages:

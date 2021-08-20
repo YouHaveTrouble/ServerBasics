@@ -41,8 +41,8 @@ public class BanCommand {
 
         if (target.isOnline()) {
             Player player = target.getPlayer();
-            for (String line : ServerBasics.getLang(player.getLocale()).ban_message) {
-                line = line.replaceAll("%reason%", ServerBasics.getLang(player.getLocale()).ban_reason);
+            for (String line : ServerBasics.getLang(player.locale()).ban_message) {
+                line = line.replaceAll("%reason%", ServerBasics.getLang(player.locale()).ban_reason);
                 kickReasonBuilder.append(line).append("\n");
             }
         } else {

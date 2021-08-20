@@ -8,10 +8,15 @@ import cloud.commandframework.bukkit.arguments.selector.MultiplePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
+import net.kyori.adventure.text.Component;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
 
 @CommandRegistration
 public class HealCommand {
@@ -41,47 +46,37 @@ public class HealCommand {
             final @Argument(value = "target", description = "Player to heal") MultiplePlayerSelector targetPlayer
     ) {
         int amountHealed = targetPlayer.getPlayers().size();
-        Player lastPlayer = null;
-
         for (Player target : targetPlayer.getPlayers()) {
-            lastPlayer = target;
-            AttributeInstance maxHpAttr = target.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            double maxHp;
-            try {
-                maxHp = maxHpAttr.getValue();
-            } catch (NullPointerException e) {
-                maxHp = maxHpAttr.getDefaultValue();
-            }
-            target.setHealth(maxHp);
+            target.setHealth(Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_HEALTH), "Player must have max health").getValue());
             String msg;
             if (sender != target) {
-                msg = String.format(ServerBasics.getLang(target.locale()).healed_by_other, sender.getName());
-            } else {
-                msg = ServerBasics.getLang(target.locale()).healed;
+                msg = ServerBasics.getLang(target.locale()).healed_by_other;
+                HashMap<String, Component> placeholders = new HashMap<>();
+                placeholders.put("%player%", MessageParser.getName(sender, target.locale()));
+                sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
             }
-            MessageParser.sendMessage(target, msg);
         }
-        if (sender instanceof Player) {
-            String msg;
-            Player player = (Player) sender;
 
-            if (amountHealed == 1)
-                msg = String.format(ServerBasics.getLang(player.locale()).healed_by_other, lastPlayer.getDisplayName());
-            else if (amountHealed > 1)
-                msg = String.format(ServerBasics.getLang(player.locale()).healed_many, amountHealed);
-            else
-                msg = ServerBasics.getLang(player.locale()).healed_noone;
-            MessageParser.sendMessage(player, msg);
+        Locale locale;
+        if (sender instanceof Player player)
+            locale = player.locale();
+        else
+            locale = ServerBasics.getConfigCache().default_lang;
+
+        String msg;
+        if (amountHealed == 1) {
+            msg = ServerBasics.getLang(locale).healed_other;
+            HashMap<String, Component> placeholders = new HashMap<>();
+            placeholders.put("%player%", MessageParser.getName(sender, locale));
+            sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
+        } else if (amountHealed > 1) {
+            msg = ServerBasics.getLang(locale).healed_many;
+            HashMap<String, Component> placeholders = new HashMap<>();
+            placeholders.put("%amount%", MessageParser.getName(sender, locale));
+            sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
         } else {
-            String msg;
-            if (amountHealed == 1)
-                msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_by_other, lastPlayer.getDisplayName());
-            else if (amountHealed > 1)
-                msg = String.format(ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_many, amountHealed);
-            else
-                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).healed_noone;
-            MessageParser.sendMessage(sender, msg);
+            msg = ServerBasics.getLang(locale).healed_noone;
+            sender.sendMessage(MessageParser.parseMessage(sender, msg));
         }
-
     }
 }

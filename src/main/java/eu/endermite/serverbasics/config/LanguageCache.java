@@ -18,7 +18,9 @@ public class LanguageCache {
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
             gamemode_creative, gamemode_adventure, gamemode_spectator, hooks, hook_inactive, hooks_paper, hook_fix,
             hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other,
-            invalid_syntax, failed_argument_parse;
+            invalid_syntax, failed_argument_parse, unknown_player, started_flying_other, stopped_flying_other, console_name,
+            nick_self, nick_other, nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set,
+            warp_exists, warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off;
 
     public List<String> kick_message, ban_message, tempban_message;
 
@@ -37,7 +39,6 @@ public class LanguageCache {
         }
         try {
             fileConfiguration.load(langFile);
-
             String defaultMessage = "Message missing";
 
             this.all_configs_reloaded = fileConfiguration.getString("commands.misc.all-reloaded", defaultMessage);
@@ -46,6 +47,8 @@ public class LanguageCache {
             this.locations_reloaded = fileConfiguration.getString("commands.misc.locations-reloaded", defaultMessage);
             this.could_not_tp = fileConfiguration.getString("commands.misc.could-not-teleport", defaultMessage);
             this.no_player_selected = fileConfiguration.getString("command.misc.no-player-selected", defaultMessage);
+            this.unknown_player = fileConfiguration.getString("command.misc.unknown-player", defaultMessage);
+            this.console_name = fileConfiguration.getString("command.misc.console-name", "Console");
 
             this.have_to_hold_item = fileConfiguration.getString("commands.misc.have-to-hold-item", defaultMessage);
             this.no_permission = fileConfiguration.getString("commands.misc.no-permission", defaultMessage);
@@ -64,6 +67,16 @@ public class LanguageCache {
             this.spawn_set = fileConfiguration.getString("commands.spawn.set", defaultMessage);
             this.spawn_not_set = fileConfiguration.getString("commands.spawn.not-set", defaultMessage);
 
+            this.warped = fileConfiguration.getString("commands.warp.warped");
+            this.warp_cant_use_name = fileConfiguration.getString("commands.warp.cannot-use-name", defaultMessage);
+            this.warp_set = fileConfiguration.getString("commands.warp.set", defaultMessage);
+            this.warp_exists = fileConfiguration.getString("commands.warp.already-exists", defaultMessage);
+            this.warp_doesnt_exist = fileConfiguration.getString("commands.warp.doesnt-exist", defaultMessage);
+            this.warp_displayname_set = fileConfiguration.getString("commands.warp.displayname-set", defaultMessage);
+            this.warp_removed = fileConfiguration.getString("comands.warp.removed", defaultMessage);
+            this.warp_perm_on = fileConfiguration.getString("commands.warp.requires-permission-true", defaultMessage);
+            this.warp_perm_off = fileConfiguration.getString("commands.warp.requires-permission-false", defaultMessage);
+
             this.healed = fileConfiguration.getString("commands.heal.healed", defaultMessage);
             this.healed_by_other = fileConfiguration.getString("commands.heal.healed-by-other", defaultMessage);
             this.healed_other = fileConfiguration.getString("commands.heal.healed-other", defaultMessage);
@@ -79,8 +92,15 @@ public class LanguageCache {
             this.item_name_changed = fileConfiguration.getString("commands.itemname.name-changed", defaultMessage);
             this.item_lore_changed = fileConfiguration.getString("commands.itemlore.lore-changed", defaultMessage);
 
+            this.nick_self = fileConfiguration.getString("commands.nick.changed-self", defaultMessage);
+            this.nick_other = fileConfiguration.getString("commands.nick.changed-other", defaultMessage);
+            this.nick_changed_by_other = fileConfiguration.getString("commands.nick.changed-by-other", defaultMessage);
+            this.nick_only_same_as_name = fileConfiguration.getString("commands.nick.only-colors", defaultMessage);
+
             this.started_flying = fileConfiguration.getString("commands.fly.flight-on", defaultMessage);
             this.stopped_flying = fileConfiguration.getString("commands.fly.flight-off", defaultMessage);
+            this.started_flying_other = fileConfiguration.getString("commands.fly.flight-on-other", defaultMessage);
+            this.stopped_flying_other = fileConfiguration.getString("commands.fly.flight-off-other", defaultMessage);
 
             this.hat_set = fileConfiguration.getString("commands.hat.hat-set", defaultMessage);
             this.hat_curse = fileConfiguration.getString("commands.hat.binding-curse", defaultMessage);
@@ -125,27 +145,20 @@ public class LanguageCache {
     }
 
     public String getGamemode(GameMode gamemode) {
-        switch (gamemode) {
-            case SURVIVAL:
-                return gamemode_survival;
-            case CREATIVE:
-                return gamemode_creative;
-            case ADVENTURE:
-                return gamemode_adventure;
-            case SPECTATOR:
-                return gamemode_spectator;
-            default:
-                return "";
-        }
+        return switch (gamemode) {
+            case SURVIVAL -> gamemode_survival;
+            case CREATIVE -> gamemode_creative;
+            case ADVENTURE -> gamemode_adventure;
+            case SPECTATOR -> gamemode_spectator;
+            default -> "";
+        };
     }
 
     public String getHookDesc(String string) {
-        switch (string) {
-            default:
-                return "";
-            case "PlaceholderAPI":
-                return hooks_placeholderapi;
+        if ("PlaceholderAPI".equals(string)) {
+            return hooks_placeholderapi;
         }
+        return "";
     }
 
 

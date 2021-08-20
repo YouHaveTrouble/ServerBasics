@@ -15,23 +15,21 @@ join-leave-messages:
 
 chat:
   format-enabled: true
-  format: "&f<%nickname%&f> "
+  format: "<%nickname%> %message%"
   staffchat-enabled: true
-  staffchat-format: "&f[&9STAFF&f] &f<%nickname%&f> "
+  staffchat-format: "<white>[<blue>STAFF<white>] <%nickname%> %message%"
+
 
 # Storage options: sqlite, mysql
-# If you're not sure what to do here, leave "type" field at sqlite, plugin will take care of the rest
+# If you're not sure what to do here, leave "type" field at sqlite
 storage:
   type: sqlite
   host: localhost
-  table: sbasics_players
+  player_table_prefix: "sbasics_"
+  locations_table_prefix: "sbasics_"
   database: database
   port: 3306
   username: root
   password: password
   ssl: true
   verifycertificate: true
-
-
-# DO NOT TOUCH THIS LINE! It's used for server identification in bungeecord setup
-server-uuid: <this should generate automatically>

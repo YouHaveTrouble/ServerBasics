@@ -3,53 +3,53 @@ package eu.endermite.serverbasics.config;
 import eu.endermite.serverbasics.ServerBasics;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.io.IOException;
-import java.util.UUID;
+import java.util.Locale;
 
 public class ConfigCache {
 
-    public String default_lang, chat_format, staffchat_format;
+    public String chat_format, staffchat_format;
+    public Locale default_lang;
     public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
             chat_format_enabled, staffchat_enabled, spawn_on_join;
-    private final String sql_connection_string;
-    private String server_uuid;
+    private final String sql_connection_string, database_player_table_prefix, database_locations_table_prefix;
+    public final DatabaseType databaseType;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
 
-        this.default_lang = config.getString("language.default-language", "en_us");
+        this.default_lang = Locale.forLanguageTag(config.getString("language.default-language", "en_us"));
         this.auto_lang = config.getBoolean("language.auto-language", true);
 
         String playerdbType = config.getString("storage.type", "sqlite");
 
-        playerdbType = playerdbType.toLowerCase();
+        playerdbType = playerdbType.toUpperCase();
+        DatabaseType databaseType;
+        try {
+            databaseType = DatabaseType.valueOf(playerdbType);
+        } catch (IllegalArgumentException e) {
+            databaseType = DatabaseType.SQLITE;
+        }
+        this.databaseType = databaseType;
 
-        switch (playerdbType) {
-            case "mysql":
+        switch (databaseType) {
+            case MYSQL -> {
                 String host = config.getString("storage.host", "localhost");
                 int port = config.getInt("storage.port", 3306);
                 String database = config.getString("storage.database");
                 String user = config.getString("storage.username");
                 String password = config.getString("storage.password");
-                String connString = "jdbc:mysql://" + host + ":" + port + "/"+database+"?user=" + user + "&password=" + password;
+                String connString = "jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + user + "&password=" + password;
                 boolean ssl = config.getBoolean("storage.ssl", true);
-                if (ssl) {
-                    connString = connString + "&useSSL=true";
-                } else {
-                    connString = connString + "&useSSL=false";
-                }
+                connString = connString + "&useSSL=" + ssl;
                 boolean verify = config.getBoolean("storage.players.verifycertificate", true);
-                if (verify) {
-                    connString = connString + "&verifyServerCertificate=true";
-                } else {
-                    connString = connString + "&verifyServerCertificate=false";
-                }
+                connString = connString + "&verifyServerCertificate=" + verify;
                 this.sql_connection_string = connString;
-                break;
-            default:
-                this.sql_connection_string = "jdbc:sqlite:plugins/ServerBasics/data.db";
-                break;
+            }
+            default -> this.sql_connection_string = "jdbc:sqlite:plugins/ServerBasics/data.db";
         }
+
+        this.database_player_table_prefix = config.getString("storage.player_table_prefix", "sbasics_");
+        this.database_locations_table_prefix = config.getString("storage.locations_table_prefix", "sbasics_");
 
         this.disable_join_msg = config.getBoolean("join-leave-messages.disable-join", false);
         this.disable_leave_msg = config.getBoolean("join-leave-messages.disable-leave", false);
@@ -65,23 +65,21 @@ public class ConfigCache {
 
         this.spawn_on_join = config.getBoolean("spawn.players-always-join-spawn", false);
 
-        this.server_uuid = config.getString("server-uuid", "<this should generate automatically>");
-        if (server_uuid.equals("<this should generate automatically>")) {
-            try {
-                server_uuid = UUID.randomUUID().toString();
-                config.set("server-uuid", server_uuid);
-                config.save(ServerBasics.getInstance().getDataFolder()+ "/config.yml");
-            } catch (IOException e) {
-                ServerBasics.getInstance().getLogger().severe("Could not save generated server UUID");
-            }
-        }
-
     }
 
     public String getSqlPlayersConnectionString() {
         return sql_connection_string;
     }
-    public String getServerUuid() {
-        return server_uuid;
+
+    public String getDatabasePlayerTablePrefix() {
+        return database_player_table_prefix;
+    }
+
+    public String getDatabaseLocationsTablePrefix() {
+        return database_locations_table_prefix;
+    }
+
+    public enum DatabaseType {
+        MYSQL, SQLITE
     }
 }

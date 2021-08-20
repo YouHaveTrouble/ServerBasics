@@ -1,34 +1,55 @@
 package eu.endermite.serverbasics.config;
 
+import com.google.common.collect.ImmutableList;
 import eu.endermite.serverbasics.ServerBasics;
-import eu.endermite.serverbasics.storage.ServerDatabase;
-import org.bukkit.Location;
+import eu.endermite.serverbasics.util.BasicWarp;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class LocationsCache {
 
-    public Location spawn;
-    public HashMap<String, Location> warps;
-    public HashMap<String, Location> homes;
+    public BasicWarp spawn;
+    private HashMap<String, BasicWarp> warps;
+    private HashMap<String, BasicWarp> homes;
 
     public LocationsCache() {
-
-        ServerBasics plugin = ServerBasics.getInstance();
-
-        this.spawn = ServerDatabase.getSpawn(ServerBasics.getConfigCache().getServerUuid());
-
-
+        ServerBasics.getInstance().getDatabase().getSpawn().thenAccept(spawn -> this.spawn = spawn);
+        ServerBasics.getInstance().getDatabase().getWarps().thenAccept(warps -> {
+            warps.remove("spawn");
+            this.warps = warps;
+        });
     }
-
-
 
     public boolean isSpawnSet() {
         return spawn != null;
     }
 
-    public void setSpawn(Location sBasicLocation) {
-        spawn = sBasicLocation;
+    public void setSpawn(BasicWarp basicWarp) {
+        ServerBasics.getInstance().getDatabase().saveSpawn(basicWarp).thenRun(() -> spawn = basicWarp);
+    }
+
+    public void addWarp(BasicWarp basicWarp) {
+        ServerBasics.getInstance().getDatabase().saveWarp(basicWarp).thenRun(() -> warps.put(basicWarp.getWarpId(), basicWarp));
+    }
+
+    public void deleteWarp(String warpId) {
+        ServerBasics.getInstance().getDatabase().deleteWarp(warpId).thenRun(() -> warps.remove(warpId));
+    }
+
+    public BasicWarp getWarp(String warpId) {
+        return warps.get(warpId);
+    }
+
+    public boolean warpExists(String warpId) {
+        return warps.containsKey(warpId);
+    }
+
+    /**
+     * @return Immutable list of all cached warp IDs
+     */
+    public List<BasicWarp> warpList() {
+        return ImmutableList.copyOf(warps.values());
     }
 
 

@@ -8,121 +8,75 @@ import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
-import eu.endermite.serverbasics.storage.PlayerDatabase;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.UUID;
+
 @CommandRegistration
 public class NicknameCommand {
 
-    @CommandMethod("nick <player>")
-    @CommandDescription("Set your nickname")
-    @CommandPermission("serverbasics.command.nick.reset")
-    private void commandNickReset(
-            final CommandSender sender,
-            final @Argument(value = "player") SinglePlayerSelector player
-    ) {
-        if (!player.hasAny()) {
-            try {
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(player.getSelector());
-                if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
-                    sendHaventPlayedError(sender);
-                    return;
-                }
-
-                Component message = Component.translatable(
-                        "commands.scoreboard.objectives.modify.displayname",
-                        NamedTextColor.WHITE,
-                        Component.text(offlinePlayer.getName()),
-                        MiniMessage.markdown().parse(offlinePlayer.getName())
-                );
-                sender.sendMessage(message);
-            } catch (Exception e) {
-                sendHaventPlayedError(sender);
-            }
-            return;
-        }
-
-        Player target = player.getPlayer();
-
-        String nick = target.getName();
-
-        Component message = Component.translatable(
-                "commands.scoreboard.objectives.modify.displayname",
-                NamedTextColor.WHITE,
-                Component.text(target.getName()),
-               MiniMessage.get().parse(nick)
-        );
-        sender.sendMessage(message);
-
-        Player onlineTarget = target.getPlayer();
-        onlineTarget.displayName(MiniMessage.markdown().parse(nick));
-
-    }
-
-    @CommandMethod("nick <player> <nickname>")
+    @CommandMethod("nick <nickname>")
     @CommandDescription("Set your nickname")
     @CommandPermission("serverbasics.command.nick")
+    private void commandNick(
+            final Player player,
+            final @Argument(value = "nickname") String nick
+    ) {
+        Component nickComponent = MiniMessage.markdown().parse(nick);
+        String nickStripped = MiniMessage.get().stripTokens(nick);
+        if (!player.hasPermission("serverbasics.command.nick.change") && !player.getName().equals(nickStripped)) {
+            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).nick_only_same_as_name));
+            return;
+        }
+        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
+            basicPlayer.setDisplayName(nick);
+            HashMap<String, Component> placeholders = new HashMap<>();
+            placeholders.put("%nickname%", nickComponent);
+            basicPlayer.sendMessage(ServerBasics.getLang(player.locale()).nick_self, placeholders);
+        });
+    }
+
+    @CommandMethod("nick <nickname> <player>")
+    @CommandDescription("Set nickname of other player")
+    @CommandPermission("serverbasics.command.nick.other")
     private void commandNickOther(
             final CommandSender sender,
-            final @Argument(value = "player") SinglePlayerSelector player,
-            final @Argument(value = "nickname") String[] newNick
+            final @Argument(value = "player") SinglePlayerSelector playerSelector,
+            final @Argument(value = "nickname") String nick
     ) {
-        String nick = String.join(" ", newNick);
-
-        if (!player.hasAny()) {
-            try {
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getSelector());
-                if (!PlayerDatabase.playerExists(offlinePlayer.getUniqueId())) {
-                    sendHaventPlayedError(sender);
-                    return;
-                }
-
-                Component message = Component.translatable(
-                        "commands.scoreboard.objectives.modify.displayname",
-                        NamedTextColor.WHITE,
-                        Component.text(offlinePlayer.getName()),
-                        MiniMessage.markdown().parse(nick)
-                );
-                sender.sendMessage(message);
+        UUID uuid;
+        if (!playerSelector.hasAny()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerSelector.getSelector());
+            if (!offlinePlayer.hasPlayedBefore()) {
+                MessageParser.sendHaventPlayedError(sender);
                 return;
-            } catch (Exception e) {
-                sendHaventPlayedError(sender);
             }
-        }
+            uuid = offlinePlayer.getUniqueId();
+        } else
+            uuid = playerSelector.getPlayer().getUniqueId();
 
-        Player target = player.getPlayer();
-
-        Component message = Component.translatable(
-                "commands.scoreboard.objectives.modify.displayname",
-                NamedTextColor.WHITE,
-                Component.text(target.getName()),
-                MiniMessage.markdown().parse(nick)
-        );
-        sender.sendMessage(message);
-
-        if (!target.isOnline())
-            return;
-
-        Player onlineTarget = target.getPlayer();
-        ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).setDisplayName(nick);
-        onlineTarget.displayName(MiniMessage.markdown().parse(nick));
+        ServerBasics.getBasicPlayers().getBasicPlayer(uuid).thenAccept(basicPlayer -> {
+            Locale locale;
+            if (sender instanceof Player playerSender)
+                locale = playerSender.locale();
+            else
+                locale = ServerBasics.getConfigCache().default_lang;
+            Component nickComponent = MiniMessage.markdown().parse(nick);
+            HashMap<String, Component> placeholders = new HashMap<>();
+            placeholders.put("%oldnickname%", basicPlayer.getDisplayName());
+            placeholders.put("%newnickname%", nickComponent);
+            basicPlayer.setDisplayName(nick);
+            sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).nick_other, placeholders));
+            placeholders.clear();
+            placeholders.put("%nickname%", nickComponent);
+            basicPlayer.sendMessage(ServerBasics.getLang(basicPlayer.getLocale()).nick_changed_by_other);
+        });
     }
-
-    private void sendHaventPlayedError(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            String msg = ServerBasics.getLang(player.locale()).havent_played;
-            MessageParser.sendMessage(player, msg);
-        } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).havent_played;
-            MessageParser.sendMessage(sender, msg);
-        }
-    }
-
 }

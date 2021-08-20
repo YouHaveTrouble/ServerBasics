@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
 import java.util.Map;
 
 @CommandRegistration
@@ -27,7 +28,7 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
-        String msg = "&fServerBasics " + plugin.getDescription().getVersion();
+        String msg = "ServerBasics " + plugin.getDescription().getVersion();
         MessageParser.sendMessage(sender, msg);
     }
 
@@ -41,16 +42,15 @@ public class ServerBasicsCommand {
         sender.sendMessage(Component.text("Server version: " + Bukkit.getVersion()));
         sender.sendMessage(Component.text("NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", "")));
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            sender.sendMessage(getHooksComponent(player.getLocale()));
+        if (sender instanceof Player player) {
+            sender.sendMessage(getHooksComponent(player.locale()));
         } else {
             sender.sendMessage(getHooksComponent(ServerBasics.getConfigCache().default_lang));
         }
 
     }
 
-    private Component getHooksComponent(String locale) {
+    private Component getHooksComponent(Locale locale) {
         Component hooksComponent = Component.text("Hooks (hookamount): ");
 
         int hooks = 0;
@@ -97,9 +97,8 @@ public class ServerBasicsCommand {
             plugin.reloadConfigs();
             plugin.reloadLang();
             plugin.reloadLocations();
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).all_configs_reloaded);
+            if (sender instanceof Player player) {
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).all_configs_reloaded);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).all_configs_reloaded);
             }
@@ -115,9 +114,8 @@ public class ServerBasicsCommand {
         ServerBasics plugin = ServerBasics.getInstance();
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             plugin.reloadConfigs();
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).config_reloaded);
+            if (sender instanceof Player player) {
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).config_reloaded);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).config_reloaded);
             }
@@ -133,30 +131,10 @@ public class ServerBasicsCommand {
         ServerBasics plugin = ServerBasics.getInstance();
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             plugin.reloadLang();
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).lang_reloaded);
+            if (sender instanceof Player player) {
+                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).lang_reloaded);
             } else {
                 MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).lang_reloaded);
-            }
-
-        });
-    }
-
-    @CommandMethod("serverbasics reload locations")
-    @CommandDescription("Reload ServerBasics location files")
-    @CommandPermission("serverbasics.command.serverbasics.reload")
-    private void commandServerBasicsReloadLocations(
-            final CommandSender sender
-    ) {
-        ServerBasics plugin = ServerBasics.getInstance();
-        Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
-            plugin.reloadLocations();
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.getLocale()).locations_reloaded);
-            } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).locations_reloaded);
             }
         });
     }

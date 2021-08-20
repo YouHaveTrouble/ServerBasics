@@ -1,61 +1,43 @@
 package eu.endermite.serverbasics.storage;
 
 import eu.endermite.serverbasics.players.BasicPlayer;
+import eu.endermite.serverbasics.util.BasicWarp;
 import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface Database {
 
-    void createTables(String playerTableName, String warpTableName, String homesTableName);
-    BasicPlayer getPlayer(UUID uuid);
-    void savePlayer(BasicPlayer basicPlayer);
-    void savePlayerOption(UUID uuid, PlayerOption option, Object value);
-    void deletePlayer(UUID uuid);
+    void createTables();
 
-    Location getSpawn();
-    void saveSpawn(Location location);
-    void deleteSpawn();
+    // Player data
 
-    HashMap<String, Location> getWarps();
-    void saveWarp(Location location, String name);
-    void deleteWarp(String name);
+    /**
+     * Get complete player data object from database.
+     * @param uuid Player's UUID
+     * @return CompletableFuture of BasicPlayer when possible. Null when uuid not present in the database.
+     */
+    CompletableFuture<BasicPlayer> getPlayer(UUID uuid);
 
-    HashMap<String, Location> getPlayerHomes(UUID uuid);
-    void savePlayerHomes(HashMap<String, Location> homes);
-    void deletePlayerHome(UUID uuid, String name);
+    CompletableFuture<Void> savePlayerDisplayName(UUID uuid, String displayName);
+    CompletableFuture<Void> savePlayerLastSeen(UUID uuid, long lastSeen);
+    CompletableFuture<Void> deletePlayer(UUID uuid);
+
+    CompletableFuture<BasicWarp> getSpawn();
+    CompletableFuture<Void> saveSpawn(BasicWarp basicWarp);
+    CompletableFuture<Void> deleteSpawn();
+
+    // Warp data
+    CompletableFuture<HashMap<String, BasicWarp>> getWarps();
+    CompletableFuture<Void> saveWarp(BasicWarp basicWarp);
+    CompletableFuture<Void> deleteWarp(String name);
+
+    // Home data
+    CompletableFuture<HashMap<String, BasicWarp>> getPlayerHomes(UUID uuid);
+    CompletableFuture<Void> savePlayerHome(BasicWarp home, UUID uuid);
+    CompletableFuture<Void> deletePlayerHome(UUID uuid, String name);
 
 
-}
-
-enum PlayerOption {
-    NICK("displayname"),
-    GAMEMODE("gamemode"),
-    HOMES("homes");
-
-    private final String rowId;
-
-    PlayerOption(String rowId) {
-        this.rowId = rowId;
-    }
-
-    public String getId() {
-        return rowId;
-    }
-}
-
-enum WarpOption {
-    LOCATION("location"),
-    NAME("name");
-
-    private final String rowId;
-
-    WarpOption(String rowId) {
-        this.rowId = rowId;
-    }
-
-    public String getId() {
-        return rowId;
-    }
 }

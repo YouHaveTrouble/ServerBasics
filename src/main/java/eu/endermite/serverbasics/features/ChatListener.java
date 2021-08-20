@@ -3,10 +3,8 @@ package eu.endermite.serverbasics.features;
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.chat.BasicChatRenderer;
 import eu.endermite.serverbasics.chat.StaffChatRenderer;
-import eu.endermite.serverbasics.messages.MessageParser;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,8 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class ChatListener implements Listener {
-
-
 
     BasicChatRenderer chatRenderer = new BasicChatRenderer();
     StaffChatRenderer staffChatRenderer = new StaffChatRenderer();

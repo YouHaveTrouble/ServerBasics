@@ -7,8 +7,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +43,7 @@ public class BasicChatRenderer implements ChatRenderer {
 
         TextReplacementConfig nameReplacementConfig = TextReplacementConfig.builder()
                 .match("%nickname%")
-                .replacement(MessageParser.miniMessage.parse(stringMessage))
+                .replacement(component)
                 .build();
         format = format.replaceText(nameReplacementConfig);
         return format;

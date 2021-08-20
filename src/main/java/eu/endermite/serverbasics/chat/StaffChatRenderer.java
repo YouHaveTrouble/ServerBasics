@@ -34,7 +34,7 @@ public class StaffChatRenderer implements ChatRenderer {
 
         TextReplacementConfig nameReplacementConfig = TextReplacementConfig.builder()
                 .match("%nickname%")
-                .replacement(MessageParser.miniMessage.parse(stringMessage))
+                .replacement(component)
                 .build();
         format = format.replaceText(nameReplacementConfig);
         return format;

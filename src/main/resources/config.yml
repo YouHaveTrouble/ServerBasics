@@ -15,9 +15,9 @@ join-leave-messages:
 
 chat:
   format-enabled: true
-  format: "<white><%nickname%<white>> %message%"
+  format: "<%nickname%> %message%"
   staffchat-enabled: true
-  staffchat-format: "<white>[<cyan>STAFF<white>] <%nickname%<white>> %message%"
+  staffchat-format: "<white>[<blue>STAFF<white>] <%nickname%> %message%"
 
 
 # Storage options: sqlite, mysql

@@ -31,9 +31,9 @@ public class GamemodeCommand {
             final @Argument(value = "gm") GameMode gamemode
     ) {
 
-        if (!player.hasPermission("serverbasics.gamemode.self." + gamemode.toString().toLowerCase())
-                && !player.hasPermission("serverbasics.gamemode.*")
-                && !player.hasPermission("serverbasics.gamemode.self.*")
+        if (!player.hasPermission("serverbasics.command.gamemode.self." + gamemode.toString().toLowerCase())
+                && !player.hasPermission("serverbasics.command.gamemode.*")
+                && !player.hasPermission("serverbasics.command.gamemode.self.*")
         ) {
             MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).gamemode_no_perms);
             return;
@@ -55,9 +55,9 @@ public class GamemodeCommand {
     ) {
 
         // Permission check
-        if (!sender.hasPermission("serverbasics.gamemode.others." + gamemode.toString().toLowerCase())
-                && !sender.hasPermission("serverbasics.gamemode.*")
-                && !sender.hasPermission("serverbasics.gamemode.others.*")) {
+        if (!sender.hasPermission("serverbasics.command.gamemode.others." + gamemode.toString().toLowerCase())
+                && !sender.hasPermission("serverbasics.command.gamemode.*")
+                && !sender.hasPermission("serverbasics.command.gamemode.others.*")) {
             String msg;
             if (sender instanceof Player player) {
                 msg = ServerBasics.getLang(player.locale()).gamemode_no_perms_to_set;

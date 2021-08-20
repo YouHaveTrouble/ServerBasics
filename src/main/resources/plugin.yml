@@ -6,38 +6,28 @@ authors: [ YouHaveTrouble, CorvetteCole, Dashiell ]
 softdepend:
   - PlaceholderAPI
 permissions:
-  serverbasics.gamemode:
+  serverbasics.command.gamemode.*:
     default: op
     children:
-      serverbasics.gamemode.self:
-        serverbasics.gamemode.self.survival:
-          description: Allows switching to survival mode
-        serverbasics.gamemode.self.creative:
-          description: Allows switching to creative mode
-        serverbasics.gamemode.self.adventure:
-          description: Allows switching to adventure mode
-        serverbasics.gamemode.self.spectator:
-          description: Allows switching to spectator mode
-      serverbasics.gamemode.others:
+      serverbasics.command.gamemode.self.*:
+        serverbasics.command.gamemode.self.survival: true
+        serverbasics.command.gamemode.self.creative: true
+        serverbasics.command.gamemode.self.adventure: true
+        serverbasics.command.gamemode.self.spectator: true
+      serverbasics.command.gamemode.others.*:
         children:
-          serverbasics.gamemode.others.survival:
-            description: Allows switching other players to survival mode
-          serverbasics.gamemode.others.creative:
-            description: Allows switching other players to creative mode
-          serverbasics.gamemode.others.adventure:
-            description: Allows switching other players to adventure mode
-          serverbasics.gamemode.others.spectator:
-            description: Allows switching other players to spectator mode
+          serverbasics.command.gamemode.others.survival: true
+          serverbasics.command.gamemode.others.creative: true
+          serverbasics.command.gamemode.others.adventure: true
+          serverbasics.command.gamemode.others.spectator: true
   serverbasics.chat.color:
     description: Allows usage of colors in chat
     default: op
-  serverbasics.chat.staffchat:
+  serverbasics.chat.staffchat.*:
     default: op
     children:
-      serverbasics.chat.staffchat.send:
-        description: Allows sending messages in staff chat
-      serverbasics.chat.staffchat.recieve:
-        description: Allows recieving messages from staffchat
+      serverbasics.chat.staffchat.send: true
+      serverbasics.chat.staffchat.recieve: true
   serverbasics.command.hat.equip:
     description: Allows equipping hat in the survival inventory
     default: op

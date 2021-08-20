@@ -22,7 +22,7 @@ public class LanguageCache {
             nick_self, nick_other, nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set,
             warp_exists, warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off;
 
-    public List<String> kick_message, ban_message, tempban_message;
+    public List<String> kick_message, ban_message;
 
     public LanguageCache(String lang) {
 
@@ -127,7 +127,6 @@ public class LanguageCache {
             this.kick_reason = fileConfiguration.getString("commands.kick.default-reason", defaultMessage);
 
             this.ban_message = fileConfiguration.getStringList("commands.ban.ban-message");
-            this.tempban_message = fileConfiguration.getStringList("commands.ban.tempban-message");
             this.ban_reason = fileConfiguration.getString("commands.ban.default-reason", defaultMessage);
 
             this.custom_join_message = fileConfiguration.getString("custom-join-leave-messages.join", defaultMessage);

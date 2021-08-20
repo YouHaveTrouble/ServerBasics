@@ -67,7 +67,6 @@ public final class ServerBasics extends JavaPlugin {
         basicPlayers = new BasicPlayerCache();
         reloadLocations();
 
-        //getServer().getPluginManager().registerEvents(new CustomJoinLeaveMessageListener(), this);
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new HatListener(), this);
@@ -122,12 +121,15 @@ public final class ServerBasics extends JavaPlugin {
         locationsCache = new LocationsCache();
     }
 
-    private static LanguageCache getLang(String lang) {
-        LanguageCache cache;
-         cache = languageCacheMap.get(lang);
-        if (cache == null)
-            cache = languageCacheMap.get(configCache.default_lang);
-        return cache;
+    public static LanguageCache getLang(String lang) {
+        lang = lang.replace("-", "_");
+        if (configCache.auto_lang) {
+            return languageCacheMap.getOrDefault(lang, languageCacheMap.get(configCache.default_lang.toString().toLowerCase()));
+        } else {
+            System.out.println("lang: "+configCache.default_lang.toString().toLowerCase());
+            return languageCacheMap.get(configCache.default_lang.toString().toLowerCase());
+        }
+
     }
 
     public static LanguageCache getLang(Locale locale) {

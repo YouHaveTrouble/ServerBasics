@@ -55,7 +55,7 @@ commands:
     noone-to-teleport: "No entities to teleport"
     teleported-self: "You teleported to %entity%'s location"
     teleported-to-self: "You teleported %name% to your location"
-    teleported-coords: "You teleported to %s"
+    teleported-coords: "You teleported to %coords%"
     teleported-by-other: "You have been teleported"
   warp:
     warped: "You warped to %warp%"
@@ -74,9 +74,6 @@ commands:
     default-reason: "Kicked by a moderator"
   ban:
     ban-message:
-    - "%reason%"
-    tempban-message:
-    - "Ban will expire in: <yellow>%time%"
     - "%reason%"
     default-reason: "Banned by a moderator"
   misc:

@@ -17,7 +17,7 @@ public class ConfigCache {
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
 
-        this.default_lang = Locale.forLanguageTag(config.getString("language.default-language", "en_us"));
+        this.default_lang = Locale.forLanguageTag(config.getString("language.default-language", "en-us").replace("_", "-"));
         this.auto_lang = config.getBoolean("language.auto-language", true);
 
         String playerdbType = config.getString("storage.type", "sqlite");

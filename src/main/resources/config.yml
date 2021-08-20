@@ -1,5 +1,5 @@
+# Match message language to player language set in client. If disabled default language is always used
 language:
-  #Match message language to player language set in client
   auto-language: true
   default-language: "en_us"
 

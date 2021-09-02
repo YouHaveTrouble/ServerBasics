@@ -16,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
-
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -72,7 +71,7 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new HatListener(), this);
 
         if (hooks.isHooked("PlaceholderAPI")) {
-            new PlaceholderAPIHook(this).register();
+            new PlaceholderAPIHook().register();
         }
 
     }

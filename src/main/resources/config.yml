@@ -19,6 +19,10 @@ chat:
   staffchat-enabled: true
   staffchat-format: "<white>[<blue>STAFF<white>] <%nickname%> %message%"
 
+economy:
+  # How often player balances should be saved in seconds
+  # Do not change unless you REALLY know what you're doing.
+  save-interval: 60
 
 # Storage options: sqlite, mysql
 # If you're not sure what to do here, leave "type" field at sqlite

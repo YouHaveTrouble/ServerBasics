@@ -1,5 +1,6 @@
 package eu.endermite.serverbasics.hooks;
 
+import eu.endermite.serverbasics.ServerBasics;
 
 import java.util.HashMap;
 
@@ -10,10 +11,10 @@ public class Hooks {
     public Hooks() {
 
         // Plugin hooks
-
         Hook papiHook = new Hook("PlaceholderAPI", null);
-        if (papiHook.pluginEnabled())
+        if (papiHook.pluginEnabled()) {
             pluginHooks.put(papiHook.getName(), papiHook);
+        }
 
     }
 

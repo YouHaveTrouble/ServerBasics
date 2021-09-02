@@ -5,21 +5,25 @@ api-version: 1.17
 authors: [ YouHaveTrouble, CorvetteCole, Dashiell ]
 softdepend:
   - PlaceholderAPI
+  - Vault
 permissions:
   serverbasics.command.gamemode.*:
     default: op
     children:
-      serverbasics.command.gamemode.self.*:
-        serverbasics.command.gamemode.self.survival: true
-        serverbasics.command.gamemode.self.creative: true
-        serverbasics.command.gamemode.self.adventure: true
-        serverbasics.command.gamemode.self.spectator: true
-      serverbasics.command.gamemode.others.*:
-        children:
-          serverbasics.command.gamemode.others.survival: true
-          serverbasics.command.gamemode.others.creative: true
-          serverbasics.command.gamemode.others.adventure: true
-          serverbasics.command.gamemode.others.spectator: true
+      serverbasics.command.gamemode.self.*: true
+      serverbasics.command.gamemode.others.*: true
+  serverbasics.command.gamemode.self.*:
+    children:
+      serverbasics.command.gamemode.self.survival: true
+      serverbasics.command.gamemode.self.creative: true
+      serverbasics.command.gamemode.self.adventure: true
+      serverbasics.command.gamemode.self.spectator: true
+  serverbasics.command.gamemode.others.*:
+    children:
+      serverbasics.command.gamemode.others.survival: true
+      serverbasics.command.gamemode.others.creative: true
+      serverbasics.command.gamemode.others.adventure: true
+      serverbasics.command.gamemode.others.spectator: true
   serverbasics.chat.color:
     description: Allows usage of colors in chat
     default: op

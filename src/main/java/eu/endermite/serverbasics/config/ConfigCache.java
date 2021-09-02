@@ -7,12 +7,13 @@ import java.util.Locale;
 
 public class ConfigCache {
 
-    public String chat_format, staffchat_format;
-    public Locale default_lang;
+    public final String chat_format, staffchat_format;
+    public final Locale default_lang;
     public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
             chat_format_enabled, staffchat_enabled, spawn_on_join;
     private final String sql_connection_string, database_player_table_prefix, database_locations_table_prefix;
     public final DatabaseType databaseType;
+    public final long economySaveInterval;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
@@ -64,6 +65,8 @@ public class ConfigCache {
         this.staffchat_format = config.getString("chat.staffchat-format", "&f<%nickname%&f> %message%");
 
         this.spawn_on_join = config.getBoolean("spawn.players-always-join-spawn", false);
+
+        this.economySaveInterval = config.getLong("economy.save-interval", 60);
 
     }
 

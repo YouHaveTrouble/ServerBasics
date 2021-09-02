@@ -21,11 +21,12 @@ public class MySQL implements Database {
 
     DataSource dataSource;
 
-    private final String playerTable, warpTable, homesTable;
+    private final String playerTable, warpTable, homesTable, economyTable;
     private final String loadPlayer, savePlayerDisplayName, savePlayerLastSeen, getSpawn, saveWarp,
-            getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer;
+            getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer, saveBalance, getBalance,
+            deleteBalance;
 
-    public MySQL(String playerPrefix, String locationsPrefix) {
+    public MySQL(String playerPrefix, String serverPrefix) {
         HikariConfig config = new HikariConfig();
         String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
         config.setJdbcUrl(url);
@@ -33,8 +34,9 @@ public class MySQL implements Database {
 
         dataSource = new HikariDataSource(config);
         this.playerTable = playerPrefix + "players";
-        this.warpTable = locationsPrefix + "warps";
-        this.homesTable = locationsPrefix + "homes";
+        this.warpTable = serverPrefix + "warps";
+        this.homesTable = serverPrefix + "homes";
+        this.economyTable = serverPrefix + "economy";
         createTables();
 
         loadPlayer = "SELECT * FROM `" + playerTable + "` WHERE `player_uuid` = ?;";
@@ -48,6 +50,9 @@ public class MySQL implements Database {
         deleteWarp = "DELETE FROM `" + warpTable + "` WHERE warp_id = ?;";
         deleteHome = "DELETE FROM " + homesTable + "` WHERE player_uuid = ?, WHERE home_id = ?;";
         deletePlayer = "DELETE FROM `" + playerTable + "` WHERE player_uuid = ?;";
+        saveBalance = "INSERT INTO `" + economyTable + "` (player_uuid, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE SET balance = ?;";
+        getBalance = "SELECT `balance` FROM `" + economyTable + "` WHERE player_uuid = ?;";
+        deleteBalance = "DELETE FROM `" + economyTable + "` WHERE player_uuid = ?;";
     }
 
     public void createTables() {
@@ -59,6 +64,8 @@ public class MySQL implements Database {
             sql = "CREATE TABLE IF NOT EXISTS `" + warpTable + "` (`warp_id` varchar(32) UNIQUE PRIMARY KEY, `displayname` varchar(256), `location` json, `requires_permission` boolean DEFAULT FALSE);";
             statement.execute(sql);
             sql = "CREATE TABLE IF NOT EXISTS `" + homesTable + "` (`home_id` varchar(32), `player_uuid` varchar(36), `location` json, CONSTRAINT COMP_KEY PRIMARY KEY (home_id, player_uuid));";
+            statement.execute(sql);
+            sql = "CREATE TABLE IF NOT EXISTS `" + economyTable + "` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `balance` double);";
             statement.execute(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -279,6 +286,49 @@ public class MySQL implements Database {
             try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteHome)) {
                 statement.setString(1, uuid.toString());
                 statement.setString(2, homeId);
+                statement.executeUpdate();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Double> getBalance(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(loadPlayer)) {
+                statement.setString(1, uuid.toString());
+                ResultSet result = statement.executeQuery();
+                if (result.next()) {
+                    return result.getDouble("balance");
+                } else
+                    return 0d;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                return 0d;
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> saveBalance(UUID uuid, double balance) {
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveBalance)) {
+                statement.setString(1, uuid.toString());
+                statement.setDouble(2, balance);
+                statement.setDouble(3, balance);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> removeBalance(UUID uuid) {
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteBalance)) {
+                statement.setString(1, uuid.toString());
                 statement.executeUpdate();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

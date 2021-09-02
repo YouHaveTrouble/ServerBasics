@@ -23,6 +23,7 @@ public class FeatureListener implements Listener {
         Player player = event.getPlayer();
         if (ServerBasics.getConfigCache().custom_join_msg || ServerBasics.getConfigCache().disable_join_msg)
             event.joinMessage(null);
+
         BasicPlayer.fromDatabase(player.getUniqueId()).thenAccept(basicPlayer -> {
             ServerBasics.getBasicPlayers().addBasicPlayer(basicPlayer);
             if (ServerBasics.getConfigCache().custom_join_msg)

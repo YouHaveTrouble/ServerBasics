@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
-    private final ServerBasics plugin;
 
-    public PlaceholderAPIHook(ServerBasics plugin) {
-        this.plugin = plugin;
+    private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().hexColors().build();
+
+    public PlaceholderAPIHook() {
     }
 
     @Override
@@ -36,7 +36,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         // %serverbasics_nickname%
         if (params.equals("nickname")) {
             if (player.isOnline())
-                return LegacyComponentSerializer.legacySection().serialize(player.getPlayer().displayName());
+                return serializer.serialize(player.getPlayer().displayName());
             else
                 return player.getName();
         }

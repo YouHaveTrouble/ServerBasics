@@ -8,11 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
-
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().hexColors().build();
-
-    public PlaceholderAPIHook() {
-    }
 
     @Override
     public @NotNull String getIdentifier() {
@@ -21,12 +17,12 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        return "YouHaveTrouble";
+        return String.join(", ", ServerBasics.getInstance().getDescription().getAuthors());
     }
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0";
+        return ServerBasics.getInstance().getDescription().getVersion();
     }
 
     @Override

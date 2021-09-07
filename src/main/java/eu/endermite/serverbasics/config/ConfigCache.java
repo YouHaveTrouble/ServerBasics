@@ -9,11 +9,12 @@ public class ConfigCache {
 
     public final String chat_format, staffchat_format;
     public final Locale default_lang;
-    public boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
+    public final boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
             chat_format_enabled, staffchat_enabled, spawn_on_join;
-    private final String sql_connection_string, database_player_table_prefix, database_locations_table_prefix;
+    private final String sql_connection_string, database_player_table_prefix, database_server_table_prefix;
     public final DatabaseType databaseType;
     public final long economySaveInterval;
+    public final int baltopSize, baltopRefreshInterval;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
@@ -50,7 +51,7 @@ public class ConfigCache {
         }
 
         this.database_player_table_prefix = config.getString("storage.player_table_prefix", "sbasics_");
-        this.database_locations_table_prefix = config.getString("storage.locations_table_prefix", "sbasics_");
+        this.database_server_table_prefix = config.getString("storage.server_table_prefix", "sbasics_");
 
         this.disable_join_msg = config.getBoolean("join-leave-messages.disable-join", false);
         this.disable_leave_msg = config.getBoolean("join-leave-messages.disable-leave", false);
@@ -67,6 +68,8 @@ public class ConfigCache {
         this.spawn_on_join = config.getBoolean("spawn.players-always-join-spawn", false);
 
         this.economySaveInterval = config.getLong("economy.save-interval", 60);
+        this.baltopSize = config.getInt("economy.baltop.size", 10);
+        this.baltopRefreshInterval = config.getInt("economy.baltop.refresh", 30);
 
     }
 
@@ -79,7 +82,7 @@ public class ConfigCache {
     }
 
     public String getDatabaseLocationsTablePrefix() {
-        return database_locations_table_prefix;
+        return database_server_table_prefix;
     }
 
     public enum DatabaseType {

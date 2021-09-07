@@ -12,7 +12,7 @@ public class LanguageCache {
     public String all_configs_reloaded, config_reloaded, lang_reloaded, locations_reloaded, have_to_hold_item,
             healed, healed_by_other, healed_other, healed_many, healed_noone, fed, fed_by_other, fed_other,
             fed_many, fed_noone, item_name_changed, item_lore_changed, custom_join_message, custom_leave_message,
-            teleported_spawn, teleported_spawn_other, teleported_spawn_by_other, spawn_set, spawn_not_set, could_not_tp, no_permission,
+            teleported_spawn, teleported_spawn_other, teleported_spawn_by_other, spawn_set, spawn_not_set, spawn_unset, could_not_tp, no_permission,
             started_flying, stopped_flying, gamemode_set_many, gamemode_changed, gamemode_changed_self, gamemode_changed_other, gamemode_no_perms,
             gamemode_no_perms_to_set, havent_played, no_player_selected, hat_set, hat_curse, fixed_hand,
             fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
@@ -66,6 +66,7 @@ public class LanguageCache {
             this.teleported_spawn_by_other = fileConfiguration.getString("commands.spawn.teleported-by-other", defaultMessage);
             this.spawn_set = fileConfiguration.getString("commands.spawn.set", defaultMessage);
             this.spawn_not_set = fileConfiguration.getString("commands.spawn.not-set", defaultMessage);
+            this.spawn_unset = fileConfiguration.getString("commands.spawn.unset");
 
             this.warped = fileConfiguration.getString("commands.warp.warped");
             this.warp_cant_use_name = fileConfiguration.getString("commands.warp.cannot-use-name", defaultMessage);

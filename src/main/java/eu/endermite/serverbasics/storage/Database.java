@@ -36,6 +36,7 @@ public interface Database {
     CompletableFuture<Double> getBalance(UUID uuid);
     CompletableFuture<Void> saveBalance(UUID uuid, double balance);
     CompletableFuture<Void> removeBalance(UUID uuid);
+    CompletableFuture<HashMap<UUID, Double>> getBaltop(int limit);
 
 
 }

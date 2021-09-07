@@ -9,6 +9,7 @@ commands:
     teleported-other: "You teleported %s to spawn"
     teleported-by-other: "You have been sent to spawn by %s"
     set: "Spawn has been set at your location"
+    unset: "Spawn unset!"
     not-set: "Spawn not set! Ask server administrators to do that!"
   heal:
     healed: "You have been healed"

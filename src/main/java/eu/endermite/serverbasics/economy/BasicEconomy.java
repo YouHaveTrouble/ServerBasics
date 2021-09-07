@@ -2,22 +2,18 @@ package eu.endermite.serverbasics.economy;
 
 import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.storage.Database;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BasicEconomy {
 
     private final HashMap<UUID, BasicEconomyAccount> accounts = new HashMap<>();
-    private final LinkedHashMap<Component, Double> baltop = new LinkedHashMap<>();
-
+    private final List<BasicEconomyAccount> baltop = new ArrayList<>();
     private final Database database;
 
     public BasicEconomy(ServerBasics plugin) {
@@ -33,10 +29,11 @@ public class BasicEconomy {
             long now = Instant.now().getEpochSecond();
             while (iterator.hasNext()) {
                 BasicEconomyAccount account = iterator.next();
-                database.saveBalance(account.getUuid(), account.getBalance());
+                if (account.changedSinceLastSave())
+                    database.saveBalance(account.getUuid(), account.getBalance()).thenRun(() -> account.changedSinceLastSave(false));
+
                 Player player = Bukkit.getPlayer(account.getUuid());
-                if ((player == null || !player.isOnline()) && now > account.getLastAccessed()+(interval*0.75))
-                    iterator.remove();
+                if ((player == null || !player.isOnline()) && now > account.getLastAccessed()+(interval*0.75)) iterator.remove();
             }
         }, interval*20, interval*20);
 
@@ -52,10 +49,36 @@ public class BasicEconomy {
         });
     }
 
+    public List<BasicEconomyAccount> getBaltop() {
+        return baltop;
+    }
+
     public void addToCache(UUID uuid) {
         database.getBalance(uuid).thenAccept(balance -> {
             BasicEconomyAccount economyAccount = new BasicEconomyAccount(uuid, balance);
             accounts.putIfAbsent(uuid, economyAccount);
+        });
+    }
+
+    public void refreshBaltop(boolean force) {
+        if (force) {
+            HashMap<UUID, BasicEconomyAccount> accountClone = new HashMap<>(accounts);
+            CompletableFuture[] futures = new CompletableFuture[accountClone.size()];
+            AtomicInteger i = new AtomicInteger();
+            accountClone.values().forEach(account -> futures[i.getAndIncrement()] = ServerBasics.getInstance().getDatabase().saveBalance(account.getUuid(), account.getBalance()));
+            CompletableFuture.allOf(futures).thenRun(this::updateBaltopEntries);
+            return;
+        }
+        updateBaltopEntries();
+    }
+
+    private void updateBaltopEntries() {
+        database.getBaltop(ServerBasics.getConfigCache().baltopSize).thenAccept(newBaltop ->  {
+            baltop.clear();
+            for (Map.Entry<UUID, Double> entry : newBaltop.entrySet()) {
+                BasicEconomyAccount account = new BasicEconomyAccount(entry.getKey(), entry.getValue());
+                baltop.add(account);
+            }
         });
     }
 

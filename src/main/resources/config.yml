@@ -20,6 +20,11 @@ chat:
   staffchat-format: "<white>[<blue>STAFF<white>] <%nickname%> %message%"
 
 economy:
+  baltop:
+    # How many entries baltop should have
+    size: 10
+    # How often in seconds should baltop refresh
+    refresh: 30
   # How often player balances should be saved in seconds
   # Do not change unless you REALLY know what you're doing.
   save-interval: 60
@@ -30,7 +35,7 @@ storage:
   type: sqlite
   host: localhost
   player_table_prefix: "sbasics_"
-  locations_table_prefix: "sbasics_"
+  server_table_prefix: "sbasics_"
   database: database
   port: 3306
   username: root

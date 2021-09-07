@@ -24,7 +24,7 @@ public class MySQL implements Database {
     private final String playerTable, warpTable, homesTable, economyTable;
     private final String loadPlayer, savePlayerDisplayName, savePlayerLastSeen, getSpawn, saveWarp,
             getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer, saveBalance, getBalance,
-            deleteBalance;
+            deleteBalance, getBaltop;
 
     public MySQL(String playerPrefix, String serverPrefix) {
         HikariConfig config = new HikariConfig();
@@ -53,6 +53,7 @@ public class MySQL implements Database {
         saveBalance = "INSERT INTO `" + economyTable + "` (player_uuid, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE SET balance = ?;";
         getBalance = "SELECT `balance` FROM `" + economyTable + "` WHERE player_uuid = ?;";
         deleteBalance = "DELETE FROM `" + economyTable + "` WHERE player_uuid = ?;";
+        getBaltop = "SELECT * FROM `" + economyTable + "` ORDER BY balance DESC LIMIT ?;";
     }
 
     public void createTables() {
@@ -296,7 +297,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Double> getBalance(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(loadPlayer)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getBalance)) {
                 statement.setString(1, uuid.toString());
                 ResultSet result = statement.executeQuery();
                 if (result.next()) {
@@ -332,6 +333,29 @@ public class MySQL implements Database {
                 statement.executeUpdate();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<HashMap<UUID, Double>> getBaltop(int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getBaltop)) {
+                HashMap<UUID, Double> baltop = new HashMap<>();
+                ResultSet result = loadPlayerStatement.executeQuery();
+                while (result.next()) {
+                    String id = result.getString("player_uuid");
+                    double balance = result.getDouble("balance");
+                    try {
+                        UUID uuid = UUID.fromString(id);
+                        baltop.put(uuid, balance);
+                    } catch (IllegalArgumentException ignored) {
+                    }
+                }
+                return baltop;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return new HashMap<>();
             }
         });
     }

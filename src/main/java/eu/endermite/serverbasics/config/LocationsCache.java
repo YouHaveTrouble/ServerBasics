@@ -29,6 +29,10 @@ public class LocationsCache {
         ServerBasics.getInstance().getDatabase().saveSpawn(basicWarp).thenRun(() -> spawn = basicWarp);
     }
 
+    public void clearSpawn() {
+        ServerBasics.getInstance().getDatabase().deleteSpawn().thenRun(() -> spawn = null);
+    }
+
     public void addWarp(BasicWarp basicWarp) {
         ServerBasics.getInstance().getDatabase().saveWarp(basicWarp).thenRun(() -> warps.put(basicWarp.getWarpId(), basicWarp));
     }

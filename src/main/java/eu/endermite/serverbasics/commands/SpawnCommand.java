@@ -10,8 +10,6 @@ import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.util.BasicWarp;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,10 +35,10 @@ public class SpawnCommand {
         Player target = targetToParse.getPlayer();
 
         if (target == null) {
-            final Component message = Component.translatable(
-                    "argument.entity.notfound.entity",
-                    NamedTextColor.WHITE);
-            sender.sendMessage(message);
+            if (sender instanceof Player player)
+                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_player_selected);
+            else
+                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_player_selected);
             return;
         }
         ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).thenAccept(BasicPlayer::teleportToSpawn);
@@ -56,10 +54,7 @@ public class SpawnCommand {
             MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_not_set);
             return;
         }
-        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
-            basicPlayer.teleportToSpawn();
-            basicPlayer.sendMessage("a");
-        });
+        ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(BasicPlayer::teleportToSpawn);
     }
 
     @CommandMethod("setspawn")
@@ -76,6 +71,16 @@ public class SpawnCommand {
                 .build();
         ServerBasics.getLocationsCache().setSpawn(spawn);
         MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_set);
+    }
+
+    @CommandMethod("setspawn none")
+    @CommandDescription("Sets spawn location to none")
+    @CommandPermission("serverbasics.command.setspawn")
+    private void commandSetSpawnToNone(
+            final Player player
+    ) {
+        ServerBasics.getLocationsCache().clearSpawn();
+        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_unset);
     }
 
 }

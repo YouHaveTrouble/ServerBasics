@@ -183,9 +183,9 @@ public class SQLite implements Database {
     @Override
     public CompletableFuture<HashMap<String, BasicWarp>> getWarps() {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getWarps)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getWarps)) {
                 HashMap<String, BasicWarp> warps = new HashMap<>();
-                ResultSet result = loadPlayerStatement.executeQuery();
+                ResultSet result = statement.executeQuery();
                 while (result.next()) {
                     String id = result.getString("warp_id");
                     if (id.equals("spawn")) continue;
@@ -244,9 +244,9 @@ public class SQLite implements Database {
     @Override
     public CompletableFuture<HashMap<String, BasicWarp>> getPlayerHomes(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getHomes)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getHomes)) {
                 HashMap<String, BasicWarp> warps = new HashMap<>();
-                ResultSet result = loadPlayerStatement.executeQuery();
+                ResultSet result = statement.executeQuery();
                 while (result.next()) {
                     String id = result.getString("home_id");
                     String displayName = result.getString("displayname");
@@ -344,9 +344,10 @@ public class SQLite implements Database {
     @Override
     public CompletableFuture<HashMap<UUID, Double>> getBaltop(int limit) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement loadPlayerStatement = connection.prepareStatement(getBaltop)) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getBaltop)) {
+                statement.setInt(1, limit);
                 HashMap<UUID, Double> baltop = new HashMap<>();
-                ResultSet result = loadPlayerStatement.executeQuery();
+                ResultSet result = statement.executeQuery();
                 while (result.next()) {
                     String id = result.getString("player_uuid");
                     double balance = result.getDouble("balance");

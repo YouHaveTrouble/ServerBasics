@@ -116,7 +116,7 @@ public class BasicPlayer {
     public Component getDisplayName() {
         if (displayName != null) return displayName;
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        if (!offlinePlayer.hasPlayedBefore()) return Component.empty();
+        if (offlinePlayer.getName() == null) return Component.empty();
         if (offlinePlayer.isOnline())
             return offlinePlayer.getPlayer().displayName();
         else

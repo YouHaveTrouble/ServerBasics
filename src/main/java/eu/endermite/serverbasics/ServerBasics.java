@@ -1,5 +1,7 @@
 package eu.endermite.serverbasics;
 
+import eu.endermite.serverbasics.economy.BasicEconomy;
+import eu.endermite.serverbasics.economy.VaultHandler;
 import eu.endermite.serverbasics.hooks.PlaceholderAPIHook;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
@@ -12,6 +14,8 @@ import eu.endermite.serverbasics.config.LocationsCache;
 import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.HatListener;
 import eu.endermite.serverbasics.storage.SQLite;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -32,6 +36,7 @@ public final class ServerBasics extends JavaPlugin {
     private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
     private static BasicPlayerCache basicPlayers;
+    private static BasicEconomy basicEconomy;
     private static Hooks hooks;
     private Database database;
 
@@ -72,6 +77,10 @@ public final class ServerBasics extends JavaPlugin {
 
         if (hooks.isHooked("PlaceholderAPI")) {
             new PlaceholderAPIHook().register();
+        }
+        if (hooks.isHooked("Vault")) {
+            basicEconomy = new BasicEconomy(this);
+            getServer().getServicesManager().register(Economy.class, new VaultHandler(), this, ServicePriority.Lowest);
         }
 
     }
@@ -128,7 +137,6 @@ public final class ServerBasics extends JavaPlugin {
             System.out.println("lang: "+configCache.default_lang.toString().toLowerCase());
             return languageCacheMap.get(configCache.default_lang.toString().toLowerCase());
         }
-
     }
 
     public static LanguageCache getLang(Locale locale) {
@@ -151,6 +159,9 @@ public final class ServerBasics extends JavaPlugin {
         return basicPlayers;
     }
 
+    public static BasicEconomy getBasicEconomy() {
+        return basicEconomy;
+    }
     public static Hooks getHooks() {
         return hooks;
     }

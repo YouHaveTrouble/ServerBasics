@@ -20,6 +20,10 @@ chat:
   staffchat-format: "<white>[<blue>STAFF<white>] <%nickname%> %message%"
 
 economy:
+  currency:
+    singular: "$"
+    plural: "$"
+    fractional-digits: 2
   baltop:
     # How many entries baltop should have
     size: 10

@@ -7,14 +7,14 @@ import java.util.Locale;
 
 public class ConfigCache {
 
-    public final String chat_format, staffchat_format;
+    public final String chat_format, staffchat_format, currencySingular, currencyPlural;
     public final Locale default_lang;
     public final boolean auto_lang, custom_join_msg, custom_leave_msg, disable_join_msg, disable_leave_msg,
             chat_format_enabled, staffchat_enabled, spawn_on_join;
     private final String sql_connection_string, database_player_table_prefix, database_server_table_prefix;
     public final DatabaseType databaseType;
     public final long economySaveInterval;
-    public final int baltopSize, baltopRefreshInterval;
+    public final int baltopSize, baltopRefreshInterval, fractionalDigits;
 
     public ConfigCache() {
         FileConfiguration config = ServerBasics.getInstance().getConfig();
@@ -70,6 +70,9 @@ public class ConfigCache {
         this.economySaveInterval = config.getLong("economy.save-interval", 60);
         this.baltopSize = config.getInt("economy.baltop.size", 10);
         this.baltopRefreshInterval = config.getInt("economy.baltop.refresh", 30);
+        this.currencySingular = config.getString("economy.currency.singular", "$");
+        this.currencyPlural = config.getString("economy.currency.plural", "$");
+        this.fractionalDigits = config.getInt("economy.corrency.fractional-digits", 2);
 
     }
 

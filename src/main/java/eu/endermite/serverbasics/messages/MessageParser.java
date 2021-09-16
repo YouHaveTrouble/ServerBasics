@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,12 +18,13 @@ public class MessageParser {
 
     public static final MiniMessage miniMessage = MiniMessage.builder().markdown().build();
 
-    public static final MiniMessage basicMiniMessage = MiniMessage.withTransformations(TransformationType.COLOR,
-            TransformationType.DECORATION,
-            TransformationType.GRADIENT,
-            TransformationType.RAINBOW,
-            TransformationType.RESET
-    );
+    public static final MiniMessage basicMiniMessage = MiniMessage.builder()
+            .transformations(
+            TransformationRegistry.builder()
+                    .add(TransformationType.COLOR)
+                    .add(TransformationType.DECORATION)
+                    .add(TransformationType.RAINBOW).build())
+            .build();
 
     /**
      * Parses message string into message

@@ -12,15 +12,17 @@ public class LanguageCache {
     public String all_configs_reloaded, config_reloaded, lang_reloaded, locations_reloaded, have_to_hold_item,
             healed, healed_by_other, healed_other, healed_many, healed_noone, fed, fed_by_other, fed_other,
             fed_many, fed_noone, item_name_changed, item_lore_changed, custom_join_message, custom_leave_message,
-            teleported_spawn, teleported_spawn_other, teleported_spawn_by_other, spawn_set, spawn_not_set, spawn_unset, could_not_tp, no_permission,
-            started_flying, stopped_flying, gamemode_set_many, gamemode_changed, gamemode_changed_self, gamemode_changed_other, gamemode_no_perms,
-            gamemode_no_perms_to_set, havent_played, no_player_selected, hat_set, hat_curse, fixed_hand,
-            fixed_hand_other, fixed_inventory, fixed_inventory_other, kick_reason, ban_reason, gamemode_survival,
-            gamemode_creative, gamemode_adventure, gamemode_spectator, hooks, hook_inactive, hooks_paper, hook_fix,
-            hooks_placeholderapi, tp_noone_to_tp, teleported_self, teleported_to_self, teleported_coords, teleported_by_other,
-            invalid_syntax, failed_argument_parse, unknown_player, started_flying_other, stopped_flying_other, console_name,
-            nick_self, nick_other, nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set,
-            warp_exists, warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off;
+            teleported_spawn, teleported_spawn_other, teleported_spawn_by_other, spawn_set, spawn_not_set, spawn_unset,
+            could_not_tp, no_permission, started_flying, stopped_flying, gamemode_set_many, gamemode_changed,
+            gamemode_changed_self, gamemode_changed_other, gamemode_no_perms, gamemode_no_perms_to_set, havent_played,
+            no_player_selected, hat_set, hat_curse, fixed_hand, fixed_hand_other, fixed_inventory, fixed_inventory_other,
+            kick_reason, ban_reason, gamemode_survival, gamemode_creative, gamemode_adventure, gamemode_spectator, hooks,
+            hook_inactive, hooks_paper, hook_fix, hooks_placeholderapi, tp_noone_to_tp, teleported_self,
+            teleported_to_self, teleported_coords, teleported_by_other, invalid_syntax, failed_argument_parse,
+            unknown_player, started_flying_other, stopped_flying_other, console_name, nick_self, nick_other,
+            nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set, warp_exists,
+            warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off, econ_disabled, balance,
+            balance_other;
 
     public List<String> kick_message, ban_message;
 
@@ -55,6 +57,10 @@ public class LanguageCache {
             this.invalid_syntax = fileConfiguration.getString("commands.misc.invalid-syntax", defaultMessage);
             this.failed_argument_parse = fileConfiguration.getString("commands.misc.failed-argument-parse", defaultMessage);
             this.havent_played = fileConfiguration.getString("commands.misc.havent-played", defaultMessage);
+
+            this.econ_disabled = fileConfiguration.getString("commands.money.economy-disabled", defaultMessage);
+            this.balance = fileConfiguration.getString("commands.money.balance", defaultMessage);
+            this.balance_other = fileConfiguration.getString("commands.money.balance-other", defaultMessage);
 
             this.gamemode_survival = fileConfiguration.getString("gamemodes.survival", "Survival");
             this.gamemode_creative = fileConfiguration.getString("gamemodes.creative", "Creative");

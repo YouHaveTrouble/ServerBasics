@@ -137,7 +137,7 @@ public class VaultHandler implements Economy {
         if (has(offlinePlayer, amount)) {
             try {
                 ServerBasics.getBasicEconomy().getEconomyAccount(offlinePlayer.getUniqueId()).thenAccept(account -> {
-                    account.setBalance(account.getBalance() - amount);
+                    account.deductBalance(amount);
                     newBalance.set(account.getBalance());
                 }).get();
                 return new EconomyResponse(amount, newBalance.get(), EconomyResponse.ResponseType.SUCCESS, "");
@@ -174,7 +174,7 @@ public class VaultHandler implements Economy {
         AtomicReference<Double> newBalance = new AtomicReference<>((double) 0);
         try {
             ServerBasics.getBasicEconomy().getEconomyAccount(offlinePlayer.getUniqueId()).thenAccept(account -> {
-                account.setBalance(account.getBalance() - amount);
+                account.addBalance(amount);
                 newBalance.set(account.getBalance());
             }).get();
             return new EconomyResponse(amount, newBalance.get(), EconomyResponse.ResponseType.SUCCESS, "");

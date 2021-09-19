@@ -11,6 +11,10 @@ commands:
     set: "Spawn has been set at your location"
     unset: "Spawn unset!"
     not-set: "Spawn not set! Ask server administrators to do that!"
+  money:
+    economy-disabled: "<red>Economy is disabled!"
+    balance: "Your balance is %balance%"
+    balance-other: "Balance of %player% is %balance%"
   heal:
     healed: "You have been healed"
     healed-by-other: "You have been healed by %player%"

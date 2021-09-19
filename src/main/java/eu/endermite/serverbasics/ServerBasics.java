@@ -15,6 +15,8 @@ import eu.endermite.serverbasics.hooks.Hooks;
 import eu.endermite.serverbasics.listeners.HatListener;
 import eu.endermite.serverbasics.storage.SQLite;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
@@ -33,7 +35,6 @@ public final class ServerBasics extends JavaPlugin {
     private static ServerBasics instance;
     private static ConfigCache configCache;
     private static LocationsCache locationsCache;
-    private static CommandManager commandManager;
     private static HashMap<String, LanguageCache> languageCacheMap;
     private static BasicPlayerCache basicPlayers;
     private static BasicEconomy basicEconomy;
@@ -57,7 +58,7 @@ public final class ServerBasics extends JavaPlugin {
         reloadConfigs();
         reloadLang();
         hooks = new Hooks();
-        commandManager = new CommandManager();
+        CommandManager commandManager = new CommandManager();
         commandManager.initCommands();
 
         String playerPrefix = configCache.getDatabasePlayerTablePrefix();
@@ -81,6 +82,7 @@ public final class ServerBasics extends JavaPlugin {
         if (hooks.isHooked("Vault")) {
             basicEconomy = new BasicEconomy(this);
             getServer().getServicesManager().register(Economy.class, new VaultHandler(), this, ServicePriority.Lowest);
+            getLogger().info("Vault economy support enabled!");
         }
 
     }
@@ -134,13 +136,20 @@ public final class ServerBasics extends JavaPlugin {
         if (configCache.auto_lang) {
             return languageCacheMap.getOrDefault(lang, languageCacheMap.get(configCache.default_lang.toString().toLowerCase()));
         } else {
-            System.out.println("lang: "+configCache.default_lang.toString().toLowerCase());
             return languageCacheMap.get(configCache.default_lang.toString().toLowerCase());
         }
     }
 
     public static LanguageCache getLang(Locale locale) {
         return getLang(locale.toString().toLowerCase());
+    }
+
+    public static LanguageCache getLang(CommandSender commandSender) {
+        if (commandSender instanceof Player player) {
+            return getLang(player.locale());
+        } else {
+            return getLang(configCache.default_lang);
+        }
     }
 
     public static ServerBasics getInstance() {

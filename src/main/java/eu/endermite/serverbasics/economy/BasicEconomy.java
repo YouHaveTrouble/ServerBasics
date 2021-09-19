@@ -39,6 +39,10 @@ public class BasicEconomy {
 
     }
 
+    /**
+     * @param uuid
+     * @return Economy account associated with provided UUID
+     */
     public CompletableFuture<BasicEconomyAccount> getEconomyAccount(UUID uuid) {
         if (accounts.containsKey(uuid))
             return CompletableFuture.completedFuture(accounts.get(uuid));
@@ -49,21 +53,30 @@ public class BasicEconomy {
         });
     }
 
+    /**
+     * The accounts in this list are not tied to the economy cache and modifying them will not modify actual data!
+     * @return List of Accounts in baltop
+     */
     public List<BasicEconomyAccount> getBaltop() {
         return baltop;
     }
 
-    public void addToCache(UUID uuid) {
+    protected void addToCache(UUID uuid) {
         database.getBalance(uuid).thenAccept(balance -> {
             BasicEconomyAccount economyAccount = new BasicEconomyAccount(uuid, balance);
             accounts.putIfAbsent(uuid, economyAccount);
         });
     }
 
+    /**
+     * Refresh the baltop ranking
+     * @param force If true, all currently cached accounts are saved and baltop is recalculated.
+     *              Otherwise baltop might be slightly out of date, but will be leass heavy on the server.
+     */
     public void refreshBaltop(boolean force) {
         if (force) {
             HashMap<UUID, BasicEconomyAccount> accountClone = new HashMap<>(accounts);
-            CompletableFuture[] futures = new CompletableFuture[accountClone.size()];
+            CompletableFuture<?>[] futures = new CompletableFuture[accountClone.size()];
             AtomicInteger i = new AtomicInteger();
             accountClone.values().forEach(account -> futures[i.getAndIncrement()] = ServerBasics.getInstance().getDatabase().saveBalance(account.getUuid(), account.getBalance()));
             CompletableFuture.allOf(futures).thenRun(this::updateBaltopEntries);

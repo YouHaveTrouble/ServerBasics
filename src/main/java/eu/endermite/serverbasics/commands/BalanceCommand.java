@@ -29,14 +29,14 @@ public class BalanceCommand {
     private void commandBalance(
             final Player player
     ) {
-        if (ServerBasics.getBasicEconomy() == null) {
+        if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) {
             player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).econ_disabled));
             return;
         }
         ServerBasics.getBasicEconomy().getEconomyAccount(player.getUniqueId()).thenAccept(basicEconomyAccount -> {
             double balance = basicEconomyAccount.getBalance();
             HashMap<String, Component> placeholders = new HashMap<>();
-            placeholders.put("%balance%", Component.text(balance));
+            placeholders.put("%balance%", Component.text(ServerBasics.getBasicEconomy().formatMoney(balance)));
             player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).balance, placeholders));
         });
     }
@@ -48,7 +48,7 @@ public class BalanceCommand {
             final CommandSender sender,
             final @Argument(value = "player") SinglePlayerSelector singlePlayerSelector
             ) {
-        if (ServerBasics.getBasicEconomy() == null) {
+        if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) {
             sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).econ_disabled));
             return;
         }
@@ -73,7 +73,7 @@ public class BalanceCommand {
             BasicPlayer basicPlayer = basicPlayerFuture.join();
             BasicEconomyAccount economyAccount = basicEconAccount.join();
             HashMap<String, Component> placeholders = new HashMap<>();
-            placeholders.put("%balance%", Component.text(economyAccount.getBalance()));
+            placeholders.put("%balance%", Component.text(ServerBasics.getBasicEconomy().formatMoney(economyAccount.getBalance())));
             placeholders.put("%player%", basicPlayer.getDisplayName());
             feedback.sendMessage(MessageParser.parseMessage(feedback, ServerBasics.getLang(feedback).balance_other, placeholders));
         });

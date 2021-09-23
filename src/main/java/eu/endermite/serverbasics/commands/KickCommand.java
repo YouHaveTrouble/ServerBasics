@@ -13,7 +13,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -28,28 +27,22 @@ public class KickCommand {
             @Argument(value = "player", description = "Player to kick") MultiplePlayerSelector playerSelector
     ) {
         if (!playerSelector.hasAny()) {
-            if (sender instanceof Player player) {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_player_selected);
-            } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_player_selected);
-            }
+            MessageParser.sendMessage(sender, ServerBasics.getLang(sender).no_player_selected);
             return;
         }
-
-        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
-            for (Player player : playerSelector.getPlayers()) {
-                Component kickReason = Component.empty();
-                for (String line : ServerBasics.getLang(player.locale()).kick_message) {
-                    line = line.replaceAll("%reason%", ServerBasics.getLang(player.locale()).kick_reason);
-                    kickReason = kickReason.append(MiniMessage.markdown().parse(line)).append(Component.newline());
-                }
-                player.kick(kickReason);
+        for (Player player : playerSelector.getPlayers()) {
+            Component kickReason = Component.empty();
+            for (String line : ServerBasics.getLang(player.locale()).kick_message) {
+                line = line.replaceAll("%reason%", ServerBasics.getLang(player.locale()).kick_reason);
+                kickReason = kickReason.append(MiniMessage.markdown().parse(line)).append(Component.newline());
             }
-        });
+            Component finalKickReason = kickReason;
+            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.kick(finalKickReason));
+        }
     }
 
     @CommandMethod("kick <player> <reason>")
-    @CommandDescription("Kick player")
+    @CommandDescription("Kick player with provided reason")
     @CommandPermission("serverbasics.command.kick")
     private void commandKickWithReason(
             final CommandSender sender,
@@ -57,33 +50,22 @@ public class KickCommand {
             final @Argument(value = "reason", description = "Reason or kick") @Greedy String[] reason
     ) {
         if (!playerSelector.hasAny()) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                MessageParser.sendMessage(sender, ServerBasics.getLang(player.locale()).no_player_selected);
-            } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).no_player_selected);
-            }
+            MessageParser.sendMessage(sender, ServerBasics.getLang(sender).no_player_selected);
             return;
         }
         String kickReason = StringUtils.join(reason, " ");
+        kickReason = MessageParser.makeColorsWork('&', kickReason);
+        String parsedKickReason = MessageParser.formattedStringFromMinimessage(kickReason);
 
-        Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> {
-            for (Player player : playerSelector.getPlayers()) {
-                StringBuilder kickReasonBuilder = new StringBuilder();
-
-                for (String line : ServerBasics.getLang(player.locale()).kick_message) {
-                    line = line.replaceAll("%reason%", kickReason);
-                    kickReasonBuilder.append(line).append("\n");
-                }
-
-                String kickReasonParsed = kickReasonBuilder.toString();
-                kickReasonParsed = MessageParser.makeColorsWorkButReverse(kickReasonParsed);
-                kickReasonParsed = ChatColor.translateAlternateColorCodes('&', kickReasonParsed);
-                player.kickPlayer(kickReasonParsed);
+        for (Player player : playerSelector.getPlayers()) {
+            Component kickReasonBuilder = Component.empty();
+            for (String line : ServerBasics.getLang(player.locale()).kick_message) {
+                line = line.replaceAll("%reason%", parsedKickReason);
+                kickReasonBuilder = kickReasonBuilder.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
             }
-        });
-
-
+            Component finalKickReason = kickReasonBuilder;
+            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.kick(finalKickReason));
+        }
     }
 
 }

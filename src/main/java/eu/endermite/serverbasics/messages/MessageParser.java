@@ -5,7 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,14 +15,14 @@ import java.util.Map;
 
 public class MessageParser {
 
-    public static final MiniMessage miniMessage = MiniMessage.builder().markdown().build();
+    // TODO sort out why minimessage builder doesn't want to work with transformations builder
+    public static final MiniMessage miniMessage = MiniMessage.builder().build();
+    public static final MiniMessage basicMiniMessage = MiniMessage.builder().markdown().build();
 
-    public static final MiniMessage basicMiniMessage = MiniMessage.builder()
-            .transformations(TransformationRegistry.standard())
-            .build();
+    private static final LegacyComponentSerializer legacyComponentSerializer = LegacyComponentSerializer.builder().hexColors().build();
 
     /**
-     * Parses message string into message
+     * Parses message string into message and sends it to the recipent
      *
      * @param recipent Recipent of the message
      * @param message  String to parse into message
@@ -37,6 +37,13 @@ public class MessageParser {
         recipent.sendMessage(component);
     }
 
+    /**
+     * Parses most of the legacy color codes and minimessage format.
+     * @param sender For who to parse the placeholders if applicable.
+     * @param message Message to parse.
+     * @param placeholders HashMap of placeholder id and Components that should replace them in final message.
+     * @return Parsed message Component.
+     */
     public static Component parseMessage(CommandSender sender, String message, HashMap<String, Component> placeholders) {
         if (sender instanceof Player player && ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
             message = PlaceholderAPI.setPlaceholders(player, message);
@@ -57,10 +64,45 @@ public class MessageParser {
         return minimsg;
     }
 
+    /**
+     * Parses most of the legacy color codes and minimessage format.
+     * @param sender For who to parse the placeholders if applicable.
+     * @param message Message to parse.
+     * @param placeholder Placeholder id.
+     * @param toReplace Component to replace the id with.
+     * @return Parsed message Component.
+     */
+    public static Component parseMessage(CommandSender sender, String message, String placeholder, Component toReplace) {
+        if (sender instanceof Player player && ServerBasics.getHooks().isHooked("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        }
+        message = makeColorsWork('&', message);
+        Component minimsg = miniMessage.parse(message);
+        TextReplacementConfig replacementConfig = TextReplacementConfig
+                .builder()
+                .match(placeholder)
+                .replacement(toReplace)
+                .build();
+        minimsg = minimsg.replaceText(replacementConfig);
+        return minimsg;
+    }
+
+    /**
+     * Parses most of the legacy color codes and minimessage format.
+     * @param sender For who to parse the placeholders if applicable.
+     * @param message Message to parse.
+     * @return Parsed message Component.
+     */
     public static Component parseMessage(CommandSender sender, String message) {
         return parseMessage(sender, message, null);
     }
 
+    /**
+     * Swaps most legacy color codes to adventure minimessage tags.
+     * @param symbol Usually '&'.
+     * @param string String to replace symbols in.
+     * @return String with legacy color codes replaced with minimessage tags.
+     */
     public static String makeColorsWork(Character symbol, String string) {
         // Adventure and ChatColor do not like each other, so this is a thing.
         string = string.replaceAll(symbol + "0", "<black>");
@@ -88,32 +130,12 @@ public class MessageParser {
         return string;
     }
 
-    public static String makeColorsWorkButReverse(String string) {
-        string = string.replaceAll("<black>", "&0");
-        string = string.replaceAll("<dark_blue>", "&1");
-        string = string.replaceAll("<dark_green>", "&2");
-        string = string.replaceAll("<dark_aqua>", "&3");
-        string = string.replaceAll("<dark_red>", "&4");
-        string = string.replaceAll("<dark_purple>", "&5");
-        string = string.replaceAll("<gold>", "&6");
-        string = string.replaceAll("<gray>", "&7");
-        string = string.replaceAll("<dark_gray>", "&8");
-        string = string.replaceAll("<blue>", "&9");
-        string = string.replaceAll("<green>", "&a");
-        string = string.replaceAll("<aqua>", "&b");
-        string = string.replaceAll("<red>", "&c");
-        string = string.replaceAll("<light_purple>", "&d");
-        string = string.replaceAll("<yellow>", "&e");
-        string = string.replaceAll("<white>", "&f");
-        string = string.replaceAll("<obfuscated>", "&k");
-        string = string.replaceAll("<bold>", "&l");
-        string = string.replaceAll("<strikethrough>", "&m");
-        string = string.replaceAll("<underlined>", "&n");
-        string = string.replaceAll("<italic>", "&o");
-        string = string.replaceAll("<reset>", "&r");
-        return string;
-    }
-
+    /**
+     * Gets the name of CommandSender.
+     * @param sender Who's name to get.
+     * @param locale Locale of console name if sender is not Player
+     * @return Display name of player or localized console name.
+     */
     public static Component getName(CommandSender sender, Locale locale) {
         if (sender instanceof Player player) {
             return player.displayName();
@@ -121,14 +143,30 @@ public class MessageParser {
         return miniMessage.parse(ServerBasics.getLang(locale).console_name);
     }
 
+    /**
+     * Sends "player haven't played on this server" message.
+     */
     public static void sendHaventPlayedError(CommandSender sender) {
-        if (sender instanceof Player player) {
-            String msg = ServerBasics.getLang(player.locale()).havent_played;
-            sendMessage(player, msg);
-        } else {
-            String msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).havent_played;
-            sendMessage(sender, msg);
-        }
+        String msg = ServerBasics.getLang(sender).havent_played;
+        sendMessage(sender, msg);
+    }
+
+    /**
+     * @param component Component to serialize.
+     * @return Formatted legacy string.
+     */
+    public static String formattedStringFromMinimessage(Component component) {
+        return legacyComponentSerializer.serialize(component);
+    }
+
+    /**
+     * @param string String to parse.
+     * @return Formatted legacy string.
+     */
+    public static String formattedStringFromMinimessage(String string) {
+        string = MessageParser.makeColorsWork('&', string);
+        Component component = MessageParser.basicMiniMessage.parse(string);
+        return formattedStringFromMinimessage(component);
     }
 }
 

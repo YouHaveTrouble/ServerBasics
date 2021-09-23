@@ -15,7 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @CommandRegistration
@@ -38,44 +39,50 @@ public class ServerBasicsCommand {
     private void commandServerBasicsDebug(
             final CommandSender sender
     ) {
-
+        sender.sendMessage(Component.text("---------- ServerBasics ----------"));
+        sender.sendMessage(Component.text("Plugin version: " + ServerBasics.getInstance().getDescription().getVersion()));
         sender.sendMessage(Component.text("Server version: " + Bukkit.getVersion()));
         sender.sendMessage(Component.text("NMS version: " + Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", "")));
-
-        if (sender instanceof Player player) {
-            sender.sendMessage(getHooksComponent(player.locale()));
-        } else {
-            sender.sendMessage(getHooksComponent(ServerBasics.getConfigCache().default_lang));
-        }
-
+        sender.sendMessage(getHooksComponent(sender));
     }
 
-    private Component getHooksComponent(Locale locale) {
+    private Component getHooksComponent(CommandSender sender) {
         Component hooksComponent = Component.text("Hooks (hookamount): ");
 
         int hooks = 0;
+        List<Component> inactive = new ArrayList<>();
         for (Map.Entry<String, Hook> e : ServerBasics.getHooks().getHooks().entrySet()) {
             if (hooks > 0) {
                 hooksComponent = hooksComponent.append(Component.text(", "));
             }
 
             if (e.getValue().pluginEnabled()) {
-                Component hoverText = Component.text(ServerBasics.getLang(locale).getHookDesc(e.getKey()));
+                Component hoverText = MessageParser.miniMessage.parse(ServerBasics.getLang(sender).getHookDesc(e.getKey()));
                 HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
                 hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.GREEN).hoverEvent(hoverEvent));
+                hooks++;
             } else {
-                String fix = String.format(ServerBasics.getLang(locale).hook_inactive, e.getKey());
-                Component hoverText = Component.text(ServerBasics.getLang(locale).getHookDesc(e.getKey()))
+                String fix = String.format(ServerBasics.getLang(sender).hook_inactive, e.getKey());
+                Component hoverText = Component.text(ServerBasics.getLang(sender).getHookDesc(e.getKey()))
                         .append(Component.newline())
                         .append(Component.text()
                                 .append(Component.newline())
-                                .append(Component.text(fix)));
+                                .append(MessageParser.miniMessage.parse(fix)));
                 HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
-                hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.RED).hoverEvent(hoverEvent));
+                Component inactiveComponent = Component.text(e.getKey()).color(NamedTextColor.RED).hoverEvent(hoverEvent);
+                inactive.add(inactiveComponent);
             }
-            hooks++;
-
         }
+
+        int inactiveCount = 0;
+        for (Component component : inactive) {
+            if (inactiveCount > 1) {
+                hooksComponent = hooksComponent.append(Component.text(", "));
+            }
+            hooksComponent = hooksComponent.append(component);
+            inactiveCount++;
+        }
+
         TextReplacementConfig replacer = TextReplacementConfig.builder()
                 .times(1)
                 .match("hookamount")
@@ -97,11 +104,7 @@ public class ServerBasicsCommand {
             plugin.reloadConfigs();
             plugin.reloadLang();
             plugin.reloadLocations();
-            if (sender instanceof Player player) {
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).all_configs_reloaded);
-            } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).all_configs_reloaded);
-            }
+            MessageParser.sendMessage(sender, ServerBasics.getLang(sender).all_configs_reloaded);
         });
     }
 
@@ -114,11 +117,7 @@ public class ServerBasicsCommand {
         ServerBasics plugin = ServerBasics.getInstance();
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             plugin.reloadConfigs();
-            if (sender instanceof Player player) {
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).config_reloaded);
-            } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).config_reloaded);
-            }
+            MessageParser.sendMessage(sender, ServerBasics.getLang(sender).config_reloaded);
         });
     }
 
@@ -131,11 +130,7 @@ public class ServerBasicsCommand {
         ServerBasics plugin = ServerBasics.getInstance();
         Bukkit.getScheduler().runTaskAsynchronously(ServerBasics.getInstance(), () -> {
             plugin.reloadLang();
-            if (sender instanceof Player player) {
-                MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).lang_reloaded);
-            } else {
-                MessageParser.sendMessage(sender, ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).lang_reloaded);
-            }
+            MessageParser.sendMessage(sender, ServerBasics.getLang(sender).lang_reloaded);
         });
     }
 
@@ -146,7 +141,7 @@ public class ServerBasicsCommand {
             final CommandSender sender
     ) {
         ServerBasics plugin = ServerBasics.getInstance();
-        String msg = "&fServerBasics " + plugin.getDescription().getVersion();
+        String msg = "<white>ServerBasics " + plugin.getDescription().getVersion();
         MessageParser.sendMessage(sender, msg);
     }
 

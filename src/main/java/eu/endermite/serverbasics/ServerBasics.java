@@ -1,7 +1,7 @@
 package eu.endermite.serverbasics;
 
 import eu.endermite.serverbasics.economy.BasicEconomy;
-import eu.endermite.serverbasics.economy.VaultHandler;
+import eu.endermite.serverbasics.economy.BasicVaultHandler;
 import eu.endermite.serverbasics.hooks.PlaceholderAPIHook;
 import eu.endermite.serverbasics.listeners.FeatureListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
@@ -23,6 +23,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Locale;
@@ -81,10 +82,18 @@ public final class ServerBasics extends JavaPlugin {
         }
         if (hooks.isHooked("Vault")) {
             basicEconomy = new BasicEconomy(this);
-            getServer().getServicesManager().register(Economy.class, new VaultHandler(), this, ServicePriority.Lowest);
+            getServer().getServicesManager().register(Economy.class, new BasicVaultHandler(), this, ServicePriority.Lowest);
+            basicEconomy.activateEconomy();
             getLogger().info("Vault economy support enabled!");
         }
 
+    }
+
+    @Override
+    public void onDisable() {
+        if (basicEconomy.isBasicEconomy()) {
+            basicEconomy.refreshBaltop(true);
+        }
     }
 
     public void reloadConfigs() {
@@ -116,7 +125,7 @@ public final class ServerBasics extends JavaPlugin {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             getLogger().severe("Error loading language files! Language files will not reload to avoid errors, make sure to correct this before restarting the server!");
         }

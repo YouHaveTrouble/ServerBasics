@@ -17,12 +17,12 @@ public class LanguageCache {
             gamemode_changed_self, gamemode_changed_other, gamemode_no_perms, gamemode_no_perms_to_set, havent_played,
             no_player_selected, hat_set, hat_curse, fixed_hand, fixed_hand_other, fixed_inventory, fixed_inventory_other,
             kick_reason, ban_reason, gamemode_survival, gamemode_creative, gamemode_adventure, gamemode_spectator, hooks,
-            hook_inactive, hooks_paper, hook_fix, hooks_placeholderapi, tp_noone_to_tp, teleported_self,
+            hook_inactive, hook_fix, hooks_vault, hooks_placeholderapi, tp_noone_to_tp, teleported_self,
             teleported_to_self, teleported_coords, teleported_by_other, invalid_syntax, failed_argument_parse,
             unknown_player, started_flying_other, stopped_flying_other, console_name, nick_self, nick_other,
             nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set, warp_exists,
             warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off, econ_disabled, balance,
-            balance_other;
+            balance_other, balance_set, balance_add, balance_got, balance_deducted, negative_value;
 
     public List<String> kick_message, ban_message;
 
@@ -61,6 +61,12 @@ public class LanguageCache {
             this.econ_disabled = fileConfiguration.getString("commands.money.economy-disabled", defaultMessage);
             this.balance = fileConfiguration.getString("commands.money.balance", defaultMessage);
             this.balance_other = fileConfiguration.getString("commands.money.balance-other", defaultMessage);
+            this.balance_set = fileConfiguration.getString("commands.money.balance-set", defaultMessage);
+            this.balance_add = fileConfiguration.getString("commands.money.balance-added", defaultMessage);
+            this.balance_got = fileConfiguration.getString("commands.money.balance-got", defaultMessage);
+            this.balance_deducted = fileConfiguration.getString("commands.money.balance-deducted", defaultMessage);
+            this.negative_value = fileConfiguration.getString("commands.money.negative-value", defaultMessage);
+
 
             this.gamemode_survival = fileConfiguration.getString("gamemodes.survival", "Survival");
             this.gamemode_creative = fileConfiguration.getString("gamemodes.creative", "Creative");
@@ -142,8 +148,8 @@ public class LanguageCache {
             this.hooks = fileConfiguration.getString("debug.hooks.hooks", defaultMessage);
             this.hook_inactive = fileConfiguration.getString("debug.hooks.inactive", defaultMessage);
             this.hook_fix = fileConfiguration.getString("debug.hooks.fix", defaultMessage);
-            this.hooks_paper = fileConfiguration.getString("debug.hooks.paper", defaultMessage);
             this.hooks_placeholderapi = fileConfiguration.getString("debug.hooks.placeholderapi", defaultMessage);
+            this.hooks_vault = fileConfiguration.getString("debug.hooks.vault", defaultMessage);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,13 +162,15 @@ public class LanguageCache {
             case CREATIVE -> gamemode_creative;
             case ADVENTURE -> gamemode_adventure;
             case SPECTATOR -> gamemode_spectator;
-            default -> "";
         };
     }
 
     public String getHookDesc(String string) {
         if ("PlaceholderAPI".equals(string)) {
             return hooks_placeholderapi;
+        }
+        if ("Vault".equals(string)) {
+            return hooks_vault;
         }
         return "";
     }

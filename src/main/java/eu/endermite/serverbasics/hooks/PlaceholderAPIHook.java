@@ -1,10 +1,13 @@
 package eu.endermite.serverbasics.hooks;
 
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.economy.BasicBaltopEntry;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
@@ -36,6 +39,56 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             else
                 return player.getName();
         }
+
+        System.out.println("Paarams: "+params);
+
+        if (params.startsWith("baltop_player_"))
+            return handleBaltopPlayer(params);
+        if (params.startsWith("baltop_balance_formatted_"))
+            return handleBaltopBalanceFormat(params);
+        if (params.startsWith("baltop_balance_"))
+            return handleBaltopBalance(params);
+
+
         return null;
+    }
+
+    private String handleBaltopPlayer(String param) {
+        if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) return null;
+        String numToParse = param.replace("baltop_player_", "");
+        System.out.println(numToParse);
+        try {
+            int place = Integer.parseInt(numToParse);
+            List<BasicBaltopEntry> entries = ServerBasics.getBasicEconomy().getBaltop();
+            if (place >= entries.size()) return "";
+            return entries.get(place).getName();
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+    private String handleBaltopBalance(String param) {
+        if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) return null;
+        String numToParse = param.replace("baltop_balance_", "");
+        try {
+            int place = Integer.parseInt(numToParse);
+            List<BasicBaltopEntry> entries = ServerBasics.getBasicEconomy().getBaltop();
+            if (place >= entries.size()) return "";
+            return entries.get(place).getMoney();
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String handleBaltopBalanceFormat(String param) {
+        if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) return null;
+        String numToParse = param.replace("baltop_balance_formatted_", "");
+        try {
+            int place = Integer.parseInt(numToParse);
+            List<BasicBaltopEntry> entries = ServerBasics.getBasicEconomy().getBaltop();
+            if (place >= entries.size()) return "";
+            return entries.get(place).getFormattedMoney();
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

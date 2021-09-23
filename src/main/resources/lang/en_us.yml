@@ -14,7 +14,12 @@ commands:
   money:
     economy-disabled: "<red>Economy is disabled!"
     balance: "Your balance is %balance%"
+    balance-got: "You got %amount%"
+    balance-deducted: "%amount% was deducted from your account"
     balance-other: "Balance of %player% is %balance%"
+    balance-set: "Balance of %player% set to %amount%"
+    balance-added: "Added %amount% to %player%'s balance"
+    negative-value: "<red>You cannot use negative values here"
   heal:
     healed: "You have been healed"
     healed-by-other: "You have been healed by %player%"
@@ -77,6 +82,8 @@ commands:
     - "You have been kicked from the server"
     - "Reason: %reason%"
     default-reason: "Kicked by a moderator"
+    feedback-single: "Player %player% has been kicked for: %reason%"
+    feedback-multiple: "Kicked %amount% players for: %reason%"
   ban:
     ban-message:
     - "%reason%"
@@ -106,6 +113,6 @@ custom-join-leave-messages:
 debug:
   hooks:
     hooks: "Hooks"
-    inactive: "Inactive"
-    fix: "Install %s to benefit from this"
+    inactive: "<red>Inactive. Install %s to benefit from this"
     placeholderapi: "Parsing placeholders in messages"
+    vault: "Economy support"

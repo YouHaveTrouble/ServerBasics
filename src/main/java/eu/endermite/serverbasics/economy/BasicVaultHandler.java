@@ -10,13 +10,15 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class VaultHandler implements Economy {
+public class BasicVaultHandler implements Economy {
 
     private final ServerBasics plugin = ServerBasics.getInstance();
 
     @Override
     public boolean isEnabled() {
-        return plugin != null && ServerBasics.getBasicEconomy() != null;
+        return plugin != null
+                && ServerBasics.getBasicEconomy() != null
+                && ServerBasics.getBasicEconomy().isBasicEconomy();
     }
 
     @Override
@@ -36,12 +38,8 @@ public class VaultHandler implements Economy {
 
     @Override
     public String format(double v) {
-        String symbol;
-        if (v < 2 && v > -2)
-            symbol = currencyNameSingular();
-        else
-            symbol = currencyNamePlural();
-        return String.format("%." + fractionalDigits() + symbol, v);
+        if (ServerBasics.getBasicEconomy() == null) return String.valueOf(v);
+        return ServerBasics.getBasicEconomy().formatMoney(v);
     }
 
     @Override
@@ -196,57 +194,57 @@ public class VaultHandler implements Economy {
 
     @Override
     public EconomyResponse createBank(String s, String s1) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse createBank(String s, OfflinePlayer offlinePlayer) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse deleteBank(String s) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse bankBalance(String s) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse bankHas(String s, double v) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse bankWithdraw(String s, double v) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse bankDeposit(String s, double v) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse isBankOwner(String s, String s1) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse isBankOwner(String s, OfflinePlayer offlinePlayer) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse isBankMember(String s, String s1) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override
     public EconomyResponse isBankMember(String s, OfflinePlayer offlinePlayer) {
-        return new EconomyResponse(0,0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Not implemented");
     }
 
     @Override

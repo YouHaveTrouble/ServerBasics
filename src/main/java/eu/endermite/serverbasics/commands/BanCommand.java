@@ -70,7 +70,7 @@ public class BanCommand {
             @Argument(value = "reason", description = "Reason for ban") String[] reason
     ) {
         OfflinePlayer target;
-        Component joinedReason = MessageParser.basicMiniMessage.parse(String.join(" ", reason));
+
 
         if (!playerSelector.hasAny()) {
             target = Bukkit.getOfflinePlayer(playerSelector.getSelector());
@@ -81,6 +81,7 @@ public class BanCommand {
         } else
             target = playerSelector.getPlayer();
 
+        Component joinedReason = MessageParser.basicMiniMessage.parse(String.join(" ", reason));
         Component banMessage = Component.empty();
         Locale locale;
         if (target.isOnline())

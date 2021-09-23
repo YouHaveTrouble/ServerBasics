@@ -10,15 +10,10 @@ public class Hooks {
 
         // Plugin hooks
         Hook papiHook = new Hook("PlaceholderAPI", null);
-        if (papiHook.pluginEnabled()) {
-            pluginHooks.put(papiHook.getName(), papiHook);
-        }
+        pluginHooks.put(papiHook.getName(), papiHook);
 
         Hook vaultHook = new Hook("Vault", null);
-        if (vaultHook.pluginEnabled()) {
-            pluginHooks.put(vaultHook.getName(), vaultHook);
-        }
-
+        pluginHooks.put(vaultHook.getName(), vaultHook);
     }
 
     public HashMap<String, Hook> getHooks() {

@@ -4,6 +4,7 @@ import eu.endermite.serverbasics.economy.BasicEconomy;
 import eu.endermite.serverbasics.economy.BasicVaultHandler;
 import eu.endermite.serverbasics.hooks.PlaceholderAPIHook;
 import eu.endermite.serverbasics.listeners.FeatureListener;
+import eu.endermite.serverbasics.listeners.SpawnListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.Database;
 import eu.endermite.serverbasics.storage.MySQL;
@@ -76,6 +77,7 @@ public final class ServerBasics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FeatureListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new HatListener(), this);
+        getServer().getPluginManager().registerEvents(new SpawnListener(), this);
 
         if (hooks.isHooked("PlaceholderAPI")) {
             new PlaceholderAPIHook().register();

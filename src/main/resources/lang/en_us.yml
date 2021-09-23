@@ -71,6 +71,7 @@ commands:
     teleported-to-self: "You teleported %name% to your location"
     teleported-coords: "You teleported to %coords%"
     teleported-by-other: "You have been teleported"
+    cant-tp-to-offline: "Player is not online"
   warp:
     warped: "You warped to %warp%"
     doesnt-exist: "Warp %warp% doesn't exist"

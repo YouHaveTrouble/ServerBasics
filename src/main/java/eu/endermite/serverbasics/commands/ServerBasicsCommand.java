@@ -134,15 +134,4 @@ public class ServerBasicsCommand {
         });
     }
 
-    @CommandMethod("serverbasics")
-    @CommandDescription("Main ServerBasics command")
-    @CommandPermission("serverbasics.command.serverbasics")
-    private void commandServerBasics(
-            final CommandSender sender
-    ) {
-        ServerBasics plugin = ServerBasics.getInstance();
-        String msg = "<white>ServerBasics " + plugin.getDescription().getVersion();
-        MessageParser.sendMessage(sender, msg);
-    }
-
 }

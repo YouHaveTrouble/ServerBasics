@@ -5,6 +5,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.markdown.DiscordFlavor;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,9 +17,18 @@ import java.util.Map;
 
 public class MessageParser {
 
-    // TODO sort out why minimessage builder doesn't want to work with transformations builder
     public static final MiniMessage miniMessage = MiniMessage.builder().build();
-    public static final MiniMessage basicMiniMessage = MiniMessage.builder().markdown().build();
+    public static final MiniMessage basicMiniMessage = MiniMessage.builder()
+            .removeDefaultTransformations()
+            .markdown()
+            .markdownFlavor(DiscordFlavor.get())
+            .transformation(TransformationType.COLOR)
+            .transformation(TransformationType.DECORATION)
+            .transformation(TransformationType.GRADIENT)
+            .transformation(TransformationType.RESET)
+            .transformation(TransformationType.RAINBOW)
+            .transformation(TransformationType.PRE)
+            .build();
 
     private static final LegacyComponentSerializer legacyComponentSerializer = LegacyComponentSerializer.builder().hexColors().build();
 

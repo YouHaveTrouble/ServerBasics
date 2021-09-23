@@ -35,7 +35,7 @@ public class HealCommand {
             maxHp = maxHpAttr.getDefaultValue();
         }
         player.setHealth(maxHp);
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).healed);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player).healed);
     }
 
     @CommandMethod("heal <target>")
@@ -48,12 +48,9 @@ public class HealCommand {
         int amountHealed = targetPlayer.getPlayers().size();
         for (Player target : targetPlayer.getPlayers()) {
             target.setHealth(Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_HEALTH), "Player must have max health").getValue());
-            String msg;
             if (sender != target) {
-                msg = ServerBasics.getLang(target.locale()).healed_by_other;
-                HashMap<String, Component> placeholders = new HashMap<>();
-                placeholders.put("%player%", MessageParser.getName(sender, target.locale()));
-                sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
+                String msg = ServerBasics.getLang(target).healed_by_other;
+                sender.sendMessage(MessageParser.parseMessage(sender, msg, "%player%", MessageParser.getName(sender, target.locale())));
             }
         }
 

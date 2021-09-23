@@ -35,7 +35,7 @@ public class GamemodeCommand {
                 && !player.hasPermission("serverbasics.command.gamemode.*")
                 && !player.hasPermission("serverbasics.command.gamemode.self.*")
         ) {
-            MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).gamemode_no_perms);
+            MessageParser.sendMessage(player, ServerBasics.getLang(player).gamemode_no_perms);
             return;
         }
 
@@ -58,13 +58,8 @@ public class GamemodeCommand {
         if (!sender.hasPermission("serverbasics.command.gamemode.others." + gamemode.toString().toLowerCase())
                 && !sender.hasPermission("serverbasics.command.gamemode.*")
                 && !sender.hasPermission("serverbasics.command.gamemode.others.*")) {
-            String msg;
-            if (sender instanceof Player player) {
-                msg = ServerBasics.getLang(player.locale()).gamemode_no_perms_to_set;
-            } else {
-                msg = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).gamemode_no_perms_to_set;
-            }
-            msg = String.format(msg, gamemode);
+
+            String msg = String.format(ServerBasics.getLang(sender).gamemode_no_perms_to_set, gamemode);
             MessageParser.sendMessage(sender, msg);
         }
 
@@ -113,41 +108,27 @@ public class GamemodeCommand {
     }
 
     private void gamemodeChangedManyTargets(CommandSender sender, int amount, GameMode gameMode) {
-        LanguageCache lang;
-        if (sender instanceof Player player)
-            lang = ServerBasics.getLang(player.locale());
-        else
-            lang = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang);
-        String msg = lang.gamemode_set_many;
-
+        String msg = ServerBasics.getLang(sender).gamemode_set_many;
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%amount%", Component.text(amount));
-        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        placeholders.put("%gamemode%", MiniMessage.markdown().parse(ServerBasics.getLang(sender).getGamemode(gameMode)));
         sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
     }
 
     private void gamemodeChanged(Player player, GameMode gameMode) {
-        LanguageCache lang = ServerBasics.getLang(player.locale());
+        LanguageCache lang = ServerBasics.getLang(player);
         String msg = lang.gamemode_changed;
-        HashMap<String, Component> placeholders = new HashMap<>();
-        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
-        player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
+        player.sendMessage(MessageParser.parseMessage(player, msg, "%gamemode%", MessageParser.miniMessage.parse(lang.getGamemode(gameMode))));
     }
 
     private void gamemodeChangedSelf(Player player, GameMode gameMode) {
         LanguageCache lang = ServerBasics.getLang(player.locale());
         String msg = lang.gamemode_changed_self;
-        HashMap<String, Component> placeholders = new HashMap<>();
-        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
-        player.sendMessage(MessageParser.parseMessage(player, msg, placeholders));
+        player.sendMessage(MessageParser.parseMessage(player, msg,"%gamemode%", MessageParser.miniMessage.parse(lang.getGamemode(gameMode))));
     }
 
     private void gamemodeChangedOtherSender(CommandSender sender, BasicPlayer basicPlayer, GameMode gameMode) {
-        LanguageCache lang;
-        if (sender instanceof Player player)
-            lang = ServerBasics.getLang(player.locale());
-        else
-            lang = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang);
+        LanguageCache lang = ServerBasics.getLang(sender);
         String msg = lang.gamemode_changed_other;
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%name", basicPlayer.getDisplayName());

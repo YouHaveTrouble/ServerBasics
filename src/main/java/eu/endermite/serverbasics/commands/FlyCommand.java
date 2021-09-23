@@ -9,13 +9,11 @@ import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.commands.registration.CommandRegistration;
 import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.players.BasicPlayer;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 @CommandRegistration
@@ -29,10 +27,10 @@ public class FlyCommand {
     ) {
         BasicPlayer.fromPlayer(player).thenAccept(basicPlayer -> {
             if (basicPlayer.toggleFly()) {
-                String msg = ServerBasics.getLang(player.locale()).started_flying;
+                String msg = ServerBasics.getLang(player).started_flying;
                 MessageParser.sendMessage(player, msg);
             } else {
-                String msg = ServerBasics.getLang(player.locale()).stopped_flying;
+                String msg = ServerBasics.getLang(player).stopped_flying;
                 MessageParser.sendMessage(player, msg);
             }
         });
@@ -40,7 +38,7 @@ public class FlyCommand {
 
     @CommandMethod("fly <target>")
     @CommandDescription("Toggle flight mode")
-    @CommandPermission("serverbasics.command.fly")
+    @CommandPermission("serverbasics.command.fly.others")
     private void commandFlyOther(
             final CommandSender sender,
             @Argument(value = "target", description = "Target") SinglePlayerSelector playerSelector
@@ -58,35 +56,24 @@ public class FlyCommand {
             uuid = target.getUniqueId();
         }
         BasicPlayer.fromUuid(uuid).thenAccept(basicPlayer -> {
-            String msg;
             boolean flying = basicPlayer.toggleFly();
             senderFeedback(sender, flying, basicPlayer);
             if (!basicPlayer.isOnline()) return;
             if (flying) {
-                msg = ServerBasics.getLang(target.locale()).started_flying;
+                MessageParser.sendMessage(target, ServerBasics.getLang(target).started_flying);
             } else {
-                msg = ServerBasics.getLang(target.locale()).stopped_flying;
+                MessageParser.sendMessage(target, ServerBasics.getLang(target).stopped_flying);
             }
-            MessageParser.sendMessage(target.getPlayer(), msg);
         });
     }
 
     private void senderFeedback(CommandSender sender, boolean flying, BasicPlayer basicPlayer) {
         String component;
-        if (sender instanceof Player player) {
-            if (flying)
-                component = ServerBasics.getLang(player.locale()).started_flying_other;
-            else
-                component = ServerBasics.getLang(player.locale()).stopped_flying_other;
-        } else {
-            if (flying)
-                component = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).started_flying_other;
-            else
-                component = ServerBasics.getLang(ServerBasics.getConfigCache().default_lang).stopped_flying_other;
-        }
-        HashMap<String, Component> placeholders = new HashMap<>();
-        placeholders.put("%player%", basicPlayer.getDisplayName());
-        sender.sendMessage(MessageParser.parseMessage(sender, component, placeholders));
+        if (flying)
+            component = ServerBasics.getLang(sender).started_flying_other;
+        else
+            component = ServerBasics.getLang(sender).stopped_flying_other;
+        sender.sendMessage(MessageParser.parseMessage(sender, component, "%player%", basicPlayer.getDisplayName()));
     }
 
 }

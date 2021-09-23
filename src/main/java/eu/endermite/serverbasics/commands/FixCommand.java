@@ -10,14 +10,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 @CommandRegistration
 public class FixCommand {
 
     @CommandMethod("fix")
     @CommandDescription("Fix item")
-    @CommandPermission("serverbasics.command.fix.hand")
+    @CommandPermission("serverbasics.command.fix")
     private void commandFix(
             final Player player
     ) {
@@ -64,7 +63,7 @@ public class FixCommand {
     private void fixItem(ItemStack itemStack) {
         Damageable damagable = (Damageable) itemStack.getItemMeta();
         damagable.setDamage(0);
-        itemStack.setItemMeta((ItemMeta) damagable);
+        itemStack.setItemMeta(damagable);
     }
 
 }

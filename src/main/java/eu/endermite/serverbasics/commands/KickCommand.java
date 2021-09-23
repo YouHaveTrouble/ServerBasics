@@ -47,7 +47,7 @@ public class KickCommand {
     private void commandKickWithReason(
             final CommandSender sender,
             @Argument(value = "player", description = "Player to kick") MultiplePlayerSelector playerSelector,
-            final @Argument(value = "reason", description = "Reason or kick") @Greedy String[] reason
+            final @Argument(value = "reason", description = "Reason for kick") @Greedy String[] reason
     ) {
         if (!playerSelector.hasAny()) {
             MessageParser.sendMessage(sender, ServerBasics.getLang(sender).no_player_selected);
@@ -59,7 +59,7 @@ public class KickCommand {
 
         for (Player player : playerSelector.getPlayers()) {
             Component kickReasonBuilder = Component.empty();
-            for (String line : ServerBasics.getLang(player.locale()).kick_message) {
+            for (String line : ServerBasics.getLang(player).kick_message) {
                 line = line.replaceAll("%reason%", parsedKickReason);
                 kickReasonBuilder = kickReasonBuilder.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
             }

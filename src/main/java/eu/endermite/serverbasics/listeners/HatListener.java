@@ -19,7 +19,7 @@ public class HatListener implements Listener {
         if (!event.getSlotType().equals(InventoryType.SlotType.ARMOR)) return;
         if (event.getClick().equals(ClickType.MIDDLE)) return;
         if (event.getSlot() != 39) return;
-        if (!event.getWhoClicked().hasPermission("serverbasics.command.hat.equip")) return;
+        if (!event.getWhoClicked().hasPermission("serverbasics.hat.equip")) return;
         if (event.getCursor() == null) return;
         Player player = (Player) event.getWhoClicked();
         if (player.getGameMode() == GameMode.CREATIVE) return;

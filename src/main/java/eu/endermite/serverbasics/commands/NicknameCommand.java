@@ -29,14 +29,15 @@ public class NicknameCommand {
             final Player player,
             final @Argument(value = "nickname") String nick
     ) {
-        Component nickComponent = MiniMessage.markdown().parse(nick);
+        String newNick = MessageParser.makeColorsWork('&', nick);
+        Component nickComponent = MessageParser.basicMiniMessage.parse(newNick);
         String nickStripped = MiniMessage.get().stripTokens(nick);
         if (!player.hasPermission("serverbasics.command.nick.change") && !player.getName().equals(nickStripped)) {
             player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).nick_only_same_as_name));
             return;
         }
         ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
-            basicPlayer.setDisplayName(nick);
+            basicPlayer.setDisplayName(newNick);
             HashMap<String, Component> placeholders = new HashMap<>();
             placeholders.put("%nickname%", nickComponent);
             basicPlayer.sendMessage(ServerBasics.getLang(player.locale()).nick_self, placeholders);
@@ -62,17 +63,19 @@ public class NicknameCommand {
         } else
             uuid = playerSelector.getPlayer().getUniqueId();
 
+        String newNick = MessageParser.makeColorsWork('&', nick);
+
         ServerBasics.getBasicPlayers().getBasicPlayer(uuid).thenAccept(basicPlayer -> {
             Locale locale;
             if (sender instanceof Player playerSender)
                 locale = playerSender.locale();
             else
                 locale = ServerBasics.getConfigCache().default_lang;
-            Component nickComponent = MiniMessage.markdown().parse(nick);
+            Component nickComponent = MessageParser.basicMiniMessage.parse(newNick);
             HashMap<String, Component> placeholders = new HashMap<>();
             placeholders.put("%oldnickname%", basicPlayer.getDisplayName());
             placeholders.put("%newnickname%", nickComponent);
-            basicPlayer.setDisplayName(nick);
+            basicPlayer.setDisplayName(newNick);
             sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).nick_other, placeholders));
             placeholders.clear();
             placeholders.put("%nickname%", nickComponent);

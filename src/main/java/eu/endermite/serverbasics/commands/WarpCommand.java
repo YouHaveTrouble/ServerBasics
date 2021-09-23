@@ -56,13 +56,11 @@ public class WarpCommand {
             final @Argument(value = "name") String id
     ) {
         if (id.equalsIgnoreCase("spawn")) {
-            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).warp_cant_use_name));
+            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player).warp_cant_use_name));
             return;
         }
         if (ServerBasics.getLocationsCache().warpExists(id)) {
-            HashMap<String, Component> placeholders = new HashMap<>();
-            placeholders.put("%warp%", Component.text(id));
-            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).warp_exists, placeholders));
+            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player).warp_exists, "%warp%", Component.text(id)));
             return;
         }
         Location location = player.getLocation();
@@ -73,7 +71,7 @@ public class WarpCommand {
         ServerBasics.getLocationsCache().addWarp(basicWarp);
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%warp%", Component.text(id));
-        player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).warp_set, placeholders));
+        player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player).warp_set, placeholders));
     }
 
     @CommandMethod("editwarp <name> displayname <displayname>")
@@ -84,13 +82,8 @@ public class WarpCommand {
             final @Argument(value = "name", suggestions = "warps") String id,
             final @Argument(value = "displayname") String[] displayname
     ) {
-
-        Locale locale = BasicUtil.playerLocaleOrDefault(sender);
-
         if (!ServerBasics.getLocationsCache().warpExists(id)) {
-            HashMap<String, Component> placeholders = new HashMap<>();
-            placeholders.put("%warp%", Component.text(id));
-           sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).warp_doesnt_exist, placeholders));
+           sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).warp_doesnt_exist, "%warp%", Component.text(id)));
             return;
         }
         String joinedDisplayName = String.join(" ", displayname);
@@ -100,7 +93,7 @@ public class WarpCommand {
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%warp%", Component.text(id));
         placeholders.put("%displayname%", MiniMessage.markdown().parse(joinedDisplayName));
-        sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).warp_displayname_set, placeholders));
+        sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).warp_displayname_set, placeholders));
     }
 
     @CommandMethod("editwarp <name> delete")
@@ -110,17 +103,12 @@ public class WarpCommand {
             final CommandSender sender,
             final @Argument(value = "name", suggestions = "warps") String id
     ) {
-
-        Locale locale = BasicUtil.playerLocaleOrDefault(sender);
-
-        HashMap<String, Component> placeholders = new HashMap<>();
-        placeholders.put("%warp%", Component.text(id));
         if (!ServerBasics.getLocationsCache().warpExists(id)) {
-            sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).warp_doesnt_exist, placeholders));
+            sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).warp_doesnt_exist, "%warp%", Component.text(id)));
             return;
         }
         ServerBasics.getLocationsCache().deleteWarp(id);
-        sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).warp_removed, placeholders));
+        sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).warp_removed, "%warp%", Component.text(id)));
     }
 
     @CommandMethod("editwarp <name> requirepermission <boolean>")

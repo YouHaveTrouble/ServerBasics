@@ -30,7 +30,7 @@ public class BalanceCommand {
             final Player player
     ) {
         if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) {
-            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).econ_disabled));
+            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player).econ_disabled));
             return;
         }
         ServerBasics.getBasicEconomy().getEconomyAccount(player.getUniqueId()).thenAccept(basicEconomyAccount -> {

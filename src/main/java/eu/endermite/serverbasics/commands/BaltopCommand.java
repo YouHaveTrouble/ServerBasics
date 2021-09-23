@@ -20,6 +20,12 @@ public class BaltopCommand {
     private void commandBaltop(
             final CommandSender sender
     ) {
+
+        if (ServerBasics.getBasicEconomy() == null || !ServerBasics.getBasicEconomy().isBasicEconomy()) {
+            sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).econ_disabled));
+            return;
+        }
+
         List<BasicBaltopEntry> entries = ServerBasics.getBasicEconomy().getBaltop();
         sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).baltop_title));
         if (entries.isEmpty()) {

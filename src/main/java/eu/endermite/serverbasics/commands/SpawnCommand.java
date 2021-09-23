@@ -70,7 +70,7 @@ public class SpawnCommand {
                 .location(location)
                 .build();
         ServerBasics.getLocationsCache().setSpawn(spawn);
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_set);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player).spawn_set);
     }
 
     @CommandMethod("setspawn none")
@@ -80,7 +80,7 @@ public class SpawnCommand {
             final Player player
     ) {
         ServerBasics.getLocationsCache().clearSpawn();
-        MessageParser.sendMessage(player, ServerBasics.getLang(player.locale()).spawn_unset);
+        MessageParser.sendMessage(player, ServerBasics.getLang(player).spawn_unset);
     }
 
 }

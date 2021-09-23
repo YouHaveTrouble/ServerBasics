@@ -7,6 +7,21 @@ softdepend:
   - PlaceholderAPI
   - Vault
 permissions:
+  serverbasics.command.fly.*:
+    children:
+      serverbasics.command.fly: true
+      serverbasics.command.fly.others: true
+  serverbasics.command.fix.*:
+    default: op
+    children:
+      serverbasics.command.fix.hand: true
+      serverbasics.command.fix.all: true
+  serverbasics.command.fix.hand:
+    children:
+      serverbasics.command.fix: true
+  serverbasics.command.fix.all:
+    children:
+      serverbasics.command.fix: true
   serverbasics.command.gamemode.*:
     default: op
     children:
@@ -14,12 +29,14 @@ permissions:
       serverbasics.command.gamemode.others.*: true
   serverbasics.command.gamemode.self.*:
     children:
+      serverbasics.command.gamemode: true
       serverbasics.command.gamemode.self.survival: true
       serverbasics.command.gamemode.self.creative: true
       serverbasics.command.gamemode.self.adventure: true
       serverbasics.command.gamemode.self.spectator: true
   serverbasics.command.gamemode.others.*:
     children:
+      serverbasics.command.gamemode: true
       serverbasics.command.gamemode.others.survival: true
       serverbasics.command.gamemode.others.creative: true
       serverbasics.command.gamemode.others.adventure: true
@@ -32,7 +49,7 @@ permissions:
     children:
       serverbasics.chat.staffchat.send: true
       serverbasics.chat.staffchat.recieve: true
-  serverbasics.command.hat.equip:
+  serverbasics.hat.equip:
     description: Allows equipping hat in the survival inventory
     default: op
   serverbasics.command.nick.change:

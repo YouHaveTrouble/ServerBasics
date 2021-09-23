@@ -36,6 +36,10 @@ public class TeleportCommand {
                     MessageParser.sendHaventPlayedError(player);
                     return;
                 }
+                if (!player.hasPermission("serverbasics.teleportoffline")) {
+                    player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player).cant_tp_to_offline));
+                    return;
+                }
                 ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
                     Location location = NMSHandler.getOfflinePlayerPosition(target);
                     basicPlayer.teleportPlayer(location);
@@ -49,10 +53,8 @@ public class TeleportCommand {
         ServerBasics.getBasicPlayers().getBasicPlayer(player.getUniqueId()).thenAccept(basicPlayer -> {
             Location location = entitySelector.getEntity().getLocation();
             basicPlayer.teleportPlayer(location);
-            String msg = ServerBasics.getLang(player.locale()).teleported_self;
-            HashMap<String, Component> placeholders = new HashMap<>();
-            placeholders.put("%entity%", name);
-            player.teleportAsync(entitySelector.getEntity().getLocation()).thenRunAsync(() -> player.sendMessage(MessageParser.parseMessage(player, msg, placeholders)));
+            String msg = ServerBasics.getLang(player).teleported_self;
+            player.teleportAsync(entitySelector.getEntity().getLocation()).thenRunAsync(() -> player.sendMessage(MessageParser.parseMessage(player, msg, "%entity%", name)));
         });
     }
 
@@ -69,6 +71,10 @@ public class TeleportCommand {
                 MessageParser.sendHaventPlayedError(player);
                 return;
             }
+            if (!player.hasPermission("serverbasics.teleportoffline")) {
+                player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player).cant_tp_to_offline));
+                return;
+            }
             ServerBasics.getBasicPlayers().getBasicPlayer(target.getUniqueId()).thenAccept(basicPlayer -> {
                 basicPlayer.teleportPlayer(player.getLocation());
                 HashMap<String, Component> placeholders = new HashMap<>();
@@ -79,9 +85,7 @@ public class TeleportCommand {
         }
 
         Entity entity = singleEntitySelector.getEntity();
-        HashMap<String, Component> placeholders = new HashMap<>();
-        placeholders.put("%name%", BasicUtil.entityName(entity));
-        entity.teleportAsync(player.getLocation()).thenRun(() -> player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).teleported_to_self, placeholders)));
+        entity.teleportAsync(player.getLocation()).thenRun(() -> player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).teleported_to_self, "%name%", BasicUtil.entityName(entity))));
     }
 
 

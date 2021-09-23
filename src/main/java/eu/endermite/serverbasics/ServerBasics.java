@@ -93,9 +93,9 @@ public final class ServerBasics extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (basicEconomy.isBasicEconomy()) {
-
-        }
+        if (!basicEconomy.isBasicEconomy()) return;
+        // save the balances before shutdown
+        basicEconomy.getAccounts().forEach(basicEconomyAccount -> database.saveBalance(basicEconomyAccount.getUuid(), basicEconomyAccount.getBalance()));
     }
 
     public void reloadConfigs() {

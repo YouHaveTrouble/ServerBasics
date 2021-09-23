@@ -72,6 +72,13 @@ public class BasicEconomy {
     }
 
     /**
+     * @return Copies of currently cached accounts.
+     */
+    public List<BasicEconomyAccount> getAccounts() {
+        return new ArrayList<>(accounts.values());
+    }
+
+    /**
      * Refresh the baltop ranking
      * @param force If true, all currently cached accounts are saved and baltop is recalculated.
      *              Otherwise baltop might be slightly out of date, but will be leass heavy on the server.

@@ -22,7 +22,8 @@ public class LanguageCache {
             unknown_player, started_flying_other, stopped_flying_other, console_name, nick_self, nick_other,
             nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set, warp_exists,
             warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off, econ_disabled, balance,
-            balance_other, balance_set, balance_add, balance_got, balance_deducted, negative_value;
+            balance_other, balance_set, balance_add, balance_got, balance_deducted, negative_value, baltop_title,
+            baltop_format, baltop_empty;
 
     public List<String> kick_message, ban_message;
 
@@ -67,6 +68,9 @@ public class LanguageCache {
             this.balance_deducted = fileConfiguration.getString("commands.money.balance-deducted", defaultMessage);
             this.negative_value = fileConfiguration.getString("commands.money.negative-value", defaultMessage);
 
+            this.baltop_title = fileConfiguration.getString("commands.baltop.title", defaultMessage);
+            this.baltop_format = fileConfiguration.getString("commands.baltop.format", defaultMessage);
+            this.baltop_empty = fileConfiguration.getString("commands.baltop.empty", defaultMessage);
 
             this.gamemode_survival = fileConfiguration.getString("gamemodes.survival", "Survival");
             this.gamemode_creative = fileConfiguration.getString("gamemodes.creative", "Creative");

@@ -21,14 +21,16 @@ chat:
 
 economy:
   currency:
-    singular: "$"
-    plural: "$"
+    symbol: "$"
     fractional-digits: 2
   baltop:
+
     # How many entries baltop should have
     size: 10
+
     # How often in seconds should baltop refresh
     refresh: 30
+
   # How often player balances should be saved in seconds
   # Do not change unless you REALLY know what you're doing.
   save-interval: 60

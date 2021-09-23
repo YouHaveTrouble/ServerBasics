@@ -40,7 +40,7 @@ public class BasicEconomy {
             }
         }, interval*20, interval*20);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> refreshBaltop(false), 0, 1200);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> refreshBaltop(false), 0, ServerBasics.getConfigCache().baltopRefreshInterval* 20L);
 
     }
 

@@ -38,18 +38,17 @@ public class BasicVaultHandler implements Economy {
 
     @Override
     public String format(double v) {
-        if (ServerBasics.getBasicEconomy() == null) return String.valueOf(v);
         return ServerBasics.getBasicEconomy().formatMoney(v);
     }
 
     @Override
     public String currencyNamePlural() {
-        return ServerBasics.getConfigCache().currencyPlural;
+        return ServerBasics.getConfigCache().currencySymbol;
     }
 
     @Override
     public String currencyNameSingular() {
-        return ServerBasics.getConfigCache().currencySingular;
+        return ServerBasics.getConfigCache().currencySymbol;
     }
 
     @Override

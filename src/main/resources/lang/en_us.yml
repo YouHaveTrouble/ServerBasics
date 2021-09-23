@@ -20,6 +20,10 @@ commands:
     balance-set: "Balance of %player% set to %amount%"
     balance-added: "Added %amount% to %player%'s balance"
     negative-value: "<red>You cannot use negative values here"
+  baltop:
+    title: "---------- Baltop ----------"
+    format: "<white>%place%. %name% <white>- %balance%"
+    empty: "Nothing here."
   heal:
     healed: "You have been healed"
     healed-by-other: "You have been healed by %player%"

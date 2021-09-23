@@ -92,7 +92,7 @@ public final class ServerBasics extends JavaPlugin {
     @Override
     public void onDisable() {
         if (basicEconomy.isBasicEconomy()) {
-            basicEconomy.refreshBaltop(true);
+
         }
     }
 

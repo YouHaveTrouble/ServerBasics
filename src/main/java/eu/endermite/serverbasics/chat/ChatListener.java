@@ -1,8 +1,6 @@
-package eu.endermite.serverbasics.features;
+package eu.endermite.serverbasics.chat;
 
 import eu.endermite.serverbasics.ServerBasics;
-import eu.endermite.serverbasics.chat.BasicChatRenderer;
-import eu.endermite.serverbasics.chat.StaffChatRenderer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
@@ -37,7 +35,6 @@ public class ChatListener implements Listener {
         if (!ServerBasics.getConfigCache().chat_format_enabled)
             return;
         event.renderer(chatRenderer);
-
     }
 
 

@@ -8,7 +8,7 @@ import eu.endermite.serverbasics.listeners.SpawnListener;
 import eu.endermite.serverbasics.players.BasicPlayerCache;
 import eu.endermite.serverbasics.storage.Database;
 import eu.endermite.serverbasics.storage.MySQL;
-import eu.endermite.serverbasics.features.ChatListener;
+import eu.endermite.serverbasics.chat.ChatListener;
 import eu.endermite.serverbasics.config.ConfigCache;
 import eu.endermite.serverbasics.config.LanguageCache;
 import eu.endermite.serverbasics.config.LocationsCache;

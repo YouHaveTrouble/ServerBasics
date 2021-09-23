@@ -115,15 +115,18 @@ public class BasicEconomy {
 
     public String formatMoney(double amount) {
         int decPoints = ServerBasics.getConfigCache().fractionalDigits;
+        String currencySymbol = ServerBasics.getConfigCache().currencySymbol;
 
         if (amount >= Math.pow(10, 12))
-           return String.format("%,."+decPoints+"ft", amount/Math.pow(10, 12));
+           return String.format("%,."+decPoints+"ft"+currencySymbol, amount/Math.pow(10, 12));
         if (amount >= Math.pow(10, 9))
-            return String.format("%,."+decPoints+"fb", amount/Math.pow(10, 9));
+            return String.format("%,."+decPoints+"fb"+currencySymbol, amount/Math.pow(10, 9));
         if (amount >= Math.pow(10, 6))
-            return String.format("%,."+decPoints+"fm", amount/Math.pow(10, 6));
+            return String.format("%,."+decPoints+"fm"+currencySymbol, amount/Math.pow(10, 6));
+        if (amount >= Math.pow(10, 3))
+            return String.format("%,."+decPoints+"fk"+currencySymbol, amount/Math.pow(10, 3));
 
-        return String.format("%,."+decPoints+"f", amount);
+        return String.format("%,."+decPoints+"f"+currencySymbol, amount);
     }
 
     /**

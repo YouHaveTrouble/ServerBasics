@@ -16,7 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
 @CommandRegistration
@@ -66,20 +65,15 @@ public class NicknameCommand {
         String newNick = MessageParser.makeColorsWork('&', nick);
 
         ServerBasics.getBasicPlayers().getBasicPlayer(uuid).thenAccept(basicPlayer -> {
-            Locale locale;
-            if (sender instanceof Player playerSender)
-                locale = playerSender.locale();
-            else
-                locale = ServerBasics.getConfigCache().default_lang;
             Component nickComponent = MessageParser.basicMiniMessage.parse(newNick);
             HashMap<String, Component> placeholders = new HashMap<>();
             placeholders.put("%oldnickname%", basicPlayer.getDisplayName());
             placeholders.put("%newnickname%", nickComponent);
             basicPlayer.setDisplayName(newNick);
-            sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(locale).nick_other, placeholders));
-            placeholders.clear();
-            placeholders.put("%nickname%", nickComponent);
-            basicPlayer.sendMessage(ServerBasics.getLang(basicPlayer.getLocale()).nick_changed_by_other);
+            sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).nick_other, placeholders));
+            Player player = Bukkit.getPlayer(basicPlayer.getUuid());
+            if (player == null || !player.isOnline()) return;
+            player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(basicPlayer.getLocale()).nick_changed_by_other, "%nickname%", nickComponent));
         });
     }
 }

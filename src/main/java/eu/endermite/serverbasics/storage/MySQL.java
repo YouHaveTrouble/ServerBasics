@@ -3,6 +3,7 @@ package eu.endermite.serverbasics.storage;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import eu.endermite.serverbasics.ServerBasics;
+import eu.endermite.serverbasics.messages.MessageParser;
 import eu.endermite.serverbasics.players.BasicPlayer;
 import eu.endermite.serverbasics.util.BasicUtil;
 import eu.endermite.serverbasics.util.BasicWarp;
@@ -92,7 +93,7 @@ public class MySQL implements Database {
                     }
                     return BasicPlayer.builder()
                             .uuid(uuid)
-                            .displayName(MiniMessage.markdown().parse(displayName))
+                            .displayName(MessageParser.basicMiniMessageWithoutMd.parse(displayName))
                             .lastSeen(lastSeen)
                             .build();
                 } else

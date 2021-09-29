@@ -5,7 +5,6 @@ import eu.endermite.serverbasics.ServerBasics;
 import eu.endermite.serverbasics.messages.MessageParser;
 import lombok.Builder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -64,11 +63,9 @@ public class BasicPlayer {
                     player.setAllowFlight(false);
                     player.setFallDistance(Float.MIN_VALUE);
                 });
-
             }
             return true;
         }
-
         NMSHandler.setOfflinePlayerCanFly(offlinePlayer, state);
         if (state)
             NMSHandler.setOfflinePlayerFallDistance(offlinePlayer, Float.MIN_VALUE);
@@ -104,6 +101,13 @@ public class BasicPlayer {
         MessageParser.sendMessage(player, message, placeholders);
     }
 
+    public void sendMessage(Component message) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return;
+        if (!player.isOnline()) return;
+        player.sendMessage(message);
+    }
+
     public Locale getLocale() {
         Locale def = ServerBasics.getConfigCache().default_lang;
         Player player = Bukkit.getPlayer(uuid);
@@ -127,8 +131,8 @@ public class BasicPlayer {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (!offlinePlayer.hasPlayedBefore()) return false;
         if (offlinePlayer.isOnline()) {
-            displayName = MiniMessage.markdown().parse(name);
-            offlinePlayer.getPlayer().displayName(MiniMessage.markdown().parse(name));
+            displayName = MessageParser.basicMiniMessageWithoutMd.parse(name);
+            offlinePlayer.getPlayer().displayName(displayName);
         }
         ServerBasics.getInstance().getDatabase().savePlayerDisplayName(uuid, name);
         return true;
@@ -174,6 +178,13 @@ public class BasicPlayer {
         } else
             CompletableFuture.runAsync(() -> NMSHandler.setOfflinePlayerPosition(offlinePlayer, location));
         return true;
+    }
+
+    public boolean teleportPlayer(Location location, Component feedback) {
+        boolean result = teleportPlayer(location);
+        if (result)
+            sendMessage(feedback);
+        return result;
     }
 
     public void teleportToSpawn() {

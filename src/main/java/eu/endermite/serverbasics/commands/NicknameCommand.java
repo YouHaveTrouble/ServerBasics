@@ -29,7 +29,7 @@ public class NicknameCommand {
             final @Argument(value = "nickname") String nick
     ) {
         String newNick = MessageParser.makeColorsWork('&', nick);
-        Component nickComponent = MessageParser.basicMiniMessage.parse(newNick);
+        Component nickComponent = MessageParser.basicMiniMessageWithoutMd.parse(newNick);
         String nickStripped = MiniMessage.get().stripTokens(nick);
         if (!player.hasPermission("serverbasics.command.nick.change") && !player.getName().equals(nickStripped)) {
             player.sendMessage(MessageParser.parseMessage(player, ServerBasics.getLang(player.locale()).nick_only_same_as_name));
@@ -65,7 +65,7 @@ public class NicknameCommand {
         String newNick = MessageParser.makeColorsWork('&', nick);
 
         ServerBasics.getBasicPlayers().getBasicPlayer(uuid).thenAccept(basicPlayer -> {
-            Component nickComponent = MessageParser.basicMiniMessage.parse(newNick);
+            Component nickComponent = MessageParser.basicMiniMessageWithoutMd.parse(newNick);
             HashMap<String, Component> placeholders = new HashMap<>();
             placeholders.put("%oldnickname%", basicPlayer.getDisplayName());
             placeholders.put("%newnickname%", nickComponent);

@@ -43,7 +43,7 @@ public class BasicChatRenderer implements ChatRenderer {
 
         TextReplacementConfig nameReplacementConfig = TextReplacementConfig.builder()
                 .match("%nickname%")
-                .replacement(component)
+                .replacement(player.displayName())
                 .build();
         format = format.replaceText(nameReplacementConfig);
         return format;

@@ -6,7 +6,7 @@
 
     <groupId>eu.endermite</groupId>
     <artifactId>ServerBasics</artifactId>
-    <version>1.0-alpha</version>
+    <version>1.0.3-alpha</version>
     <packaging>jar</packaging>
 
     <properties>

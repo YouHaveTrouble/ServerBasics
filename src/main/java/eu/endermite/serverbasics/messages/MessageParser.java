@@ -17,11 +17,34 @@ import java.util.Map;
 
 public class MessageParser {
 
-    public static final MiniMessage miniMessage = MiniMessage.builder().build();
+    public static final MiniMessage miniMessage = MiniMessage.builder()
+            .removeDefaultTransformations()
+            .transformation(TransformationType.COLOR)
+            .transformation(TransformationType.DECORATION)
+            .transformation(TransformationType.GRADIENT)
+            .transformation(TransformationType.RESET)
+            .transformation(TransformationType.RAINBOW)
+            .transformation(TransformationType.PRE)
+            .transformation(TransformationType.FONT)
+            .transformation(TransformationType.HOVER_EVENT)
+            .transformation(TransformationType.CLICK_EVENT)
+            .transformation(TransformationType.INSERTION)
+            .transformation(TransformationType.KEYBIND)
+            .transformation(TransformationType.TRANSLATABLE)
+            .build();
     public static final MiniMessage basicMiniMessage = MiniMessage.builder()
             .removeDefaultTransformations()
             .markdown()
             .markdownFlavor(DiscordFlavor.get())
+            .transformation(TransformationType.COLOR)
+            .transformation(TransformationType.DECORATION)
+            .transformation(TransformationType.GRADIENT)
+            .transformation(TransformationType.RESET)
+            .transformation(TransformationType.RAINBOW)
+            .transformation(TransformationType.PRE)
+            .build();
+    public static final MiniMessage basicMiniMessageWithoutMd = MiniMessage.builder()
+            .removeDefaultTransformations()
             .transformation(TransformationType.COLOR)
             .transformation(TransformationType.DECORATION)
             .transformation(TransformationType.GRADIENT)

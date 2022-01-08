@@ -1,152 +1,108 @@
 package eu.endermite.serverbasics;
 
-import net.minecraft.SystemUtils;
+import net.minecraft.Util;
 import net.minecraft.nbt.*;
-import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_17_R1.CraftOfflinePlayer;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class NMSHandler {
 
-    private static Method _getData;
 
-    static {
-        try {
-            _getData = CraftOfflinePlayer.class.getDeclaredMethod("getData");
-            _getData.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-    }
+    private static final MinecraftServer minecraftServer = MinecraftServer.getServer();
+    private static final PlayerDataStorage playerData = minecraftServer.playerDataStorage;
 
     public static Location getOfflinePlayerPosition(OfflinePlayer offlinePlayer) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            NBTTagList coords = nbt.getList("Pos", CraftMagicNumbers.NBT.TAG_DOUBLE);
-            long worldUuidMost = nbt.getLong("WorldUUIDMost");
-            long worldUuidLeast = nbt.getLong("WorldUUIDLeast");
-            NBTTagList rotation = nbt.getList("Rotation", CraftMagicNumbers.NBT.TAG_FLOAT);
-            float yaw = rotation.i(0);
-            float pitch = rotation.i(1);
-            UUID worldUuid = new UUID(worldUuidMost, worldUuidLeast);
-            World world = Bukkit.getWorld(worldUuid);
-            double x = coords.h(0);
-            double y = coords.h(1);
-            double z = coords.h(2);
-            return new Location(world, x, y, z, yaw, pitch);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        ListTag coords = nbt.getList("Pos", CraftMagicNumbers.NBT.TAG_DOUBLE);
+        long worldUuidMost = nbt.getLong("WorldUUIDMost");
+        long worldUuidLeast = nbt.getLong("WorldUUIDLeast");
+        ListTag rotation = nbt.getList("Rotation", CraftMagicNumbers.NBT.TAG_FLOAT);
+        float yaw = rotation.getFloat(0);
+        float pitch = rotation.getFloat(1);
+        UUID worldUuid = new UUID(worldUuidMost, worldUuidLeast);
+        World world = Bukkit.getWorld(worldUuid);
+        double x = coords.getDouble(0);
+        double y = coords.getDouble(1);
+        double z = coords.getDouble(2);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     public static void setOfflinePlayerPosition(OfflinePlayer offlinePlayer, Location location) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            nbt.setLong("WorldUUIDMost", location.getWorld().getUID().getMostSignificantBits());
-            nbt.setLong("WorldUUIDLeast", location.getWorld().getUID().getLeastSignificantBits());
-            NBTTagList pos = new NBTTagList();
-            pos.add(NBTTagDouble.a(location.getX()));
-            pos.add(NBTTagDouble.a(location.getY()));
-            pos.add(NBTTagDouble.a(location.getZ()));
-            nbt.set("Pos", pos);
-            NBTTagList rotation = new NBTTagList();
-            rotation.add(NBTTagFloat.a(location.getYaw()));
-            rotation.add(NBTTagFloat.a(location.getPitch()));
-            nbt.set("Rotation", rotation);
-            savePlayerData(nbt, offlinePlayer);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        nbt.putLong("WorldUUIDMost", location.getWorld().getUID().getMostSignificantBits());
+        nbt.putLong("WorldUUIDLeast", location.getWorld().getUID().getLeastSignificantBits());
+        ListTag pos = new ListTag();
+        pos.add(DoubleTag.valueOf(location.getX()));
+        pos.add(DoubleTag.valueOf(location.getY()));
+        pos.add(DoubleTag.valueOf(location.getZ()));
+        nbt.put("Pos", pos);
+        ListTag rotation = new ListTag();
+        rotation.add(FloatTag.valueOf(location.getYaw()));
+        rotation.add(FloatTag.valueOf(location.getPitch()));
+        nbt.put("Rotation", rotation);
+        savePlayerData(nbt, offlinePlayer);
     }
 
     public static void setOfflinePlayerGamemode(OfflinePlayer offlinePlayer, GameMode gameMode) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            switch (gameMode) {
-                case SURVIVAL -> nbt.setInt("playerGameType", 0);
-                case CREATIVE -> nbt.setInt("playerGameType", 1);
-                case ADVENTURE -> nbt.setInt("playerGameType", 2);
-                case SPECTATOR -> nbt.setInt("playerGameType", 3);
-            }
-            savePlayerData(nbt, offlinePlayer);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        switch (gameMode) {
+            case SURVIVAL -> nbt.putInt("playerGameType", 0);
+            case CREATIVE -> nbt.putInt("playerGameType", 1);
+            case ADVENTURE -> nbt.putInt("playerGameType", 2);
+            case SPECTATOR -> nbt.putInt("playerGameType", 3);
         }
+        savePlayerData(nbt, offlinePlayer);
     }
 
     public static GameMode getOfflinePlayerGamemode(OfflinePlayer offlinePlayer) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            return switch (nbt.getInt("playerGameType")) {
-                case 0 -> GameMode.SURVIVAL;
-                case 1 -> GameMode.CREATIVE;
-                case 2 -> GameMode.ADVENTURE;
-                case 3 -> GameMode.SPECTATOR;
-                default -> null;
-            };
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        return switch (nbt.getInt("playerGameType")) {
+            case 0 -> GameMode.SURVIVAL;
+            case 1 -> GameMode.CREATIVE;
+            case 2 -> GameMode.ADVENTURE;
+            case 3 -> GameMode.SPECTATOR;
+            default -> null;
+        };
     }
 
     public static boolean getOfflinePlayerCanFly(OfflinePlayer offlinePlayer) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            NBTTagCompound abilities = nbt.getCompound("abilities");
-            return abilities.getByte("mayfly") == 1;
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            return false;
-        }
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        CompoundTag abilities = nbt.getCompound("abilities");
+        return abilities.getByte("mayfly") == 1;
     }
 
     public static void setOfflinePlayerCanFly(OfflinePlayer offlinePlayer, boolean canFly) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            NBTTagCompound abilities = nbt.getCompound("abilities");
-            if (canFly)
-                abilities.setByte("mayfly", (byte) 1);
-            else
-                abilities.setByte("mayfly", (byte) 0);
-            nbt.set("abilities", abilities);
-            savePlayerData(nbt, offlinePlayer);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        CompoundTag abilities = nbt.getCompound("abilities");
+        if (canFly)
+            abilities.putByte("mayfly", (byte) 1);
+        else
+            abilities.putByte("mayfly", (byte) 0);
+        nbt.put("abilities", abilities);
+        savePlayerData(nbt, offlinePlayer);
     }
 
     public static void setOfflinePlayerFallDistance(OfflinePlayer offlinePlayer, float distance) {
-        try {
-            NBTTagCompound nbt = (NBTTagCompound) _getData.invoke(offlinePlayer);
-            nbt.setFloat("FallDistance", distance);
-            savePlayerData(nbt, offlinePlayer);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        CompoundTag nbt = playerData.getPlayerData(offlinePlayer.getUniqueId().toString());
+        nbt.putFloat("FallDistance", distance);
+        savePlayerData(nbt, offlinePlayer);
     }
 
-    private static void savePlayerData(NBTTagCompound nbtTagCompound, OfflinePlayer offlinePlayer) {
+    private static void savePlayerData(CompoundTag nbtTagCompound, OfflinePlayer offlinePlayer) {
         try {
-            Server server = Bukkit.getServer();
-            Field dedicatedServerField = server.getClass().getDeclaredField("console");
-            dedicatedServerField.setAccessible(true);
-            DedicatedServer dedicatedServer = (DedicatedServer) dedicatedServerField.get(server);
-            File playerDir = dedicatedServer.k.getPlayerDir();
+            File playerDir = playerData.getPlayerDir();
             File file = File.createTempFile(offlinePlayer.getUniqueId() + "-", ".dat", playerDir);
-            NBTCompressedStreamTools.a(nbtTagCompound, file);
+            NbtIo.writeCompressed(nbtTagCompound, file);
             File file1 = new File(playerDir, offlinePlayer.getUniqueId() + ".dat");
             File file2 = new File(playerDir, offlinePlayer.getUniqueId() + ".dat_old");
-            SystemUtils.a(file1, file, file2);
-        } catch (IOException | NoSuchFieldException | IllegalAccessException e) {
+            Util.safeReplaceFile(file1, file, file2);
+        } catch (IOException e) {
             Bukkit.getServer().getLogger().severe("Failed to save player data for " + offlinePlayer.getUniqueId());
         }
     }

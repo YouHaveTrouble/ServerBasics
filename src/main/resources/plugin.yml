@@ -1,7 +1,8 @@
-name: ServerBasics
-version: ${project.version}
-main: eu.endermite.serverbasics.ServerBasics
-api-version: 1.17
+name: ${name}
+version: ${version}
+main: ${group}.${name}
+description: ${description}
+api-version: 1.18
 authors: [ YouHaveTrouble, CorvetteCole, Dashiell ]
 softdepend:
   - PlaceholderAPI

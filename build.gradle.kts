@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "eu.endermite.serverbasics"
-version = "1.1.0"
+version = "1.2.0"
 description = "Modern non-bloated essentials alternative"
 
 java {

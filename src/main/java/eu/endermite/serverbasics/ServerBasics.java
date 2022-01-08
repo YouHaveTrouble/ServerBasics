@@ -50,7 +50,7 @@ public final class ServerBasics extends JavaPlugin {
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
         // nms is a bitch and I don't care enough to support multiple versions
-        if (!version.equals("v1_17_R1")) {
+        if (!version.equals("v1_18_R1")) {
             this.getLogger().severe("Could not find support for server version "+version);
             this.setEnabled(false);
             return;
@@ -93,7 +93,7 @@ public final class ServerBasics extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (!basicEconomy.isBasicEconomy()) return;
+        if (basicEconomy == null || !basicEconomy.isBasicEconomy()) return;
         // save the balances before shutdown
         basicEconomy.getAccounts().forEach(basicEconomyAccount -> database.saveBalance(basicEconomyAccount.getUuid(), basicEconomyAccount.getBalance()));
     }

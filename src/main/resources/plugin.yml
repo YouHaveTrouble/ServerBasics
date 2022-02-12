@@ -61,3 +61,6 @@ permissions:
     children:
       serverbasics.command.enchant: true
     description: Allows applying unsafe enchantments with /enchant command
+  serverbasics.command.execute.bypass:
+    default: op
+    description: Users with this permission cannot have execute command used on them

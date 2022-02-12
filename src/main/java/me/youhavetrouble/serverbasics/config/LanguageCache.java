@@ -28,7 +28,8 @@ public class LanguageCache {
             nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set, warp_exists,
             warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off, econ_disabled, balance,
             balance_other, balance_set, balance_add, balance_got, balance_deducted, negative_value, baltop_title,
-            baltop_format, baltop_empty, cant_tp_to_offline, item_enchanted, no_item_to_enchant, no_unsafe_enchant;
+            baltop_format, baltop_empty, cant_tp_to_offline, item_enchanted, no_item_to_enchant, no_unsafe_enchant,
+            cannot_execute_as, executed_command_as;
 
     public List<String> kick_message, ban_message;
 
@@ -145,6 +146,9 @@ public class LanguageCache {
             this.item_enchanted = getStringTranslation("commands.enchant.item-enchanted", "Item enchanted");
             this.no_item_to_enchant = getStringTranslation("commands.enchant.no-item", "No item to enchant");
             this.no_unsafe_enchant = getStringTranslation("commands.enchant.no-unsafe", "You cannot apply unsafe enchants");
+
+            this.cannot_execute_as = getStringTranslation("commands.execute.cannot-as", "Cannot execute commands as this player");
+            this.executed_command_as = getStringTranslation("commands.execute.executed-as", "Executed %command% as %player%");
 
             this.kick_message = getStringListTranslation("commands.kick.kick-message", List.of("You have been kicked from the server", "Reason: %reason%"));
             this.kick_reason = getStringTranslation("commands.kick.default-reason", "Kicked by a moderator");

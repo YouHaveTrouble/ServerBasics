@@ -93,6 +93,10 @@ commands:
     ban-message:
     - "%reason%"
     default-reason: "Banned by a moderator"
+  enchant:
+    item-enchanted: "Item enchanted!"
+    no-item: "No item to enchant!"
+    no-unsafe: "You cannot apply unsafe enchants"
   misc:
     all-reloaded: "All configurations reloaded"
     config-reloaded: "Configuration reloaded"

@@ -23,7 +23,7 @@ public class LanguageCache {
             nick_changed_by_other, nick_only_same_as_name, warped, warp_cant_use_name, warp_set, warp_exists,
             warp_doesnt_exist, warp_displayname_set, warp_removed, warp_perm_on, warp_perm_off, econ_disabled, balance,
             balance_other, balance_set, balance_add, balance_got, balance_deducted, negative_value, baltop_title,
-            baltop_format, baltop_empty, cant_tp_to_offline;
+            baltop_format, baltop_empty, cant_tp_to_offline, item_enchanted, no_item_to_enchant, no_unsafe_enchant;
 
     public List<String> kick_message, ban_message;
 
@@ -140,6 +140,10 @@ public class LanguageCache {
             this.teleported_coords = fileConfiguration.getString("commands.teleport.teleported-coords", defaultMessage);
             this.teleported_by_other = fileConfiguration.getString("commands.teleport.teleported-by-other", defaultMessage);
             this.cant_tp_to_offline = fileConfiguration.getString("commands.teleport.cant-tp-to-offline", defaultMessage);
+
+            this.item_enchanted = fileConfiguration.getString("commands.enchant.item-enchanted", defaultMessage);
+            this.no_item_to_enchant = fileConfiguration.getString("commands.enchant.no-item", defaultMessage);
+            this.no_unsafe_enchant = fileConfiguration.getString("commands.enchant.no-unsafe", defaultMessage);
 
             this.kick_message = fileConfiguration.getStringList("commands.kick.kick-message");
             this.kick_reason = fileConfiguration.getString("commands.kick.default-reason", defaultMessage);

@@ -55,3 +55,8 @@ permissions:
     default: op
   serverbasics.command.nick.change:
     description: Allows player to change their own nickname and not only change colors
+  serverbasics.command.enchant.unsafe:
+    default: op
+    children:
+      serverbasics.command.enchant: true
+    description: Allows applying unsafe enchantments with /enchant command

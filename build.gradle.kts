@@ -29,10 +29,10 @@ dependencies {
   implementation("net.kyori:adventure-api:4.9.3")
   implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 
-  implementation("cloud.commandframework:cloud-bukkit:1.5.0")
-  implementation("cloud.commandframework:cloud-paper:1.5.0")
-  implementation("cloud.commandframework:cloud-minecraft-extras:1.5.0")
-  implementation("cloud.commandframework:cloud-annotations:1.5.0")
+  implementation("cloud.commandframework:cloud-bukkit:1.6.1")
+  implementation("cloud.commandframework:cloud-paper:1.6.1")
+  implementation("cloud.commandframework:cloud-minecraft-extras:1.6.1")
+  implementation("cloud.commandframework:cloud-annotations:1.6.1")
 
   implementation("org.reflections:reflections:0.9.12")
 

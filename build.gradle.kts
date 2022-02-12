@@ -5,7 +5,7 @@ plugins {
   id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
-group = "eu.endermite.serverbasics"
+group = "me.youhavetrouble.serverbasics"
 version = "1.2.0"
 description = "Modern non-bloated essentials alternative"
 
@@ -56,10 +56,10 @@ tasks {
   }
 
   shadowJar {
-    relocate("cloud.commandframework", "eu.endermite.serverbasics.cloud.commandframework")
-    relocate("io.leangen.geantyref", "eu.endermite.serverbasics.io.leangen.geantyref")
-    relocate("net.kyori.minimessage",  "eu.endermite.serverbasics.net.kyori.minimessage")
-    relocate("com.zaxxer", "eu.endermite.serverbasics.com.zaxxer")
+    relocate("cloud.commandframework", "me.youhavetrouble.serverbasics.cloud.commandframework")
+    relocate("io.leangen.geantyref", "me.youhavetrouble.serverbasics.io.leangen.geantyref")
+    relocate("net.kyori.minimessage",  "me.youhavetrouble.serverbasics.net.kyori.minimessage")
+    relocate("com.zaxxer", "me.youhavetrouble.serverbasics.com.zaxxer")
     archiveFileName.set("${rootProject.name}-${project.version}.jar")
   }
 

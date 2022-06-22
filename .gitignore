@@ -111,3 +111,9 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+# Gradle
+!gradle-wrapper.jar
+.gradle/
+build/
+*/build/

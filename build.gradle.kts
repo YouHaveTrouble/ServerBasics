@@ -60,7 +60,10 @@ tasks {
     relocate("io.leangen.geantyref", "me.youhavetrouble.serverbasics.io.leangen.geantyref")
     relocate("net.kyori.minimessage",  "me.youhavetrouble.serverbasics.net.kyori.minimessage")
     relocate("com.zaxxer", "me.youhavetrouble.serverbasics.com.zaxxer")
-    archiveFileName.set("${rootProject.name}-${project.version}.jar")
+  }
+
+  reobfJar {
+    outputJar.set(project.layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}.jar"))
   }
 
   processResources {

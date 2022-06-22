@@ -21,13 +21,13 @@ public class StaffChatRenderer implements ChatRenderer {
         if (ServerBasics.getHooks().isHooked("PlaceholderAPI"))
             stringFormat = PlaceholderAPI.setPlaceholders(player, stringFormat);
 
-        Component format = MessageParser.miniMessage.parse(stringFormat);
+        Component format = MessageParser.miniMessage.deserialize(stringFormat);
         TextReplacementConfig.Builder messageReplacementConfig = TextReplacementConfig.builder()
                 .match("%message%");
 
         if (player.hasPermission("serverbasics.chat.color")) {
             stringMessage = MessageParser.makeColorsWork('&', stringMessage);
-            messageReplacementConfig.replacement(MessageParser.basicMiniMessage.parse(stringMessage));
+            messageReplacementConfig.replacement(MessageParser.miniMessage.deserialize(stringMessage));
         } else
             messageReplacementConfig.replacement(Component.text(stringMessage));
         format = format.replaceText(messageReplacementConfig.build());

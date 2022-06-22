@@ -5,8 +5,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.markdown.DiscordFlavor;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,41 +15,7 @@ import java.util.Map;
 
 public class MessageParser {
 
-    public static final MiniMessage miniMessage = MiniMessage.builder()
-            .removeDefaultTransformations()
-            .transformation(TransformationType.COLOR)
-            .transformation(TransformationType.DECORATION)
-            .transformation(TransformationType.GRADIENT)
-            .transformation(TransformationType.RESET)
-            .transformation(TransformationType.RAINBOW)
-            .transformation(TransformationType.PRE)
-            .transformation(TransformationType.FONT)
-            .transformation(TransformationType.HOVER_EVENT)
-            .transformation(TransformationType.CLICK_EVENT)
-            .transformation(TransformationType.INSERTION)
-            .transformation(TransformationType.KEYBIND)
-            .transformation(TransformationType.TRANSLATABLE)
-            .build();
-    public static final MiniMessage basicMiniMessage = MiniMessage.builder()
-            .removeDefaultTransformations()
-            .markdown()
-            .markdownFlavor(DiscordFlavor.get())
-            .transformation(TransformationType.COLOR)
-            .transformation(TransformationType.DECORATION)
-            .transformation(TransformationType.GRADIENT)
-            .transformation(TransformationType.RESET)
-            .transformation(TransformationType.RAINBOW)
-            .transformation(TransformationType.PRE)
-            .build();
-    public static final MiniMessage basicMiniMessageWithoutMd = MiniMessage.builder()
-            .removeDefaultTransformations()
-            .transformation(TransformationType.COLOR)
-            .transformation(TransformationType.DECORATION)
-            .transformation(TransformationType.GRADIENT)
-            .transformation(TransformationType.RESET)
-            .transformation(TransformationType.RAINBOW)
-            .transformation(TransformationType.PRE)
-            .build();
+    public static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     private static final LegacyComponentSerializer legacyComponentSerializer = LegacyComponentSerializer.builder().hexColors().build();
 
@@ -83,7 +47,7 @@ public class MessageParser {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
         message = makeColorsWork('&', message);
-        Component minimsg = miniMessage.parse(message);
+        Component minimsg = miniMessage.deserialize(message);
 
         if (placeholders != null && !placeholders.isEmpty()) {
             for (Map.Entry<String, Component> placeholder : placeholders.entrySet()) {
@@ -111,7 +75,7 @@ public class MessageParser {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
         message = makeColorsWork('&', message);
-        Component minimsg = miniMessage.parse(message);
+        Component minimsg = miniMessage.deserialize(message);
         TextReplacementConfig replacementConfig = TextReplacementConfig
                 .builder()
                 .match(placeholder)
@@ -174,7 +138,7 @@ public class MessageParser {
         if (sender instanceof Player player) {
             return player.displayName();
         }
-        return miniMessage.parse(ServerBasics.getLang(locale).console_name);
+        return miniMessage.deserialize(ServerBasics.getLang(locale).console_name);
     }
 
     /**
@@ -199,7 +163,7 @@ public class MessageParser {
      */
     public static String formattedStringFromMinimessage(String string) {
         string = MessageParser.makeColorsWork('&', string);
-        Component component = MessageParser.basicMiniMessage.parse(string);
+        Component component = miniMessage.deserialize(string);
         return formattedStringFromMinimessage(component);
     }
 }

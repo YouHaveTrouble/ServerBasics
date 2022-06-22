@@ -54,7 +54,7 @@ public class BanCommand {
 
         for (String line : ServerBasics.getLang(locale).ban_message) {
             line = line.replaceAll("%reason%", ServerBasics.getLang(locale).ban_reason);
-            banMessage = banMessage.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
+            banMessage = banMessage.append(MessageParser.miniMessage.deserialize(line)).append(Component.newline());
         }
 
         String finalKickReasonParsed = LegacyComponentSerializer.legacySection().serialize(banMessage);
@@ -81,7 +81,7 @@ public class BanCommand {
         } else
             target = playerSelector.getPlayer();
 
-        Component joinedReason = MessageParser.basicMiniMessage.parse(String.join(" ", reason));
+        Component joinedReason = MessageParser.miniMessage.deserialize(String.join(" ", reason));
         Component banMessage = Component.empty();
         Locale locale;
         if (target.isOnline())
@@ -90,7 +90,7 @@ public class BanCommand {
             locale = ServerBasics.getConfigCache().default_lang;
 
         for (String line : ServerBasics.getLang(locale).ban_message) {
-            banMessage = banMessage.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
+            banMessage = banMessage.append(MessageParser.miniMessage.deserialize(line)).append(Component.newline());
         }
 
         TextReplacementConfig reasonReplacer = TextReplacementConfig.builder().match("%reason%").replacement(joinedReason).build();
@@ -128,7 +128,7 @@ public class BanCommand {
 
         for (String line : ServerBasics.getLang(locale).ban_message) {
             line = line.replaceAll("%reason%", ServerBasics.getLang(locale).ban_reason);
-            banMessage = banMessage.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
+            banMessage = banMessage.append(MessageParser.miniMessage.deserialize(line)).append(Component.newline());
         }
 
         String finalKickReasonParsed = LegacyComponentSerializer.legacySection().serialize(banMessage);
@@ -163,10 +163,10 @@ public class BanCommand {
         else
             locale = ServerBasics.getConfigCache().default_lang;
 
-        Component reasonComponent = MessageParser.miniMessage.parse(String.join(" ", reason));
+        Component reasonComponent = MessageParser.miniMessage.deserialize(String.join(" ", reason));
 
         for (String line : ServerBasics.getLang(locale).ban_message) {
-            banMessage = banMessage.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
+            banMessage = banMessage.append(MessageParser.miniMessage.deserialize(line)).append(Component.newline());
         }
 
         TextReplacementConfig reasonReplacer = TextReplacementConfig.builder().match("%reason%").replacement(reasonComponent).build();

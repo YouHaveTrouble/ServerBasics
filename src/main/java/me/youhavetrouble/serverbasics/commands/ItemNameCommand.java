@@ -33,7 +33,7 @@ public class ItemNameCommand {
         String name = StringUtils.join(newName, " ");
         name = MessageParser.makeColorsWork('&', name);
         ItemMeta meta = itemStack.getItemMeta();
-        meta.displayName(MessageParser.miniMessage.parse(name));
+        meta.displayName(MessageParser.miniMessage.deserialize(name));
         itemStack.setItemMeta(meta);
         player.getInventory().setItemInMainHand(itemStack);
         MessageParser.sendMessage(player, ServerBasics.getLang(player).item_name_changed);

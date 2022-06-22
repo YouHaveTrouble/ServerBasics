@@ -10,7 +10,6 @@ import me.youhavetrouble.serverbasics.ServerBasics;
 import me.youhavetrouble.serverbasics.commands.registration.CommandRegistration;
 import me.youhavetrouble.serverbasics.messages.MessageParser;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -34,7 +33,7 @@ public class KickCommand {
             Component kickReason = Component.empty();
             for (String line : ServerBasics.getLang(player.locale()).kick_message) {
                 line = line.replaceAll("%reason%", ServerBasics.getLang(player.locale()).kick_reason);
-                kickReason = kickReason.append(MiniMessage.markdown().parse(line)).append(Component.newline());
+                kickReason = kickReason.append(MessageParser.miniMessage.deserialize(line)).append(Component.newline());
             }
             Component finalKickReason = kickReason;
             Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.kick(finalKickReason));
@@ -61,7 +60,7 @@ public class KickCommand {
             Component kickReasonBuilder = Component.empty();
             for (String line : ServerBasics.getLang(player).kick_message) {
                 line = line.replaceAll("%reason%", parsedKickReason);
-                kickReasonBuilder = kickReasonBuilder.append(MessageParser.miniMessage.parse(line)).append(Component.newline());
+                kickReasonBuilder = kickReasonBuilder.append(MessageParser.miniMessage.deserialize(line)).append(Component.newline());
             }
             Component finalKickReason = kickReasonBuilder;
             Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> player.kick(finalKickReason));

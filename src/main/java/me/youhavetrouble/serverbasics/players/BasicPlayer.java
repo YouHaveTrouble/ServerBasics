@@ -131,7 +131,7 @@ public class BasicPlayer {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (!offlinePlayer.hasPlayedBefore()) return false;
         if (offlinePlayer.isOnline()) {
-            displayName = MessageParser.basicMiniMessageWithoutMd.parse(name);
+            displayName = MessageParser.miniMessage.deserialize(name);
             offlinePlayer.getPlayer().displayName(displayName);
         }
         ServerBasics.getInstance().getDatabase().savePlayerDisplayName(uuid, name);

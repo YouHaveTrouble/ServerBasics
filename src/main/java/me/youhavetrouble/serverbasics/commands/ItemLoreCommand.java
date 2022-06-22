@@ -40,7 +40,7 @@ public class ItemLoreCommand {
         String[] lines = raw.split("\\\\n");
         List<Component> lore = new ArrayList<>();
         for (String line : lines) {
-            lore.add(MessageParser.miniMessage.parse(line));
+            lore.add(MessageParser.miniMessage.deserialize(line));
         }
         ItemMeta meta = itemStack.getItemMeta();
         meta.lore(lore);

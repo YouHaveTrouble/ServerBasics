@@ -1,8 +1,8 @@
 plugins {
   `java-library`
-  id("io.papermc.paperweight.userdev") version "1.3.3"
+  id("io.papermc.paperweight.userdev") version "1.3.7"
   id("org.jetbrains.kotlin.plugin.lombok") version "1.6.10"
-  id("com.github.johnrengelman.shadow") version "7.1.0"
+  id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "me.youhavetrouble.serverbasics"
@@ -21,25 +21,25 @@ repositories {
 }
 
 dependencies {
-  paperDevBundle("1.18.1-R0.1-SNAPSHOT")
-  compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
+  paperDevBundle("1.19-R0.1-SNAPSHOT")
+  compileOnly("io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT")
 
   compileOnly("me.clip:placeholderapi:2.11.1")
 
-  implementation("net.kyori:adventure-api:4.9.3")
-  implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+  implementation("net.kyori:adventure-api:4.11.0")
+  implementation("net.kyori:adventure-text-minimessage:4.11.0")
 
-  implementation("cloud.commandframework:cloud-bukkit:1.6.1")
-  implementation("cloud.commandframework:cloud-paper:1.6.1")
-  implementation("cloud.commandframework:cloud-minecraft-extras:1.6.1")
-  implementation("cloud.commandframework:cloud-annotations:1.6.1")
+  implementation("cloud.commandframework:cloud-bukkit:1.6.2")
+  implementation("cloud.commandframework:cloud-paper:1.6.2")
+  implementation("cloud.commandframework:cloud-minecraft-extras:1.6.2")
+  implementation("cloud.commandframework:cloud-annotations:1.6.2")
 
-  implementation("org.reflections:reflections:0.9.12")
+  implementation("org.reflections:reflections:0.10.2")
 
-  compileOnly("org.projectlombok:lombok:1.18.20")
-  annotationProcessor("org.projectlombok:lombok:1.18.22")
+  compileOnly("org.projectlombok:lombok:1.18.24")
+  annotationProcessor("org.projectlombok:lombok:1.18.24")
 
-  implementation("com.zaxxer:HikariCP:5.0.0")
+  implementation("com.zaxxer:HikariCP:5.0.1")
 
   compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 

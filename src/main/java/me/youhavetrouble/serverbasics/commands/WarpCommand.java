@@ -12,7 +12,6 @@ import me.youhavetrouble.serverbasics.messages.MessageParser;
 import me.youhavetrouble.serverbasics.util.BasicUtil;
 import me.youhavetrouble.serverbasics.util.BasicWarp;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -92,7 +91,7 @@ public class WarpCommand {
         basicWarp.setDisplayName(joinedDisplayName);
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%warp%", Component.text(id));
-        placeholders.put("%displayname%", MiniMessage.markdown().parse(joinedDisplayName));
+        placeholders.put("%displayname%", MessageParser.miniMessage.deserialize(joinedDisplayName));
         sender.sendMessage(MessageParser.parseMessage(sender, ServerBasics.getLang(sender).warp_displayname_set, placeholders));
     }
 

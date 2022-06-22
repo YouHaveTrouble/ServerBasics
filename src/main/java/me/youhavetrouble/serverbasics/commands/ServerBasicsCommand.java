@@ -56,7 +56,7 @@ public class ServerBasicsCommand {
             }
 
             if (e.getValue().pluginEnabled()) {
-                Component hoverText = MessageParser.miniMessage.parse(ServerBasics.getLang(sender).getHookDesc(e.getKey()));
+                Component hoverText = MessageParser.miniMessage.deserialize(ServerBasics.getLang(sender).getHookDesc(e.getKey()));
                 HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
                 hooksComponent = hooksComponent.append(Component.text(e.getKey()).color(NamedTextColor.GREEN).hoverEvent(hoverEvent));
                 hooks++;
@@ -66,7 +66,7 @@ public class ServerBasicsCommand {
                         .append(Component.newline())
                         .append(Component.text()
                                 .append(Component.newline())
-                                .append(MessageParser.miniMessage.parse(fix)));
+                                .append(MessageParser.miniMessage.deserialize(fix)));
                 HoverEvent<Component> hoverEvent = HoverEvent.showText(hoverText);
                 Component inactiveComponent = Component.text(e.getKey()).color(NamedTextColor.RED).hoverEvent(hoverEvent);
                 inactive.add(inactiveComponent);

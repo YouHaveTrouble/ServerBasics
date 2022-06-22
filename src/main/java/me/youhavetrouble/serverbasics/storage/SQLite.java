@@ -94,7 +94,7 @@ public class SQLite implements Database {
 
                     return BasicPlayer.builder()
                             .uuid(uuid)
-                            .displayName(MessageParser.basicMiniMessageWithoutMd.parse(displayName))
+                            .displayName(MessageParser.miniMessage.deserialize(displayName))
                             .lastSeen(lastSeen)
                             .build();
                 } else

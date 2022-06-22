@@ -2,8 +2,8 @@ package me.youhavetrouble.serverbasics.util;
 
 import me.youhavetrouble.serverbasics.ServerBasics;
 import lombok.Builder;
+import me.youhavetrouble.serverbasics.messages.MessageParser;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 
 @Builder
@@ -16,7 +16,7 @@ public class BasicWarp {
 
     public Component getDisplayName() {
         if (displayName == null) return Component.text(warpId);
-        return MiniMessage.markdown().parse(displayName);
+        return MessageParser.miniMessage.deserialize(displayName);
     }
 
     public String getRawDisplayName() {

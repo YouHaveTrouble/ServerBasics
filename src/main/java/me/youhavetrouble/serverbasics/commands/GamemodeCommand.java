@@ -11,7 +11,6 @@ import me.youhavetrouble.serverbasics.config.LanguageCache;
 import me.youhavetrouble.serverbasics.messages.MessageParser;
 import me.youhavetrouble.serverbasics.players.BasicPlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -111,20 +110,20 @@ public class GamemodeCommand {
         String msg = ServerBasics.getLang(sender).gamemode_set_many;
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%amount%", Component.text(amount));
-        placeholders.put("%gamemode%", MiniMessage.markdown().parse(ServerBasics.getLang(sender).getGamemode(gameMode)));
+        placeholders.put("%gamemode%", MessageParser.miniMessage.deserialize(ServerBasics.getLang(sender).getGamemode(gameMode)));
         sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
     }
 
     private void gamemodeChanged(Player player, GameMode gameMode) {
         LanguageCache lang = ServerBasics.getLang(player);
         String msg = lang.gamemode_changed;
-        player.sendMessage(MessageParser.parseMessage(player, msg, "%gamemode%", MessageParser.miniMessage.parse(lang.getGamemode(gameMode))));
+        player.sendMessage(MessageParser.parseMessage(player, msg, "%gamemode%", MessageParser.miniMessage.deserialize(lang.getGamemode(gameMode))));
     }
 
     private void gamemodeChangedSelf(Player player, GameMode gameMode) {
         LanguageCache lang = ServerBasics.getLang(player.locale());
         String msg = lang.gamemode_changed_self;
-        player.sendMessage(MessageParser.parseMessage(player, msg,"%gamemode%", MessageParser.miniMessage.parse(lang.getGamemode(gameMode))));
+        player.sendMessage(MessageParser.parseMessage(player, msg,"%gamemode%", MessageParser.miniMessage.deserialize(lang.getGamemode(gameMode))));
     }
 
     private void gamemodeChangedOtherSender(CommandSender sender, BasicPlayer basicPlayer, GameMode gameMode) {
@@ -132,7 +131,7 @@ public class GamemodeCommand {
         String msg = lang.gamemode_changed_other;
         HashMap<String, Component> placeholders = new HashMap<>();
         placeholders.put("%name", basicPlayer.getDisplayName());
-        placeholders.put("%gamemode%", MiniMessage.markdown().parse(lang.getGamemode(gameMode)));
+        placeholders.put("%gamemode%", MessageParser.miniMessage.deserialize(lang.getGamemode(gameMode)));
         sender.sendMessage(MessageParser.parseMessage(sender, msg, placeholders));
     }
 }

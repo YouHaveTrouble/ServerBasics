@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "me.youhavetrouble.serverbasics"
-version = "1.3.0"
+version = "1.4.0"
 description = "Modern non-bloated essentials alternative"
 
 java {

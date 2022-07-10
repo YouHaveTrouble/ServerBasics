@@ -4,7 +4,7 @@ main: ${group}.${name}
 description: ${description}
 api-version: 1.18
 authors: [ YouHaveTrouble, CorvetteCole, Dashiell ]
-website: youhavetrouble.me
+website: https://youhavetrouble.me
 softdepend:
   - PlaceholderAPI
   - Vault

@@ -65,17 +65,17 @@ public class CommandManager {
             return;
         }
 
-        if (manager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
+        if (manager.hasCapability(CloudBukkitCapabilities.BRIGADIER)) {
             manager.registerBrigadier();
         }
-        if (syncManager.queryCapability(CloudBukkitCapabilities.BRIGADIER)) {
+        if (syncManager.hasCapability(CloudBukkitCapabilities.BRIGADIER)) {
             syncManager.registerBrigadier();
         }
 
-        if (manager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+        if (manager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
             ((PaperCommandManager<CommandSender>) manager).registerAsynchronousCompletions();
         }
-        if (syncManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+        if (syncManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
             ((PaperCommandManager<CommandSender>) syncManager).registerAsynchronousCompletions();
         }
 

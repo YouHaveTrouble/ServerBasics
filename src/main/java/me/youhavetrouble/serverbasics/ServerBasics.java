@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.Scanners;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,7 +134,7 @@ public final class ServerBasics extends JavaPlugin {
     }
 
     private Set<String> getDefaultLanguageFiles(){
-        Reflections reflections = new Reflections("lang", new ResourcesScanner());
+        Reflections reflections = new Reflections("lang", Scanners.Resources);
         return reflections.getResources(Pattern.compile("([a-z]{1,3}_[a-z]{1,3})(\\.yml)"));
     }
 

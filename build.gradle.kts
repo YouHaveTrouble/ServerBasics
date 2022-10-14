@@ -21,8 +21,8 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
-    compileOnly("io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT")
+    paperDevBundle("1.19.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")

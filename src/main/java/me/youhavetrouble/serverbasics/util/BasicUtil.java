@@ -41,6 +41,8 @@ public class BasicUtil {
 
     /**
      * Serializes Bukkit Location to JSONObject
+     * @param location the location
+     * @return the bukkit location as a JSONObject
      */
     public static JSONObject jsonFromLocation(Location location) {
         JSONObject json = new JSONObject();
@@ -55,8 +57,8 @@ public class BasicUtil {
 
     /**
      * Gets pretty player name, entity custom name or entity name as Component
-     * @param entity
-     * @return Pretty entity name
+     * @param entity the entity to prettify
+     * @return prettified entity name
      */
     public static Component entityName(Entity entity) {
         if (entity instanceof Player targetPlayer) {
@@ -69,6 +71,11 @@ public class BasicUtil {
         }
     }
 
+    /**
+     * Returns the {@link Locale} of the player
+     * @param sender the sender to check against
+     * @return the locale of the player
+     */
     public static Locale playerLocaleOrDefault(CommandSender sender) {
         if (sender instanceof Player player)
             return player.locale();

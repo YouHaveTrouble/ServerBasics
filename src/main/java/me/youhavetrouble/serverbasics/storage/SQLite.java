@@ -30,7 +30,9 @@ public class SQLite implements Database {
         HikariConfig config = new HikariConfig();
         String url = ServerBasics.getConfigCache().getSqlPlayersConnectionString();
         config.setJdbcUrl(url);
-        config.setMaximumPoolSize(10);
+
+        // SQLite doesn't like multiple things accessing it
+        config.setMaximumPoolSize(1);
 
         dataSource = new HikariDataSource(config);
         this.playerTable = playerPrefix + "players";

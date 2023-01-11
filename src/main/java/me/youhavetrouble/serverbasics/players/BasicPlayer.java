@@ -1,5 +1,6 @@
 package me.youhavetrouble.serverbasics.players;
 
+import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
 import me.youhavetrouble.serverbasics.NMSHandler;
 import me.youhavetrouble.serverbasics.ServerBasics;
 import me.youhavetrouble.serverbasics.messages.MessageParser;
@@ -21,12 +22,20 @@ import java.util.concurrent.CompletableFuture;
 /**
  * All player data that needs to be tracked in a plugin and convienience methods
  */
-@Builder
+
 public class BasicPlayer {
 
     private final UUID uuid;
     private Component displayName;
+    private String rawDisplayName;
     private final long lastSeen;
+
+    public BasicPlayer(UUID id, String rawDisplayName, long lastSeen) {
+        this.uuid = id;
+        this.rawDisplayName = rawDisplayName;
+        this.displayName = rawDisplayName == null ? null : MessageParser.miniMessage.deserialize(rawDisplayName);
+        this.lastSeen = lastSeen;
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -34,16 +43,12 @@ public class BasicPlayer {
 
     /**
      * Check if player is allowed to fly
-     *
-     * @return
      */
     public boolean canFly() {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (!offlinePlayer.hasPlayedBefore()) return false;
-        if (offlinePlayer.isOnline())
-            return offlinePlayer.getPlayer().getAllowFlight();
-        else
-            return NMSHandler.getOfflinePlayerCanFly(offlinePlayer);
+        if (offlinePlayer.isOnline()) return offlinePlayer.getPlayer().getAllowFlight();
+        return NMSHandler.getOfflinePlayerCanFly(offlinePlayer);
     }
 
     /**
@@ -116,45 +121,40 @@ public class BasicPlayer {
         return player.locale();
     }
 
+    public String getRawDisplayName() {
+        return rawDisplayName;
+    }
 
     public Component getDisplayName() {
         if (displayName != null) return displayName;
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (offlinePlayer.getName() == null) return Component.empty();
-        if (offlinePlayer.isOnline())
-            return offlinePlayer.getPlayer().displayName();
-        else
-            return Component.text(offlinePlayer.getName());
+        if (offlinePlayer.isOnline()) return offlinePlayer.getPlayer().displayName();
+        return Component.text(offlinePlayer.getName());
     }
 
-    public boolean setDisplayName(String name) {
+    public void setDisplayName(String name) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        if (!offlinePlayer.hasPlayedBefore()) return false;
+        if (!offlinePlayer.hasPlayedBefore()) return;
+        this.rawDisplayName = name;
         if (offlinePlayer.isOnline()) {
-            displayName = MessageParser.miniMessage.deserialize(name);
-            offlinePlayer.getPlayer().displayName(displayName);
+            this.displayName = name == null ? null : MessageParser.miniMessage.deserialize(name);
+            offlinePlayer.getPlayer().displayName(this.displayName);
         }
-        ServerBasics.getInstance().getDatabase().savePlayerDisplayName(uuid, name);
-        return true;
     }
 
     public GameMode getGameMode() {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (!offlinePlayer.hasPlayedBefore()) return null;
-        if (offlinePlayer.isOnline())
-            return offlinePlayer.getPlayer().getGameMode();
-        else
-            return NMSHandler.getOfflinePlayerGamemode(offlinePlayer);
+        if (offlinePlayer.isOnline()) return offlinePlayer.getPlayer().getGameMode();
+        return NMSHandler.getOfflinePlayerGamemode(offlinePlayer);
     }
 
-    public boolean setGameMode(GameMode gamemode) {
+    public void setGameMode(GameMode gamemode) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        if (!offlinePlayer.hasPlayedBefore()) return false;
-        if (offlinePlayer.isOnline())
-            Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> offlinePlayer.getPlayer().setGameMode(gamemode));
-        else
-            NMSHandler.setOfflinePlayerGamemode(offlinePlayer, gamemode);
-        return true;
+        if (!offlinePlayer.hasPlayedBefore()) return;
+        if (offlinePlayer.isOnline()) Bukkit.getScheduler().runTask(ServerBasics.getInstance(), () -> offlinePlayer.getPlayer().setGameMode(gamemode));
+        NMSHandler.setOfflinePlayerGamemode(offlinePlayer, gamemode);
     }
 
     public void setHat(ItemStack itemStack) {
@@ -182,8 +182,7 @@ public class BasicPlayer {
 
     public boolean teleportPlayer(Location location, Component feedback) {
         boolean result = teleportPlayer(location);
-        if (result)
-            sendMessage(feedback);
+        if (result) sendMessage(feedback);
         return result;
     }
 
@@ -207,6 +206,20 @@ public class BasicPlayer {
     public long getLastSeen() {
         return lastSeen;
     }
+
+    public static CompletableFuture<BasicPlayer> fromSinglePlayerSelector(SinglePlayerSelector selector) {
+        if (!selector.hasAny()) {
+            String name = selector.getSelector();
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
+            if (!offlinePlayer.hasPlayedBefore()) {
+                return null;
+            }
+            return ServerBasics.getBasicPlayers().getBasicPlayer(offlinePlayer.getUniqueId());
+        }
+        return ServerBasics.getBasicPlayers().getBasicPlayer(selector.getPlayer().getUniqueId());
+
+    }
+
 
     /**
      * Get player data from cache if the player is online or from database when they're not.
@@ -235,14 +248,11 @@ public class BasicPlayer {
      * @return CompletableFuture of BasicPlayer instance. Can be null if player does not exist in the database.
      */
     public static CompletableFuture<BasicPlayer> fromDatabase(UUID uuid) {
-        return ServerBasics.getInstance().getDatabase().getPlayer(uuid);
+        return ServerBasics.getInstance().getDatabase().getPlayerData().loadBasicPlayer(uuid);
     }
 
     public static BasicPlayer empty(UUID uuid) {
-        return builder()
-                .uuid(uuid)
-                .lastSeen(0L)
-                .build();
+        return new BasicPlayer(uuid, null, 0L);
     }
 
 }

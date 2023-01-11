@@ -7,7 +7,7 @@ import me.youhavetrouble.serverbasics.listeners.FeatureListener;
 import me.youhavetrouble.serverbasics.listeners.SpawnListener;
 import me.youhavetrouble.serverbasics.players.BasicPlayerCache;
 import me.youhavetrouble.serverbasics.storage.Database;
-import me.youhavetrouble.serverbasics.storage.MySQL;
+import me.youhavetrouble.serverbasics.storage.mysql.MySQL;
 import me.youhavetrouble.serverbasics.chat.ChatListener;
 import me.youhavetrouble.serverbasics.config.ConfigCache;
 import me.youhavetrouble.serverbasics.config.LanguageCache;

@@ -1,6 +1,5 @@
 package me.youhavetrouble.serverbasics.storage;
 
-import me.youhavetrouble.serverbasics.players.BasicPlayer;
 import me.youhavetrouble.serverbasics.util.BasicWarp;
 
 import java.util.HashMap;
@@ -12,10 +11,7 @@ public interface Database {
     void createTables();
 
     // Player data
-    CompletableFuture<BasicPlayer> getPlayer(UUID uuid);
-    CompletableFuture<Void> savePlayerDisplayName(UUID uuid, String displayName);
-    CompletableFuture<Void> savePlayerLastSeen(UUID uuid, long lastSeen);
-    CompletableFuture<Void> deletePlayer(UUID uuid);
+    PlayerData getPlayerData();
 
     // Spawn data
     CompletableFuture<BasicWarp> getSpawn();

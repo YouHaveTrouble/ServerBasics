@@ -12,9 +12,10 @@ public class BasicPlayerCache {
 
     public BasicPlayerCache() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            BasicPlayer.fromPlayer(player).thenAccept(basicPlayer -> basicPlayers.put(player.getUniqueId(), basicPlayer));
+            BasicPlayer.fromPlayer(player).thenAccept(basicPlayer -> basicPlayers.put(player.getUniqueId(), basicPlayer)).join();
         }
     }
+
 
     public CompletableFuture<BasicPlayer> getBasicPlayer(UUID uuid) {
         BasicPlayer basicPlayer = basicPlayers.get(uuid);

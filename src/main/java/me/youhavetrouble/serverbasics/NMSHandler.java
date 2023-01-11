@@ -5,7 +5,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_19_R2.util.CraftMagicNumbers;
 
 import java.io.File;
 import java.io.IOException;

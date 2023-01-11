@@ -1,10 +1,12 @@
-package me.youhavetrouble.serverbasics.storage;
+package me.youhavetrouble.serverbasics.storage.mysql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.youhavetrouble.serverbasics.ServerBasics;
 import me.youhavetrouble.serverbasics.messages.MessageParser;
 import me.youhavetrouble.serverbasics.players.BasicPlayer;
+import me.youhavetrouble.serverbasics.storage.Database;
+import me.youhavetrouble.serverbasics.storage.PlayerData;
 import me.youhavetrouble.serverbasics.util.BasicUtil;
 import me.youhavetrouble.serverbasics.util.BasicWarp;
 import org.bukkit.Bukkit;
@@ -19,12 +21,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class MySQL implements Database {
 
-    DataSource dataSource;
+    private final DataSource dataSource;
+    private final PlayerData playerData;
 
     private final String playerTable, warpTable, homesTable, economyTable;
-    private final String loadPlayer, savePlayerDisplayName, savePlayerLastSeen, getSpawn, saveWarp,
-            getWarps, getHomes, saveHome, deleteWarp, deleteHome, deletePlayer, saveBalance, getBalance,
-            deleteBalance, getBaltop;
+    private final String getSpawn, saveWarp, getWarps, getHomes, saveHome, deleteWarp, deleteHome, saveBalance,
+            getBalance, deleteBalance, getBaltop;
 
     public MySQL(String playerPrefix, String serverPrefix) {
         HikariConfig config = new HikariConfig();
@@ -39,9 +41,6 @@ public class MySQL implements Database {
         this.economyTable = serverPrefix + "economy";
         createTables();
 
-        loadPlayer = "SELECT * FROM `" + playerTable + "` WHERE `player_uuid` = ?;";
-        savePlayerDisplayName = "INSERT INTO `" + playerTable + "` (player_uuid, displayname) VALUES (?, ?) ON DUPLICATE KEY UPDATE displayname = ?;";
-        savePlayerLastSeen = "INSERT INTO `" + playerTable + "` (player_uuid, lastseen) VALUES (?, ?) ON DUPLICATE KEY UPDATE lastseen = ?;";
         getSpawn = "SELECT * FROM `" + warpTable + "` WHERE `warp_id` = ?;";
         saveWarp = "INSERT INTO `" + warpTable + "` (warp_id, displayname, location, requires_permission) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, location = ?, requires_permission = ?;";
         getWarps = "SELECT * FROM `" + warpTable + "`;";
@@ -49,16 +48,16 @@ public class MySQL implements Database {
         saveHome = "INSERT INTO `" + warpTable + "` (home_id, player_uuid, displayname, location) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE displayname = ?, location = ?;";
         deleteWarp = "DELETE FROM `" + warpTable + "` WHERE warp_id = ?;";
         deleteHome = "DELETE FROM " + homesTable + "` WHERE player_uuid = ?, WHERE home_id = ?;";
-        deletePlayer = "DELETE FROM `" + playerTable + "` WHERE player_uuid = ?;";
         saveBalance = "INSERT INTO `" + economyTable + "` (player_uuid, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE SET balance = ?;";
         getBalance = "SELECT `balance` FROM `" + economyTable + "` WHERE player_uuid = ?;";
         deleteBalance = "DELETE FROM `" + economyTable + "` WHERE player_uuid = ?;";
         getBaltop = "SELECT * FROM `" + economyTable + "` ORDER BY balance DESC LIMIT ?;";
+
+        this.playerData = new MySQLPlayerData(dataSource, playerTable);
     }
 
     public void createTables() {
-        try {
-            Statement statement = dataSource.getConnection().createStatement();
+        try (Statement statement = dataSource.getConnection().createStatement()) {
             String sql;
             sql = "CREATE TABLE IF NOT EXISTS `" + playerTable + "` (`player_uuid` varchar(36) NOT NULL PRIMARY KEY, `displayname` varchar(256), `lastseen` long);";
             statement.execute(sql);
@@ -75,73 +74,8 @@ public class MySQL implements Database {
     }
 
     @Override
-    public CompletableFuture<BasicPlayer> getPlayer(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(loadPlayer)) {
-                statement.setString(1, uuid.toString());
-                ResultSet result = statement.executeQuery();
-                if (result.next()) {
-                    String displayName = result.getString("displayname");
-                    long lastSeen = result.getLong("lastseen");
-                    if (displayName == null) {
-                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-                        if (offlinePlayer.hasPlayedBefore() && offlinePlayer.getName() != null)
-                            displayName = offlinePlayer.getName();
-                        else
-                            displayName = "Unknown Player";
-                    }
-                    return BasicPlayer.builder()
-                            .uuid(uuid)
-                            .displayName(MessageParser.miniMessage.deserialize(displayName))
-                            .lastSeen(lastSeen)
-                            .build();
-                } else
-                    return BasicPlayer.empty(uuid);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public CompletableFuture<Void> savePlayerDisplayName(UUID uuid, String displayName) {
-        return CompletableFuture.runAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerDisplayName)) {
-                statement.setString(1, uuid.toString());
-                statement.setString(2, displayName);
-                statement.setString(3, displayName);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
-    public CompletableFuture<Void> savePlayerLastSeen(UUID uuid, long lastSeen) {
-        return CompletableFuture.runAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(savePlayerLastSeen)) {
-                statement.setString(1, uuid.toString());
-                statement.setLong(2, lastSeen);
-                statement.setLong(3, lastSeen);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
-    public CompletableFuture<Void> deletePlayer(UUID uuid) {
-        return CompletableFuture.runAsync(() -> {
-            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(deletePlayer)) {
-                statement.setString(1, uuid.toString());
-                statement.executeUpdate();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        });
+    public PlayerData getPlayerData() {
+        return playerData;
     }
 
     @Override

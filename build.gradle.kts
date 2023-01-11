@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "me.youhavetrouble.serverbasics"
-version = "1.4.0"
+version = "2.0.0"
 description = "Modern non-bloated essentials alternative"
 
 java {
@@ -21,15 +21,15 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
-    compileOnly("io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT")
+    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 
-    implementation("cloud.commandframework:cloud-paper:1.7.0")
-    implementation("cloud.commandframework:cloud-minecraft-extras:1.7.0")
-    implementation("cloud.commandframework:cloud-annotations:1.7.0")
+    implementation("cloud.commandframework:cloud-paper:1.8.0")
+    implementation("cloud.commandframework:cloud-minecraft-extras:1.8.0")
+    implementation("cloud.commandframework:cloud-annotations:1.8.0")
     implementation("org.reflections:reflections:0.10.2")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
